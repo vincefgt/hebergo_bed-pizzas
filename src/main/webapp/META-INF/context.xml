@@ -1,0 +1,17 @@
+<Context>
+    <Resource
+            name="jdbc/MyDataSource"
+            auth="Container"
+            type="javax.sql.DataSource"
+            maxActive="15"
+            maxIdle="3"
+            maxWait="10000"
+            username="root"
+            password="root"
+            driverClassName="com.mysql.cj.jdbc.Driver"
+            url="jdbc:mysql://localhost:3306/bed_pizza?serverTimezone=GMT"
+            factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"/>
+
+
+</Context>
+
