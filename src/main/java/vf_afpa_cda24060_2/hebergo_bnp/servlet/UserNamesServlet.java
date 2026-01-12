@@ -1,6 +1,6 @@
-package controller;
+package vf_afpa_cda24060_2.hebergo_bnp.servlet;
 
-import dao.UserDao;
+import vf_afpa_cda24060_2.hebergo_bnp.dao.UserDao;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

@@ -1,10 +1,9 @@
-package vf_afpa_cda24060_2.hebergo_bnp.servlet;
+/*package vf_afpa_cda24060_2.hebergo_bnp.servlet;
 
-import java.io.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-import vf_afpa_cda24060_2.hebergo_bnp.dao.UserDAO;
+import vf_afpa_cda24060_2.hebergo_bnp.dao.userDAO_vince;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
@@ -15,13 +14,14 @@ import java.security.NoSuchAlgorithmException;
 @WebServlet(name = "UserServlet", value = "/user-servlet")
 public class UserServlet extends HttpServlet {
 
-    private UserDAO userDAO;
+    private userDAO_vince userDAO;
+   private DataSource dataSource;
 
     @Override
     public void init() throws ServletException {
         try {
-            Connection connection = DataSource.getConnection();
-            userDAO = new UserDAO(connection);
+            //Connection connection = DataSource.getConnection();
+            userDAO = new userDAO_vince(DataSource);
         } catch (SQLException e) {
             throw new ServletException("Database connection error", e);
         }
@@ -176,4 +176,4 @@ public class UserServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package dao;
+package vf_afpa_cda24060_2.hebergo_bnp.dao;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.sql.Connection;
