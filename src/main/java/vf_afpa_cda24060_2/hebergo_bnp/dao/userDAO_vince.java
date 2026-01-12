@@ -1,5 +1,4 @@
-package vf_afpa_cda24060_2.hebergo_bnp.dao;
-
+/*package vf_afpa_cda24060_2.hebergo_bnp.dao;
 
 import jakarta.annotation.Resource;
 import vf_afpa_cda24060_2.hebergo_bnp.model.User;
@@ -10,16 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UserDAO {
+public class userDAO_vince {
     @Resource(name = "jdbc/MyDataSource")
     private DataSource dataSource;
     Connection connection;
 
     //constructor
-    public UserDAO() {
+    public userDAO_vince() {
         this.connection = DataSource.getConnection();
     }
-    public UserDAO(Connection connection) throws SQLException {
+    public userDAO_vince(Connection connection) throws SQLException {
         this.connection = connection;
     }
 
@@ -210,4 +209,4 @@ public class UserDAO {
         }
         return false;
     }
-}
+}*/

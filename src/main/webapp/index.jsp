@@ -16,6 +16,7 @@
     <br/>
     <a href="hello-servlet">Hello Servlet</a>
     <a href="user-servlet">User</a>
+    <a href="names">User2</a>
 
     <script type="module" src="asset/js/App.js"></script>
 </body>

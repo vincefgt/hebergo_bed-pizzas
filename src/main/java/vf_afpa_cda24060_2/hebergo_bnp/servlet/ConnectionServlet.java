@@ -20,7 +20,7 @@ import static java.lang.System.out;
     @Override
     public void init() {
         try {
-            Connection connection = dataSource.getConnection()
+            Connection connection = dataSource.getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
