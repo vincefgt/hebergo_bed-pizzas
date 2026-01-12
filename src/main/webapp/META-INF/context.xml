@@ -4,14 +4,13 @@
             auth="Container"
             type="javax.sql.DataSource"
             maxActive="15"
-            maxIdle="3"
+            maxIdle="10"
             maxWait="10000"
             username="root"
             password="root"
             driverClassName="com.mysql.cj.jdbc.Driver"
-            url="jdbc:mysql://localhost:3306/bed_pizza?serverTimezone=GMT"
+            url="jdbc:mysql://localhost:3306/Bed_Pizza?serverTimezone=GMT"
             factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"/>
-
 
 </Context>
 
