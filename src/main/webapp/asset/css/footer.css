@@ -1,0 +1,117 @@
+/* Footer */
+footer {
+    padding: 2rem 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: #f7f7f7;
+    z-index: 1000;
+    contain: layout style paint;
+}
+
+/* Conteneur des colonnes du footer */
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 6rem;
+    transform: translateZ(0);
+}
+
+.footer-content > div {
+    flex: 0 0 auto;
+    min-width: 220px;
+}
+
+/* Trait horizontal */
+footer hr {
+    margin: 1.5rem 0;
+    border: 0;
+    border-top: 1px solid #dddddd;
+}
+
+/* Copyright centré */
+.footer-copyright {
+    text-align: center;
+}
+
+.footer-copyright p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.footer-copyright img {
+    width: 16px;
+    height: 16px;
+}
+
+/* Style des listes dans le footer */
+footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+footer ul li {
+    margin-bottom: 0.75rem;
+}
+
+/* Style des liens dans le footer - OPTIMISÉ */
+footer a {
+    color: #222222;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    font-size: 0.875rem;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Effet hover sur les liens */
+footer a:hover {
+    color: #000000;
+}
+
+/* Trait qui apparaît au hover */
+footer a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: #222222;
+    transition: width 0.3s ease;
+    will-change: width;
+}
+
+footer a:hover::after {
+    width: 100%;
+}
+
+/* Style des titres de section */
+footer p strong {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* Responsive pour petits écrans */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        gap: 2rem;
+        padding: 0 1rem;
+    }
+}
+
+#footer-logo {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 1px solid #bfbfbf;
+}
