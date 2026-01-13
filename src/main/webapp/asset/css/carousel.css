@@ -1,0 +1,127 @@
+/* Conteneur principal du carrousel */
+#carouselExampleAutoplaying {
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    margin: 40px auto;
+    max-width: 1400px;
+    position: relative;
+}
+
+.carousel-item {
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    -webkit-transition: -webkit-transform 4.2s ease-in-out !important;
+    -o-transition: -o-transform 4.2s ease-in-out !important;
+    transition: transform 4.2s ease-in-out !important;
+}
+
+.carousel-item div img {
+    width: 443px !important;
+}
+
+/* Flexbox uniquement sur le slide actif */
+#carouselExampleAutoplaying .carousel-item.active,
+#carouselExampleAutoplaying .carousel-item-next,
+#carouselExampleAutoplaying .carousel-item-prev {
+    display: flex;
+    gap: 15px;
+}
+
+#carouselExampleAutoplaying .carousel-item img {
+    width: calc(33.333% - 10px);
+    height: 180px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    display: block;
+    flex-shrink: 0;
+}
+
+#carouselExampleAutoplaying .carousel-item img:hover {
+    transform: scale(1.01);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Boutons de navigation stylisés */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 60px;
+    height: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    opacity: 0.8;
+}
+
+.carousel-control-prev {
+    left: 20px;
+}
+
+.carousel-control-next {
+    right: 20px;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-50%) scale(1.1);
+    transition: all 0.3s ease;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    width: 30px;
+    height: 30px;
+    filter: invert(0.5);
+}
+
+/* Indicateurs de slides */
+.carousel-indicators {
+    bottom: -40px;
+}
+
+.carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #6c757d;
+    opacity: 0.5;
+}
+
+.carousel-indicators button.active {
+    background-color: #007bff;
+    opacity: 1;
+    transform: scale(1.3);
+    transition: all 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .carousel-item {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #carouselExampleAutoplaying .carousel-item img {
+        width: 100%;
+        height: 300px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 40px;
+        height: 40px;
+    }
+
+    .carousel-control-prev {
+        left: 10px;
+    }
+
+    .carousel-control-next {
+        right: 10px;
+    }
+}
