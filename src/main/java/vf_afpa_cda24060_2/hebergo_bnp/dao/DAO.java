@@ -21,7 +21,7 @@ public abstract class DAO <T> {
      * @param entity T
      * @return 1 for success 0 for error
      */
-    public abstract boolean update(Connection connection, T entity) throws SQLException;
+    public abstract Object update(Connection connection, T entity) throws SQLException;
 
     /**
      * Suppression et persistance d'un objet T

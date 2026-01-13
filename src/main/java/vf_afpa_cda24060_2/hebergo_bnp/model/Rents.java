@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public class Rents {
 
+    private Integer idRents;
     private Integer idUser;
     private Integer idEstate;
     private LocalDate purchaseDate;
@@ -36,6 +37,41 @@ public class Rents {
         setEndRent(endRent);
         setTotalPrice(total_price);
         setPaymentNumber(paymentNumber);
+    }
+
+    /**
+     * constructeur complet
+     * @param idRents Integer
+     * @param idUser Integer
+     * @param idEstate Integer
+     * @param purchaseDate LocalDate
+     * @param startRent LocalDate
+     * @param endRent LocalDate
+     * @param total_price Double
+     * @param paymentNumber String
+     */
+    public Rents(Integer idRents, Integer idUser, Integer idEstate, LocalDate purchaseDate, LocalDate startRent, LocalDate endRent,
+                 Double total_price, String paymentNumber) {
+        setIdRents(idRents);
+        setIdUser(idUser);
+        setIdEstate(idEstate);
+        setPurchaseDate(purchaseDate);
+        setStartRent(startRent);
+        setEndRent(endRent);
+        setTotalPrice(total_price);
+        setPaymentNumber(paymentNumber);
+    }
+
+    /**
+     * getter idRents
+     * @return Integer
+     */
+    public Integer getIdRents(){
+        return this.idRents;
+    }
+
+    public void setIdRents(Integer idRents) {
+        this.idRents = idRents;
     }
 
     /**
