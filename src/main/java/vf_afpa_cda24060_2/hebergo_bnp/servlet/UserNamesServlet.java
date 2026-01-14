@@ -1,4 +1,4 @@
-package vf_afpa_cda24060_2.hebergo_bnp.servlet;
+/*package vf_afpa_cda24060_2.hebergo_bnp.servlet;
 
 import vf_afpa_cda24060_2.hebergo_bnp.dao.UserDao;
 import jakarta.annotation.Resource;
@@ -43,4 +43,4 @@ public class UserNamesServlet extends HttpServlet {
         this.getServletContext().getRequestDispatcher("/names.jsp").forward(request, response);
     }
 
-}
+}*/
