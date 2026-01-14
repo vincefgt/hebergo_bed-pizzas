@@ -1,42 +1,47 @@
-/*package vf_afpa_cda24060_2.hebergo_bnp.dao;
+package vf_afpa_cda24060_2.hebergo_bnp.dao;
 
 import jakarta.annotation.Resource;
 import vf_afpa_cda24060_2.hebergo_bnp.model.User;
 
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class userDAO_vince {
+public class userDAO {
     @Resource(name = "jdbc/MyDataSource")
     private DataSource dataSource;
     Connection connection;
 
     //constructor
-    public userDAO_vince() {
-        this.connection = DataSource.getConnection();
+    public userDAO() throws SQLException {
+        try {
+            InitialContext ctx = new InitialContext();
+            //Lookup the DataSource configured in context.xml
+            dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/MyDataSource");
+            this.connection = dataSource.getConnection();
+        } catch (Exception e) {
+            throw new RuntimeException("Error initializing DataSource", e);
+        }
     }
-    public userDAO_vince(Connection connection) throws SQLException {
+    public userDAO(Connection connection) throws SQLException {
         this.connection = connection;
     }
 
     // CREATE
-    public User create(User user) throws SQLException {
-        String sql = "INSERT INTO USERS (id_admin, id_role, id_address, firstname, lastname, " +
-                "phone, email, password_hash, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setObject(1, user.getIdAdmin(), Types.INTEGER);
-            stmt.setInt(2, user.getIdRole());
-            stmt.setInt(3, user.getIdAddress());
-            stmt.setString(4, user.getFirstname());
-            stmt.setString(5, user.getLastname());
-            stmt.setString(6, user.getPhone());
-            stmt.setString(7, user.getEmail());
-            stmt.setString(8, user.getPasswordHash());
-            stmt.setBoolean(9, user.isDeleted());
+    public User create( User user) throws SQLException {
+        String sql = "INSERT INTO USERS (id_role, firstname, lastname, " +
+                "phone, email, password_hash, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = this.connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, user.getIdRole()); // by default 1
+            stmt.setString(2, user.getFirstname());
+            stmt.setString(3, user.getLastname());
+            stmt.setString(4, user.getPhone());
+            stmt.setString(5, user.getEmail());
+            stmt.setString(6, user.getPasswordHash());
+            stmt.setBoolean(7, user.isDeleted());
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
@@ -51,7 +56,26 @@ public class userDAO_vince {
             }
         }
         return user;
+    }
 
+    // READ names
+    //fetch user names from database
+    public List<String> getNames(Connection connection) throws SQLException {
+
+        List<String> list = new ArrayList<>();
+        String sql = "select firstname from users";
+
+        try(PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()){
+
+            //loop through the result
+            while (rs.next()){
+                list.add(rs.getString("firstname"));
+            }
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
     }
 
     // READ - Find by ID
@@ -71,18 +95,18 @@ public class userDAO_vince {
     }
 
     // READ - Find by Email
-    public Optional<User> findByEmail(String email) throws SQLException {
+    public User findByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM USERS WHERE email = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return Optional.of(mapResultSetToUser(rs));
+                    return mapResultSetToUser(rs);
                 }
             }
         }
-        return Optional.empty();
+        return null;
     }
 
     // READ - Find all
@@ -96,7 +120,8 @@ public class userDAO_vince {
             while (rs.next()) {
                 users.add(mapResultSetToUser(rs));
             }
-        }
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());}
 
         return users;
     }
@@ -209,4 +234,4 @@ public class userDAO_vince {
         }
         return false;
     }
-}*/
+}
