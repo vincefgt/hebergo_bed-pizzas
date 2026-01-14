@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-<<<<<<< HEAD
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <<<<<<< HEAD
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="${pageContext.request.contextPath}/asset/css/navBar.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/asset/css/carousel.css" rel="stylesheet" />
@@ -18,24 +18,11 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-            crossorigin=""/>
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
     <title>Bed&Pizzas</title>
 </head>
 <body>
-<<<<<<< HEAD
-=======
-
-    <h1><%= "Hello World!" %>
-    </h1>
-    <br/>
-    <a href="hello-servlet">Hello Servlet</a>
-    <a href="user-servlet">User</a>
-    <a href="names">User2</a>
-    <a href="<c:url value="/rentsServlet" />">Rents</a>
-    <a href="<c:url value="/rolesServlet" />">Roles</a>
-
->>>>>>> bf8977e (feat: model dao roles)
 <%-- L'ajout de la navBar --%>
 <c:import url="public/navBar.jsp" />
 
@@ -68,26 +55,26 @@
 <script src="${pageContext.request.contextPath}/asset/js/App.js"></script>
 
 =======
-          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-    </script>
-    <title>JSP - Hello World</title>
+integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+</script>
+<title>JSP - Hello World</title>
 </head>
 <body>
-    <c:if test="${not empty success}">
-        <script>
-            alert("${success}");
-        </script>
-    </c:if>
+<c:if test="${not empty success}">
+    <script>
+        alert("${success}");
+    </script>
+</c:if>
 
-    <h1><%= "Hello World!" %>
-    </h1>
-    <br/>
-    <a href="hello-servlet">Hello Servlet</a>
-    <a href="user-servlet">User</a>
+<h1><%= "Hello World!" %>
+</h1>
+<br/>
+<a href="hello-servlet">Hello Servlet</a>
+<a href="user-servlet">User</a>
 
-    <script type="module" src="asset/js/UserJS.js"></script>
+<script type="module" src="asset/js/UserJS.js"></script>
 >>>>>>> dao
 </body>
 </html>
