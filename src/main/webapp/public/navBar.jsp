@@ -7,7 +7,6 @@
     To change this template use File | Settings | File Templates.
 --%>
 
-
 <header>
     <section class="mb-3">
         <nav class="navbar bg-body-tertiary">
@@ -93,24 +92,24 @@
         </nav>
 
         <!-- Modal hamburger -->
-       <div class="hamburger-modal" id="hamburgerModal">
-        <div class="hamburger-modal-content">
-        <button class="modal-close-btn" id="closeModal">&times;</button>
-        <div class="modal-menu">
-            <a href="/user-servlet?actionUser=login" class="modal-menu-item">
-                <i class="bi bi-box-arrow-in-right"><span> Se connecter</span></i>
-            </a>
-            <a href="/user-servlet?actionUser=signin" class="modal-menu-item">
-                <i class="bi bi-person-plus"><span> Créer compte</span></i>
-            </a>
-            <a href="#" class="modal-menu-item">
-                <i class="bi bi-person-gear"><span> Paramètre</span></i>
-            </a>
-            <a href="#" class="modal-menu-item">
-                <i class="bi bi-box-arrow-left"><span> Déconnexion</span></i>
-            </a>
+        <div class="hamburger-modal" id="hamburgerModal">
+            <div class="hamburger-modal-content">
+                <button class="modal-close-btn" id="closeModal">&times;</button>
+                <div class="modal-menu">
+                    <a href="#" class="modal-menu-item">
+                        <i class="bi bi-box-arrow-in-right"><span> Se connecter</span></i>
+                    </a>
+                    <a href="#" class="modal-menu-item">
+                        <i class="bi bi-person-plus"><span> Créer compte</span></i>
+                    </a>
+                    <a href="#" class="modal-menu-item">
+                        <i class="bi bi-person-gear"><span> Paramètre</span></i>
+                    </a>
+                    <a href="#" class="modal-menu-item">
+                        <i class="bi bi-box-arrow-left"><span> Déconnexion</span></i>
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
     </section>
 </header>
