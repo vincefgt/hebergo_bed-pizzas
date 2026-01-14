@@ -33,6 +33,7 @@ public class UserDao {
         String sql = "select firstname from users";
 
         try(PreparedStatement ps = connection.prepareStatement(sql);
+
             ResultSet rs = ps.executeQuery()){
 
             //loop through the result

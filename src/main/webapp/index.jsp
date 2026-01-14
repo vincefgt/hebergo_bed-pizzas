@@ -22,15 +22,13 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
-<<<<<<< HEAD
+
     <h1><%= "Hello World!" %>
     </h1>
     <br/>
     <a href="hello-servlet">Hello Servlet</a>
     <a href="user-servlet">User</a>
     <a href="names">User2</a>
-=======
->>>>>>> 4e9c436 (1° commit front / landing page)
 
 <%-- L'ajout de la navBar --%>
 <c:import url="public/navBar.jsp" />

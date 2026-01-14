@@ -13,10 +13,6 @@
     font-size: 16px;
 }
 
-body {
-    padding-bottom: 250px;
-}
-
 /* navBar */
 header {
     width: 100%;
@@ -150,6 +146,7 @@ header section {
     gap: 15px;
     padding: 18px 20px;
     background: white;
+    text-decoration: none;
     border: 2px solid #e0e0e0;
     border-radius: 12px;
     cursor: pointer;
