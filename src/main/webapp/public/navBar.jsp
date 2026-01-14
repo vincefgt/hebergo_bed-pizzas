@@ -100,7 +100,7 @@
             <a href="/user-servlet?actionUser=login" class="modal-menu-item">
                 <i class="bi bi-box-arrow-in-right"><span> Se connecter</span></i>
             </a>
-            <a href=""/user-servlet?actionUser="signin" class="modal-menu-item">
+            <a href="/user-servlet?actionUser=signin" class="modal-menu-item">
                 <i class="bi bi-person-plus"><span> Créer compte</span></i>
             </a>
             <a href="#" class="modal-menu-item">
