@@ -19,17 +19,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
             integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
             crossorigin=""/>
-    <title>JSP - Hello World</title>
+    <title>Bed&Pizzas</title>
 </head>
 <body>
-
-    <h1><%= "Hello World!" %>
-    </h1>
-    <br/>
-    <a href="hello-servlet">Hello Servlet</a>
-    <a href="user-servlet">User</a>
-    <a href="names">User2</a>
-
 <%-- L'ajout de la navBar --%>
 <c:import url="public/navBar.jsp" />
 

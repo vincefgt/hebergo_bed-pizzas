@@ -8,6 +8,9 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 import static java.lang.System.out;
 
@@ -20,12 +23,23 @@ import static java.lang.System.out;
     @Override
     public void init() {
         try {
-            Connection connection = dataSource.getConnection();
-        } catch (SQLException e) {
+            InitialContext ctx = new InitialContext();
+            //Lookup the DataSource configured in context.xml
+            dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/MyDataSource");
+        } catch (NamingException e) {
             throw new RuntimeException(e);
         }
-        ServletContext context = getServletContext();
-        context.setAttribute("dataSource", dataSource);
+
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ServletContext context = getServletContext();
+            context.setAttribute("connection", connection);
+        }
+
     }
 
     @Override
