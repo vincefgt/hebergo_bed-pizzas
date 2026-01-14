@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+<<<<<<< HEAD
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="${pageContext.request.contextPath}/asset/css/navBar.css" rel="stylesheet" />
@@ -19,19 +20,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
             integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
             crossorigin=""/>
-    <title>JSP - Hello World</title>
+    <title>Bed&Pizzas</title>
 </head>
 <body>
-<<<<<<< HEAD
-    <h1><%= "Hello World!" %>
-    </h1>
-    <br/>
-    <a href="hello-servlet">Hello Servlet</a>
-    <a href="user-servlet">User</a>
-    <a href="names">User2</a>
-=======
->>>>>>> 4e9c436 (1° commit front / landing page)
-
 <%-- L'ajout de la navBar --%>
 <c:import url="public/navBar.jsp" />
 
@@ -63,5 +54,27 @@
 <script src="${pageContext.request.contextPath}/asset/js/weather.js"></script>
 <script src="${pageContext.request.contextPath}/asset/js/App.js"></script>
 
+=======
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+    </script>
+    <title>JSP - Hello World</title>
+</head>
+<body>
+    <c:if test="${not empty success}">
+        <script>
+            alert("${success}");
+        </script>
+    </c:if>
+
+    <h1><%= "Hello World!" %>
+    </h1>
+    <br/>
+    <a href="hello-servlet">Hello Servlet</a>
+    <a href="user-servlet">User</a>
+
+    <script type="module" src="asset/js/UserJS.js"></script>
+>>>>>>> dao
 </body>
 </html>

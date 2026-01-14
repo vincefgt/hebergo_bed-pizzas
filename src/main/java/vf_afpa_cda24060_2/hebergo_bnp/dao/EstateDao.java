@@ -91,6 +91,7 @@ public class EstateDao {
     }
 
     public void addEstate(Estate estate) throws SQLException{
+
             String sql = "insert into estates(id_admin, name_estate, descriptions, is_valid, daily_price, photo_estate, id_address, id_user) values(?,?,?,?,?,?,?,?)";
             try (Connection connection = dataSource.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(sql)){

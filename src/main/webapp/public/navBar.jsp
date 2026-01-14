@@ -7,7 +7,6 @@
     To change this template use File | Settings | File Templates.
 --%>
 
-
 <header>
     <section class="mb-3">
         <nav class="navbar bg-body-tertiary">
@@ -97,20 +96,18 @@
             <div class="hamburger-modal-content">
                 <button class="modal-close-btn" id="closeModal">&times;</button>
                 <div class="modal-menu">
-                    <button class="modal-menu-item" id="loginBtn">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                        <span>Se connecter</span>
-                    </button>
-                    <button class="modal-menu-item" id="settingsBtn">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-                            <path d="M12 1v6m0 6v6M23 12h-6m-6 0H1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        <span>Paramètres</span>
-                    </button>
+                    <a href="#" class="modal-menu-item">
+                        <i class="bi bi-box-arrow-in-right"><span> Se connecter</span></i>
+                    </a>
+                    <a href="#" class="modal-menu-item">
+                        <i class="bi bi-person-plus"><span> Créer compte</span></i>
+                    </a>
+                    <a href="#" class="modal-menu-item">
+                        <i class="bi bi-person-gear"><span> Paramètre</span></i>
+                    </a>
+                    <a href="#" class="modal-menu-item">
+                        <i class="bi bi-box-arrow-left"><span> Déconnexion</span></i>
+                    </a>
                 </div>
             </div>
         </div>
