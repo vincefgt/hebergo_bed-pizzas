@@ -1,36 +1,38 @@
 package vf_afpa_cda24060_2.hebergo_bnp.model;
 
 public class Estate {
-    private int id; //to be changed to user object
+    private int idEstate; //to be changed to user object
     private int idAdmin; //to be changed to user object
     private String nameEstate;
     private String description;
     private boolean isValid;
     private double dailyPrice;
     private String photoEstate;
-    private String address; // to be changed to address object
+    private int idAddress; // to be changed to address object
+    private int idUser;
 
     //empty constructor
     public Estate(){}
 
     //constructor with params
-    public Estate(int id, int idAdmin, String nameEstate, String description, boolean isValid, double dailyPrice, String photoEstate, String address) {
-        this.id = id;
+    public Estate(int idEstate, int idAdmin, String nameEstate, String description, boolean isValid, double dailyPrice, String photoEstate, int idAddress, int idUser) {
+        this.idEstate = idEstate;
         this.idAdmin = idAdmin;
         this.nameEstate = nameEstate;
         this.description = description;
         this.isValid = isValid;
         this.dailyPrice = dailyPrice;
         this.photoEstate = photoEstate;
-        this.address = address;
+        this.idAddress = idAddress;
+        this.idUser = idUser;
     }
 
     //get and set
-    public int getId() {
-        return this.id;
+    public int getIdEstate() {
+        return this.idEstate;
     }
-    public void setId(int id) {
-        this.id = id;
+    public void setIdEstate(int idEstate) {
+        this.idEstate = idEstate;
     }
     public int getIdAdmin() {
         return this.idAdmin;
@@ -68,23 +70,30 @@ public class Estate {
     public void setPhotoEstate(String photoEstate) {
         this.photoEstate = photoEstate;
     }
-    public String getAddress() {
-        return this.address;
+    public int getIdAddress() {
+        return this.idAddress;
     }
-    public void setAddress(String address) {
-        this.address = address;
+    public void setIdAddress(int idAddress) {
+        this.idAddress = idAddress;
+    }
+    public int getIdUser() {
+        return this.idUser;
+    }
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 
     @Override
     public String toString() {
         return "Estate{" +
-                "Id = " + id +
+                "Id = " + idEstate +
                 ", Id admin = " + idAdmin +
                 ", Name estate = " + nameEstate +
                 ", Description = " + description +
                 ", Is Valid = " + isValid +
                 ", Daily price = " + dailyPrice +
                 ", image url = " + photoEstate +
-                ", address = " + address;
+                ", address = " + address +
+                ", Id user = " + idUser;
     }
 }
