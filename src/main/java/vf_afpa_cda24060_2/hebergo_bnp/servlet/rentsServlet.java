@@ -89,7 +89,7 @@ public class rentsServlet extends HttpServlet {
                     System.out.println("Erreur connection findById servlet rentsDAO: " + sqle.getMessage());
                 }
                 request.setAttribute("rentsToFind", rentsToFind);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/manageRents.jsp");
+                request.getRequestDispatcher("/WEB-INF/jsp/manageRents.jsp");
                 break;
             case "delete":
                 Integer idRentsToDelete = Integer.parseInt(request.getParameter("id-rents-d"));

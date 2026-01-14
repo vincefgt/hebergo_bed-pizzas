@@ -5,10 +5,26 @@ public class Roles {
     private Integer idRole;
     private String labelRole;
 
+    /**
+     * constructeur par défaut
+     */
     public Roles(){}
 
+    /**
+     * constructeur complet
+     * @param idRole Integer
+     * @param labelRole String
+     */
     public Roles(Integer idRole, String labelRole) {
         this.idRole = idRole;
+        this.labelRole = labelRole;
+    }
+
+    /**
+     * constructeur sans idRole
+     * @param labelRole String
+     */
+    public Roles(String labelRole) {
         this.labelRole = labelRole;
     }
 

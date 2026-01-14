@@ -21,6 +21,48 @@
 
         </ul>
     </div>
+
+    <div id="create" style="border:1px solid black;margin-top:2vh">
+        <p>Enregistrer un nouveau role: </p>
+        <form method="post" action="<c:url value="/rolesServlet" />">
+            <input name="action" type="hidden" value="create">
+            <input name="label-role" type="text" placeholder="label role">
+
+            <button type="submit">Enregistrer</button>
+        </form>
+    </div>
+
+    <div id="modify" style="border:1px solid black;margin-top:2vh">
+        <p>Rechercher un role par son identifiant: </p>
+        <form method="post" action="<c:url value="/rolesServlet" />">
+            <input name="action" type="hidden" value="findById">
+            <input name="id-role-to-find" type="number" placeholder="id role">
+
+            <button type="submit">Chercher</button>
+        </form>
+
+
+        <p>Modifier role: </p>
+
+        <form method="post" action="<c:url value="/rolesServlet" />">
+            <input name="action" type="hidden" value="modify">
+            <input name="id-role-m" type="number" placeholder="id role" value="${roleToFind.idRole}">
+            <input name="label-role-m" type="text" placeholder="label role" value="${roleToFind.labelRole}">
+
+            <button type="submit">Modifier</button>
+        </form>
+    <
+
+
+        <p>Supprimer role</p>
+        <form method="post" action="<c:url value="/rolesServlet" />">
+            <input name="action" type="hidden" value="delete">
+            <input name="id-role-d" type="number" placeholder="id role" value="${roleToFind.idRole}"readonly>
+            <input name="label-role-d" type="text" placeholder="label role" value="${roleToFind.labelRole}" readonly>
+
+            <button type="submit">Supprimer</button>
+        </form>
+    </div>
 </head>
 <body>
 

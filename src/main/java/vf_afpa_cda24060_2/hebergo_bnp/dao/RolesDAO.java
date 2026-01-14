@@ -67,7 +67,7 @@ public class RolesDAO extends DAO <Roles>{
 
     @Override
     public Roles findById(Connection connection, Integer pId) throws SQLException {
-        Roles roles = new Roles();
+        Roles role = new Roles();
         String sql = "SELECT * FROM roles WHERE id_role=?";
 
         try{
@@ -77,12 +77,12 @@ public class RolesDAO extends DAO <Roles>{
             if(rs.next()){
                 Integer idRole = rs.getInt("id_role");
                 String labelRole = rs.getString("label_role");
-                roles =  new Roles(idRole, labelRole);
+                role =  new Roles(idRole, labelRole);
             }
         }catch(SQLException sqle){
             System.out.println("Erreur find RolesDAO: " + sqle.getMessage());
         }
-        return roles;
+        return role;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class RolesDAO extends DAO <Roles>{
         try{
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            while(rs.next()){
                 Integer idRole = rs.getInt("id_role");
                 String labelRole = rs.getString("label_role");
 
