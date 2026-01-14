@@ -23,6 +23,19 @@
     <title>Bed&Pizzas</title>
 </head>
 <body>
+<<<<<<< HEAD
+=======
+
+    <h1><%= "Hello World!" %>
+    </h1>
+    <br/>
+    <a href="hello-servlet">Hello Servlet</a>
+    <a href="user-servlet">User</a>
+    <a href="names">User2</a>
+    <a href="<c:url value="/rentsServlet" />">Rents</a>
+    <a href="<c:url value="/rolesServlet" />">Roles</a>
+
+>>>>>>> bf8977e (feat: model dao roles)
 <%-- L'ajout de la navBar --%>
 <c:import url="public/navBar.jsp" />
 
