@@ -91,6 +91,25 @@ public class rentsServlet extends HttpServlet {
                 request.setAttribute("rentsToFind", rentsToFind);
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/manageRents.jsp");
                 break;
+            case "delete":
+                Integer idRentsToDelete = Integer.parseInt(request.getParameter("id-rents-d"));
+
+                Integer idUserD = Integer.parseInt(request.getParameter("id-user-d"));
+                Integer idEstateD = Integer.parseInt(request.getParameter("id-estate-d"));
+                LocalDate purchaseDateD = LocalDate.parse(request.getParameter("purchase-date-d"));
+                LocalDate startRentD =  LocalDate.parse(request.getParameter("start-rent-d"));
+                LocalDate endRentD =  LocalDate.parse(request.getParameter("end-rent-d"));
+                Double totalPriceD = Double.parseDouble(request.getParameter("total-price-d"));
+                String paymentNumberD = request.getParameter("payment-number-d");
+                Rents deleteRents = new Rents(idRentsToDelete, idUserD, idEstateD, purchaseDateD, startRentD,
+                        endRentD, totalPriceD, paymentNumberD);
+
+                try(Connection conn = ds.getConnection()){
+                    rentsDAO.deleteById(conn, idRentsToDelete);
+                } catch (SQLException e) {
+                    System.out.println("Erreur connection delete servlet rentsDAO: " + e.getMessage());
+                }
+                break;
             default:
                 break;
         }

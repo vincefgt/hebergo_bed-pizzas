@@ -47,15 +47,17 @@
         </form>
     </div>
 
+    <p>Rechercher la réservation par son identifiant: </p>
+    <form method="post" action="<c:url value="/rentsServlet" />">
+        <input name="action" type="hidden" value="findById">
+        <input name="id-rents-to-find" type="number" placeholder="id rents">
+
+        <button type="submit">Chercher</button>
+    </form>
+
     <div id="modify" style="border:1px solid black;margin-top:2vh">
         <p>Modifier réservation (location): </p>
-        <p>Rechercher la réservation par son identifiant: </p>
-        <form method="post" action="<c:url value="/rentsServlet" />">
-            <input name="action" type="hidden" value="findById">
-            <input name="id-rents-to-find" type="number" placeholder="id rents">
 
-            <button type="submit">Chercher</button>
-        </form>
         <form method="post" action="<c:url value="/rentsServlet" />">
             <input name="action" type="hidden" value="modify">
             <input name="id-rents-m" type="number" placeholder="id rents" value="${rentsToFind.idRents}">
@@ -68,6 +70,23 @@
             <input name="payment-number-m" type="text" placeholder="payment number" value="${rentsToFind.paymentNumber}">
 
             <button type="submit">Modifier</button>
+        </form>
+    </div>
+
+    <div id="delete" style="border:1px solid black;margin-top:2vh">
+        <p>Suppprimer une réservation (location): </p>
+        <form method="post" action="<c:url value="/rentsServlet" />">
+            <input name="action" type="hidden" value="delete">
+            <input name="id-rents-d" type="number" placeholder="id rents" value="${rentsToFind.idRents}" readonly>
+            <input name="id-user-d" type="number" placeholder="id user" value="${rentsToFind.idUser}" readonly>
+            <input name="id-estate-d" type="number" placeholder="id estate" value="${rentsToFind.idEstate}" readonly>
+            <input name="purchase-date-d" type="date" placeholder="purchase date" value="${rentsToFind.purchaseDate}" readonly>
+            <input name="start-rent-d" type="date" placeholder="start rent date" value="${rentsToFind.startRent}" readonly>
+            <input name="end-rent-d" type="date" placeholder="end rent date" value="${rentsToFind.endRent}" readonly>
+            <input name="total-price-d" type="text" placeholder="total price" value="${rentsToFind.totalPrice}" readonly>
+            <input name="payment-number-d" type="text" placeholder="payment number" value="${rentsToFind.paymentNumber}" readonly>
+
+            <button type="submit">Supprimer</button>
         </form>
     </div>
 

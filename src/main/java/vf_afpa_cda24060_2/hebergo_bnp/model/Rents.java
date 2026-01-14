@@ -126,7 +126,7 @@ public class Rents {
      */
     public void setPurchaseDate(LocalDate purchaseDate) {
         LocalDate today = LocalDate.now();
-        if(purchaseDate == null || purchaseDate.isBefore(today)){
+        if(purchaseDate == null){
             throw new IllegalArgumentException("La date de commande est invalde");
         }
         this.purchaseDate = purchaseDate;
@@ -145,7 +145,7 @@ public class Rents {
      * @param startRent LocalDate
      */
     public void setStartRent(LocalDate startRent) {
-        if(startRent == null || startRent.isBefore(LocalDate.now())){
+        if(startRent == null){
             throw new IllegalArgumentException("La date de début de location est invalde");
         }
         this.startRent = startRent;
