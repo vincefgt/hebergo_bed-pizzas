@@ -10,7 +10,7 @@ public class Estate {
     private String photoEstate;
     private int idAddress; // to be changed to address object
     private int idUser;
-
+    
     //empty constructor
     public Estate(){}
 
@@ -93,7 +93,7 @@ public class Estate {
                 ", Is Valid = " + isValid +
                 ", Daily price = " + dailyPrice +
                 ", image url = " + photoEstate +
-                ", address = " + idAddress +
+                ", address = " + address +
                 ", Id user = " + idUser;
     }
 }
