@@ -93,7 +93,7 @@ public class Estate {
                 ", Is Valid = " + isValid +
                 ", Daily price = " + dailyPrice +
                 ", image url = " + photoEstate +
-                ", address = " + address +
+                ", address = " + idAddress +
                 ", Id user = " + idUser;
     }
 }

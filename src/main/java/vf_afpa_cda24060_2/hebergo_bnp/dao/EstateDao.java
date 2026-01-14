@@ -31,7 +31,7 @@ public class EstateDao {
         estate.setIdEstate(resultSet.getInt("id_estate"));
         estate.setIdAdmin(resultSet.getInt("id_admin"));
         estate.setNameEstate(resultSet.getString("name_estate"));
-        estate.setDescription(resultSet.getString("description"));
+        estate.setDescription(resultSet.getString("descriptions"));
         estate.setValid(resultSet.getBoolean("is_valid"));
         estate.setDailyPrice(resultSet.getDouble("daily_price"));
         estate.setPhotoEstate(resultSet.getString("photo_estate"));
@@ -91,7 +91,8 @@ public class EstateDao {
     }
 
     public void addEstate(Estate estate) throws SQLException{
-            String sql = "insert into estates(id_admin, name_estate, description, is_valid, daily_price, photo_estate, id_address, id_user) values(?,?,?,?,?,?,?,?)";
+
+            String sql = "insert into estates(id_admin, name_estate, descriptions, is_valid, daily_price, photo_estate, id_address, id_user) values(?,?,?,?,?,?,?,?)";
             try (Connection connection = dataSource.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(sql)){
                 setEstateParams(estate, preparedStatement);
@@ -100,7 +101,7 @@ public class EstateDao {
     }
 
     public void updateEstate(Estate estate) throws SQLException{
-            String sql = "update estates set id_admin = ?, name_estate = ?, description = ?, is_valid = ?, daily_price = ?, photo_estate = ?, id_address = ?, id_user = ? where id_estate = ?";
+            String sql = "update estates set id_admin = ?, name_estate = ?, descriptions = ?, is_valid = ?, daily_price = ?, photo_estate = ?, id_address = ?, id_user = ? where id_estate = ?";
             try (Connection connection = dataSource.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(sql)){
                 setEstateParams(estate, preparedStatement);
