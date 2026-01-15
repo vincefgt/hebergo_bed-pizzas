@@ -5,14 +5,15 @@ public class Estate {
     private int idAdmin; //to be changed to user object
     private String nameEstate;
     private String description;
-    private boolean isValid;
+    private boolean isValid = true;
     private double dailyPrice;
     private String photoEstate;
     private int idAddress; // to be changed to address object
     private int idUser;
     
     //empty constructor
-    public Estate(){}
+    public Estate(){
+    }
 
     //constructor with params
     public Estate(int idEstate, int idAdmin, String nameEstate, String description, boolean isValid, double dailyPrice, String photoEstate, int idAddress, int idUser) {
