@@ -65,7 +65,7 @@
         <p>Modifier réservation (location): </p>
         <form method="post" action="<c:url value="/rentsServlet" />">
             <input name="action" type="hidden" value="modify">
-            <input name="id-rents-m" type="number" placeholder="id rents" value="${rentsToFind.idRents}">
+            <input name="id-rents-m" type="number" placeholder="id rents" value="${rentsToFind.idRents}"readonly>
             <input name="id-user-m" type="number" placeholder="id user" value="${rentsToFind.idUser}">
             <input name="id-estate-m" type="number" placeholder="id estate" value="${rentsToFind.idEstate}">
             <input name="purchase-date-m" type="date" placeholder="purchase date" value="${rentsToFind.purchaseDate}">
