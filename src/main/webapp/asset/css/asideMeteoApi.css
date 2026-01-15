@@ -82,7 +82,6 @@
 /* Responsive */
 @media (max-width: 1200px) {
     #weather-aside {
-        position: fixed;
         top: 80px;
         right: 20px;
         width: 280px;
