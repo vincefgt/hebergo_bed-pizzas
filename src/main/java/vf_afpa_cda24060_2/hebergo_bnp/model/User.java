@@ -4,8 +4,8 @@ public class User {
 
     private Integer idUser;
     private Integer idAdmin;
-    private int idRole;
-    private int idAddress;
+    private Integer idRole;
+    private Integer idAddress;
     private String firstname;
     private String lastname;
     private String phone;
@@ -15,18 +15,18 @@ public class User {
 
     // Constructors
     public User() {
+        this.idUser = null;
         this.idRole = 1; // Default value
         this.isDeleted = false;
+        this.idAddress = null;
     }
-
-    public User(String firstname, String lastname, String phone, String email, String passwordHash, int idAddress) {
+    public User(Integer idUser, Integer idAddress, String firstname, String lastname, String phone, String email, String passwordHash) {
         this();
         this.firstname = firstname;
         this.lastname = lastname;
         this.phone = phone;
         this.email = email;
         this.passwordHash = passwordHash;
-        this.idAddress = idAddress;
     }
 
     // Getters and Setters

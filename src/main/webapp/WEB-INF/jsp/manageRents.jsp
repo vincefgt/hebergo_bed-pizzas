@@ -10,7 +10,8 @@
 <html>
 <head>
     <a href="<c:url value="/index.jsp" />">Accueil</a>
-    <title>Test rents DAO</title>
+    <title>Gestion rents DAO</title>
+
     <div id="findAll" style="border:1px solid black;margin-top:2vh">
         <p>find All: liste des locations</p>
         <ul>

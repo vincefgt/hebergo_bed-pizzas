@@ -5,8 +5,16 @@ target/
 .kotlin
 
 ### IntelliJ IDEA ###
+<<<<<<< HEAD
+<<<<<<< HEAD
 .ideaa/
+=======
+.idea/
+>>>>>>> dao
 .idea/modules.xml
+=======
+.idea/
+>>>>>>> 178c06b (conflit rebase)
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/

@@ -1,14 +1,26 @@
 
 const API_KEY = "ba61b7dcff77e6e1f82fc8d1d1787c0e";
 
+function searchCity() {
+    let city = $("#destinationInput").val().trim();
+    if (city !== "") {
+        getWeather(city);
+    }
+}
+
+$("#searchField").on("click", searchCity);
+
+/*
+
 $("#destinationInput").on("keypress", function (e) {
     if (e.which === 13) {
-        let city = $(this).val().trim();
-        if (city !== "") {
-            getWeather(city);
-        }
+        searchCity();
     }
 });
+
+
+*/
+
 
 function getWeather(city) {
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=fr&appid=${API_KEY}`;
