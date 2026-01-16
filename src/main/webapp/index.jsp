@@ -5,9 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-    <<<<<<< HEAD
-    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="${pageContext.request.contextPath}/asset/css/navBar.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/asset/css/carousel.css" rel="stylesheet" />
@@ -60,7 +58,7 @@ integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJ
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
 </script>
 <title>JSP - Hello World</title>
-</head>
+
 <body>
 <c:if test="${not empty success}">
     <script>
@@ -73,6 +71,9 @@ integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJ
 <br/>
 <a href="hello-servlet">Hello Servlet</a>
 <a href="user-servlet">User</a>
+<a href="<c:url value="/rentsServlet" />">rents</a>
+<a href="<c:url value="/rolesServlet" />">roles</a>
+<a href="<c:url value="/AddressesCitiesServlet" />">address</a>
 
 <script type="module" src="asset/js/UserJS.js"></script>
 >>>>>>> dao

@@ -9,24 +9,28 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <a href="<c:url value="/index.jsp" />">Accueil</a>
     <title>Gestion rents DAO</title>
+</head>
+
+<body>
+    <a href="<c:url value="/index.jsp" />">Accueil</a>
+    <h1>Gestion rents DAO</h1>
 
     <div id="findAll" style="border:1px solid black;margin-top:2vh">
         <p>find All: liste des locations</p>
         <ul>
             <c:forEach var="rent" items="${requestScope.rentsList}">
-                    <li>
-                        id Rents ${rent.idRents} /
-                        id User ${rent.idUser} /
-                        id Estate ${rent.idEstate} /
-                        purchase date ${rent.purchaseDate} /
-                        start rent date ${rent.startRent} /
-                        end rent date ${rent.endRent} /
-                        total price ${rent.totalPrice} /
-                        payment number ${rent.paymentNumber}
+                <li>
+                    id Rents ${rent.idRents} /
+                    id User ${rent.idUser} /
+                    id Estate ${rent.idEstate} /
+                    purchase date ${rent.purchaseDate} /
+                    start rent date ${rent.startRent} /
+                    end rent date ${rent.endRent} /
+                    total price ${rent.totalPrice} /
+                    payment number ${rent.paymentNumber}
 
-                    </li>
+                </li>
 
             </c:forEach>
         </ul>
@@ -48,20 +52,20 @@
         </form>
     </div>
 
-    <p>Rechercher la réservation par son identifiant: </p>
-    <form method="post" action="<c:url value="/rentsServlet" />">
-        <input name="action" type="hidden" value="findById">
-        <input name="id-rents-to-find" type="number" placeholder="id rents">
-
-        <button type="submit">Chercher</button>
-    </form>
-
     <div id="modify" style="border:1px solid black;margin-top:2vh">
-        <p>Modifier réservation (location): </p>
+        <p>Rechercher la réservation par son identifiant: </p>
+        <form method="post" action="<c:url value="/rentsServlet" />">
+            <input name="action" type="hidden" value="findById">
+            <input name="id-rents-to-find" type="number" placeholder="id rents">
 
+            <button type="submit">Chercher</button>
+        </form>
+
+
+        <p>Modifier réservation (location): </p>
         <form method="post" action="<c:url value="/rentsServlet" />">
             <input name="action" type="hidden" value="modify">
-            <input name="id-rents-m" type="number" placeholder="id rents" value="${rentsToFind.idRents}">
+            <input name="id-rents-m" type="number" placeholder="id rents" value="${rentsToFind.idRents}"readonly>
             <input name="id-user-m" type="number" placeholder="id user" value="${rentsToFind.idUser}">
             <input name="id-estate-m" type="number" placeholder="id estate" value="${rentsToFind.idEstate}">
             <input name="purchase-date-m" type="date" placeholder="purchase date" value="${rentsToFind.purchaseDate}">
@@ -72,9 +76,7 @@
 
             <button type="submit">Modifier</button>
         </form>
-    </div>
 
-    <div id="delete" style="border:1px solid black;margin-top:2vh">
         <p>Suppprimer une réservation (location): </p>
         <form method="post" action="<c:url value="/rentsServlet" />">
             <input name="action" type="hidden" value="delete">
@@ -90,9 +92,5 @@
             <button type="submit">Supprimer</button>
         </form>
     </div>
-
-</head>
-<body>
-
 </body>
 </html>

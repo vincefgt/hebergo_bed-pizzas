@@ -29,6 +29,11 @@ public class Cities {
         this.setZipCode(pZipCode);
     }
 
+    public Cities(String pLabelCity,int pZipCode) throws SaisieException {
+        this.setLabelCity(pLabelCity);
+        this.setZipCode(pZipCode);
+    }
+
     /**
      * Gets id city.
      *

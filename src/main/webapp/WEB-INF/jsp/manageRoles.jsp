@@ -51,8 +51,6 @@
 
             <button type="submit">Modifier</button>
         </form>
-    <
-
 
         <p>Supprimer role</p>
         <form method="post" action="<c:url value="/rolesServlet" />">
