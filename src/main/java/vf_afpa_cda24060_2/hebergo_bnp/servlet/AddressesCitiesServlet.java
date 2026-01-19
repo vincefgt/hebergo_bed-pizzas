@@ -55,11 +55,19 @@ public class AddressesCitiesServlet extends HttpServlet {
 
         switch(action) {
 
-            case "create":
+            case "createAddress":
                 String numberStreet = request.getParameter("number-street");
                 Integer idCity = Integer.parseInt(request.getParameter("id-city"));
                 Addresses address = new Addresses(numberStreet, idCity);
 
+                try(Connection conn = ds.getConnection()){
+                    addressesDAO.create(conn, address);
+                }catch(SQLException sqle){
+                    System.out.println("Erreur create addressses");
+                }
+                break;
+
+            case "createCity":
                 String labelCity = request.getParameter("label-city");
                 Integer zipCode = Integer.parseInt(request.getParameter("zip-code"));
                 Cities city = new Cities();
@@ -70,41 +78,57 @@ public class AddressesCitiesServlet extends HttpServlet {
                 }
 
                 try(Connection conn = ds.getConnection()){
-                    addressesDAO.create(conn, address);
                     citiesDAO.create(conn, city);
                 }catch(SQLException sqle){
                     System.out.println("Erreur create addressses");
                 }
                 break;
-
-            case "findById":
+            case "findByIdAddress":
                 Integer idAddressToFind = Integer.parseInt(request.getParameter("id-address-toFind"));
-                Integer idCityToFind = Integer.parseInt(request.getParameter("id-city-toFind"));
 
                 Addresses addressToFind = new Addresses();
-                Cities cityToFind = new Cities();
 
                 try (Connection conn = ds.getConnection()) {
                     addressToFind = addressesDAO.findById(conn, idAddressToFind);
                 } catch (SQLException sqle) {
                     System.out.println("Erreur find address addressesCitiesServlet :" + sqle);
                 }
+
+                request.setAttribute("addressToFind", addressToFind);
+                request.getRequestDispatcher("/WEB-INF/jsp/manageAddressesCities.jsp");
+                break;
+
+            case "findByIdCity":
+                Integer idCityToFind = Integer.parseInt(request.getParameter("id-city-toFind"));
+
+                Cities cityToFind = new Cities();
+
                 try (Connection conn = ds.getConnection()) {
                     cityToFind = citiesDAO.findById(conn, idCityToFind);
                 } catch (SQLException sqle) {
                     System.out.println("Erreur find city addressesCitiesServlet :" + sqle);
                 }
-                request.setAttribute("addressToFind", addressToFind);
                 request.setAttribute("cityToFind", cityToFind);
-                request.getRequestDispatcher("/WEB-INF/jsp/manageAddressesCities.jsp").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/jsp/manageAddressesCities.jsp");
+                break;
 
-            case "modify":
+            case "modifyAddress":
                 Integer idAddressM = Integer.parseInt(request.getParameter("id-address-m"));
                 String numberStreetM = request.getParameter("number-street-m");
                 Integer idCityM = Integer.parseInt(request.getParameter("id-city-m"));
                 Addresses addressM = new Addresses(idAddressM,numberStreetM, idCityM);
 
-                Integer idCityToModify = Integer.parseInt(request.getParameter("id-city-toModify"));
+                try(Connection conn = ds.getConnection()){
+                    addressesDAO.update(conn, addressM);
+                }catch (SQLException sqle){
+                    System.out.println("Erreur modify address addressesCitiesServlet :" + sqle);
+                }
+
+                break;
+
+            case "modifyCity":
+
+                Integer idCityToModify = Integer.parseInt(request.getParameter("id-city-m"));
                 String labelCityM = request.getParameter("label-city-m");
                 Integer zipCodeM = Integer.parseInt(request.getParameter("zip-code-m"));
                 Cities cityM;
@@ -113,16 +137,30 @@ public class AddressesCitiesServlet extends HttpServlet {
                 } catch (SaisieException e) {
                     throw new RuntimeException(e);
                 }
-
-                try(Connection conn = ds.getConnection()){
-                    addressesDAO.update(conn, addressM);
-                }catch (SQLException sqle){
-                    System.out.println("Erreur modify address addressesCitiesServlet :" + sqle);
-                }
                 try(Connection conn = ds.getConnection()){
                     citiesDAO.update(conn, cityM);
                 }catch (SQLException sqle){
                     System.out.println("Erreur modify city addressesCitiesServlet :" + sqle);
+                }
+                break;
+
+            case "deleteAddress":
+                Integer idAddressD = Integer.parseInt(request.getParameter("id-address-d"));
+
+                try(Connection conn = ds.getConnection()){
+                    addressesDAO.deleteById(conn, idAddressD);
+                }catch (SQLException sqle){
+                    System.out.println("Erreur delete address addressesCitiesServlet :" + sqle);
+                }
+                break;
+
+            case "deleteCity":
+                Integer idCityToDelete = Integer.parseInt(request.getParameter("id-city-toDelete"));
+
+                try(Connection conn = ds.getConnection()){
+                    citiesDAO.deleteById(conn, idCityToDelete);
+                }catch (SQLException sqle){
+                    System.out.println("Erreur delete city addressesCitiesServlet :" + sqle);
                 }
                 break;
 
