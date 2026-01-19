@@ -22,11 +22,11 @@
     <div class="carousel-inner">
         <c:forEach var="estate" items="${estatesList}" varStatus="status">
             <div class="carousel-item ${status.first ? 'active' : ''}">
-                <img src="${estate.photoEstate}/photo.jpg" class="d-block" alt="Photo ${status.index + 1}">
+                <img src="${estate.photoEstate}/photo.jpg" class="d-block offset-1 w-50" alt="Photo ${status.index + 1}">
                 <div>
                     <h5>${estate.nameEstate}</h5>
                     <p>${estate.description}</p>
-                    <p>${estate.dailyPrice}</p>
+                    <p><strong>${estate.dailyPrice} €</strong></p>
                 </div>
             </div>
         </c:forEach>
@@ -41,15 +41,23 @@
     </button>
 </div>
 
-<div class="container-lg d-flex">
-    <c:forEach var="estate" items="${estatesList}">
-        <div class="card" style="width:18rem;margin:10px" >
-            <img src="${estate.photoEstate}/photo.jpg" class="d-block" alt="Photo 1">
-            <div class="card-body">
-                <h5 class="card-title">${estate.nameEstate}</h5>
-                <p>${estate.description}</p>
-                <p>${estate.dailyPrice}</p>
+<div>
+    <div class="row">
+
+        <c:forEach var="estate" items="${estatesList}">
+            <div class="card col-3 ofsset-1 m-3" style="width: 18rem;">
+                <img src="${estate.photoEstate}/photo.jpg" class="d-block" alt="Photo 1">
+                <div class="card-body">
+                    <h5 class="card-title">${estate.nameEstate}</h5>
+                    <p>${estate.description}</p>
+                </div>
+                <div class="card-footer">
+                    <p><strong>${estate.dailyPrice} €</strong></p>
+                </div>
             </div>
-        </div>
-    </c:forEach>
+        </c:forEach>
+
+
+
+    </div>
 </div>

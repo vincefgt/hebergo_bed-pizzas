@@ -26,15 +26,15 @@
 <c:import url="public/navBar.jsp" />
 
 <main>
-  <section>
+
+  <%-- Le aside de ma meteo API et carte de FRANCE --%>
+  <c:import url="public/asideMeteoApi.jsp" />
+
+  <section id="group-card">
     <%-- Le body de ma Home page --%>
     <jsp:include page="public/homePage.jsp" />
   </section>
 
-  <section>
-    <%-- Le aside de ma meteo API et carte de FRANCE --%>
-    <c:import url="public/asideMeteoApi.jsp" />
-  </section>
 </main>
 
 <%-- L'ajout de mon footer --%>
