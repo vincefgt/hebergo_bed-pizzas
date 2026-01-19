@@ -13,7 +13,7 @@ public class Addresses {
     public Addresses(int pIdAddress, String pNumberStreet, int pIdCity) {
         this.setIdAddress(pIdAddress);
         this.setNumberStreet(pNumberStreet);
-        this.setIdCity(pIdCity); // CORRECTION: setIdCity au lieu de getIdCity
+        this.setIdCity(pIdCity);
     }
 
     public Addresses(String pNumberStreet, int pIdCity) {
