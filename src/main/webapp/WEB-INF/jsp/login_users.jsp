@@ -35,7 +35,7 @@
                             <strong>Info :</strong> ${info}
                         </div>
                     </c:if>
-                    <form action="${pageContext.request.contextPath}/user-servlet" method="post" id="loginForm">
+                    <form action="<c:url value="/user-servlet"/>" method="post" id="loginForm">
                         <input name="actionUser" type="hidden" value="login">
                         <div class="form-group">
                             <label for="email">Email<span class="required">*</span></label>

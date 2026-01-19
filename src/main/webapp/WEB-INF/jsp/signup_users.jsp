@@ -23,7 +23,7 @@
                 alert("${success}");
             </script>
         </c:if>
-        <form action="${pageContext.request.contextPath}/user-servlet" method="post">
+        <form action="<c:url value="/user-servlet"/>" method="post">
             <input name="actionUser" type="hidden" value="signup">
             <div class="form-row">
                 <div class="form-group">

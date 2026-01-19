@@ -130,7 +130,7 @@ public class UserServlet extends HttpServlet {
                         request.setAttribute("idAddress", idAddressStr);
                         request.setAttribute("idRole", idRoleStr);
                         request.setAttribute("idAdmin", idAdminStr);
-                        request.getRequestDispatcher("/public/signup_users.jsp").forward(request, response);
+                        request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response);
                         return;
                     }
 
@@ -163,10 +163,10 @@ public class UserServlet extends HttpServlet {
                     } catch (SQLException e) {
                         request.setAttribute("error", "Erreur lors de la création de l'utilisateur: " + e.getMessage());
                         e.printStackTrace();
-                        request.getRequestDispatcher("/public/signup_users.jsp").forward(request, response);
+                        request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response);
                     } catch (NumberFormatException e) {
                         request.setAttribute("error", "Format de nombre invalide.");
-                        request.getRequestDispatcher("/public/signup_users.jsp").forward(request, response);
+                        request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response);
                     }
                 break;
             case "login": // ---------------------- LOG IN -----------------------------
@@ -217,7 +217,7 @@ public class UserServlet extends HttpServlet {
                     //userDAO.updateLastLogin(user.getId());   // Update last login timestamp
                     //logger.info("User logged in successfully: {}", username);
                     request.setAttribute("success", "Welcome back! " + user.getFirstname());
-                    request.getRequestDispatcher("/index.jsp").forward(request, response);
+                    request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
                     /*
                     // Redirect based on user role
                     String redirectUrl = getRedirectUrl(user, request);
@@ -295,7 +295,7 @@ public class UserServlet extends HttpServlet {
                     request.getRequestDispatcher("/public/param_users.jsp").forward(request, response);
                 } catch (NumberFormatException e) {
                     request.setAttribute("error", "Format de nombre invalide.");
-                    request.getRequestDispatcher("/public/param_users.jsp").forward(request, response);
+                    request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
                 }
                 break;
             default:
