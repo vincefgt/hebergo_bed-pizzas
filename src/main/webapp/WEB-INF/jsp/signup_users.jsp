@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="container">
-    <div id="signup">
+    <div id="signup" style="width: -webkit-fill-available;">
         <h1>Créer un utilisateur</h1>
         <c:if test="${not empty error}">
             <div class="alert alert-error">
@@ -100,10 +100,11 @@
             <button type="submit" class="btn btn-primary">Créer l'utilisateur</button>
 
             <div class="form-footer">
-                <a href="${pageContext.request.contextPath}/index.jsp" class="btn btn-secondary">Annuler</a>
+                <!--<a href="${pageContext.request.contextPath}/index.jsp" class="btn btn-secondary">Annuler</a>-->
             </div>
         </form>
     </div>
+    <button type="button" class="close-btn" id="close" onclick="window.location.href='${pageContext.request.contextPath}/index.jsp'"></button>
 </div>
 <script>
     // Validation en temps réel du téléphone

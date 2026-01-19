@@ -40,6 +40,6 @@
     <hr>
     <div class="footer-copyright">
         <p><img src="${pageContext.request.contextPath}/asset/images/droits-dauteur.png" alt="Droit auteur"> 2026 Bad and Pizza
-            <img id="footer-logo" src="${pageContext.request.contextPath}/asset/images/Bed_and_Pizza_logo.jpg" alt="Droit auteur"></p>
+        <img id="footer-logo" src="${pageContext.request.contextPath}/asset/images/Bed_and_Pizza_logo.jpg" alt="Droit auteur"></p>
     </div>
 </footer>

@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.*;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.userDAO;
 import vf_afpa_cda24060_2.hebergo_bnp.model.User;
 
+import javax.management.DynamicMBean;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
@@ -35,30 +36,37 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         String actionUser = request.getParameter("actionUser");
         if (actionUser == null) {
             request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response);  // action par défaut
             return;}
 
         switch (actionUser) {
+        case "paramUser": // ---------------------------- PARAM -------------------------
+            request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+            break;
         case "signup": // ---------------------------- SIGN IN -------------------------
             request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response); // otherwise Forward to login page
             break;
-        case "login": // ------------------- LOG IN -----------------------
+        case "login": // ------------------- LOG IN ------------------------------------
             // Check if user is already logged in
             HttpSession session = request.getSession(false);
             if (session != null && session.getAttribute("user") != null) {
                 response.sendRedirect(request.getContextPath() + "/index.jsp"); // return to landing page
-                return;
-            }
+                return;}
             request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response); // otherwise Forward to login page
+            break;
+        case "logout": // ---------------------- LOG OUT -------------------------------
+            HttpSession sessionOut = request.getSession(false);
+            if (sessionOut != null && sessionOut.getAttribute("user") != null) {
+                sessionOut.invalidate();
+                response.sendRedirect(request.getContextPath() + "/index.jsp"); // return to landing page
+                return;}
             break;
         default:
             request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response);
             break;
         }
-        //request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response);
     }
 
     // managing forms
@@ -99,9 +107,6 @@ public class UserServlet extends HttpServlet {
                 if (!password.equals(confirmPassword)) {
                     errors.append("Les mots de passe ne correspondent pas. ");}
 
-               /* if (idAddressStr == null || idAddressStr.trim().isEmpty()) {
-                    errors.append("L'adresse est obligatoire. ");
-                }*/
                     // Vérifier les doublons
                     try {
                         if (userDAO.emailExists(email)) {
@@ -169,7 +174,6 @@ public class UserServlet extends HttpServlet {
                  email = request.getParameter("email");
                  password = request.getParameter("password");
                  String remember = request.getParameter("remember");
-
                 // Validate input
                 if (email == null || email.trim().isEmpty()) {
                     request.setAttribute("error", "Le nom d'utilisateur est requis");
@@ -181,7 +185,6 @@ public class UserServlet extends HttpServlet {
                     request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response);
                     return;
                 }
-
                 try { // Try to find by email
                     User user = userDAO.findByEmail(email.trim());
                     if (user == null) {
@@ -190,7 +193,6 @@ public class UserServlet extends HttpServlet {
                         request.setAttribute("username", email);
                         request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response); // stay on log in page
                         return;}
-
                     // Verify password using Argon2id
                     boolean isPasswordValid = vf_afpa_cda24060_2.hebergo_bnp.util.PasswordUtil.verifyPassword(user.getPasswordHash(), password);
                     if (!isPasswordValid) {
@@ -199,26 +201,21 @@ public class UserServlet extends HttpServlet {
                         request.setAttribute("username", email);
                         request.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(request, response); //TODO info use to index page
                         return;}
-
                     // Check if user account is active
                     if (user.isDeleted()) {
                         // logger.warn("Login attempt for inactive account: {}", email); //TODO logger
                         request.setAttribute("error", "Votre compte est désactivé. Veuillez contacter l'administrateur.");
                         request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response);
                         return;}
-
                     // Successful login - create session
                     HttpSession session = request.getSession(true);
                     session.setAttribute("user", user);
-                    // session.setAttribute("userId", user.getIdUser());
                     session.setMaxInactiveInterval(30 * 60); // Set session timeout (30 minutes) without remenber me
                     if ("on".equals(remember)) {  // "Remember Me" functionality
                         session.setMaxInactiveInterval(7 * 24 * 60 * 60);} // 7 days
-
                     //log connection user
                     //userDAO.updateLastLogin(user.getId());   // Update last login timestamp
                     //logger.info("User logged in successfully: {}", username);
-
                     request.setAttribute("success", "Welcome back! " + user.getFirstname());
                     request.getRequestDispatcher("/index.jsp").forward(request, response);
                     /*
@@ -230,6 +227,76 @@ public class UserServlet extends HttpServlet {
                     //logger.error("Error during login process", e);
                     request.setAttribute("error", "Une erreur s'est produite lors de la connexion. Veuillez réessayer.");
                     request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response);}
+                break;
+            case "update": //--------------------------------- update user -------------------------------
+                request.setCharacterEncoding("UTF-8");
+                // Récupérer les paramètres du formulaire
+                firstname = request.getParameter("firstname");
+                lastname = request.getParameter("lastname");
+                phone = request.getParameter("phone");
+                email = request.getParameter("email");
+                password = request.getParameter("password");
+                String newPassword = request.getParameter("newPassword");
+                String confirmNewPassword = request.getParameter("confirmNewPassword");
+                // Validation
+                errors = new StringBuilder();
+                if (firstname == null || firstname.trim().isEmpty()) {
+                    errors.append("Le prénom est obligatoire. ");}
+                if (lastname == null || lastname.trim().isEmpty()) {
+                    errors.append("Le nom est obligatoire. ");}
+                if (phone == null || !phone.matches("\\d{10}")) {
+                    errors.append("Le téléphone doit contenir exactement 10 chiffres. ");}
+                if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+                    errors.append("L'email n'est pas valide. ");}
+                if (newPassword == null || newPassword.length() < 8) {
+                    errors.append("Le mot de passe doit contenir au moins 8 caractères. ");}
+                if (!newPassword.equals(confirmNewPassword)) {
+                    errors.append("Les mots de passe ne correspondent pas. ");}
+                // Vérifier les doublons
+                try {
+                    if (userDAO.emailExists(email)) {
+                        errors.append("Cet email est déjà utilisé. ");}
+                    if (userDAO.phoneExists(phone)) {
+                        errors.append("Ce numéro de téléphone est déjà utilisé. ");}
+                } catch (SQLException e) {
+                    errors.append("Erreur lors de la vérification des doublons. ");
+                    e.printStackTrace();
+                }
+                // Si erreurs, retourner au formulaire
+                if (errors.length() > 0) {
+                    request.setAttribute("error", errors.toString());
+                    request.setAttribute("firstname", firstname);
+                    request.setAttribute("lastname", lastname);
+                    request.setAttribute("phone", phone);
+                    request.setAttribute("email", email);
+                    request.setAttribute("password", password);
+                    //request.getRequestDispatcher("/public/signup_users.jsp").forward(request, response);
+                    return;}
+
+                // Update l'utilisateur
+                try {
+                    User updateUser = new User(); //model
+                    updateUser.setFirstname(firstname.trim());
+                    updateUser.setLastname(lastname.trim());
+                    updateUser.setPhone(phone.trim());
+                    updateUser.setEmail(email.trim());
+                    updateUser.setPasswordHash(newPassword);
+
+                    userDAO.update(updateUser); // Call DAO update BDD
+                    HttpSession session = request.getSession(true); // update user in session scope
+                    session.setAttribute("user", updateUser);
+                    // Succès - rediriger
+                    request.getSession().setAttribute("success", "Utilisateur mis à jour avec succès !");
+                    response.sendRedirect(request.getContextPath() + "/index.jsp"); //TODO link to user account
+
+                } catch (SQLException e) {
+                    request.setAttribute("error", "Erreur lors de la création de l'utilisateur: " + e.getMessage());
+                    e.printStackTrace();
+                    request.getRequestDispatcher("/public/param_users.jsp").forward(request, response);
+                } catch (NumberFormatException e) {
+                    request.setAttribute("error", "Format de nombre invalide.");
+                    request.getRequestDispatcher("/public/param_users.jsp").forward(request, response);
+                }
                 break;
             default:
                 break;

@@ -26,6 +26,7 @@ body {
     padding: 40px;
     max-width: 800px;
     width: 100%;
+    align-items: flex-start;
 }
 
 h1 {
@@ -153,6 +154,7 @@ small {
 
 .forgot-password {
     color: #667eea;
+    font-size: 12px;
     text-decoration: none;
     transition: color 0.3s ease;
 }
@@ -195,4 +197,49 @@ small {
 }
 .toggle-password:hover {
     color: #667eea;
+}
+
+.close-btn {
+    position: relative;
+    left: 5px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-items: end;
+    transition: transform 0.2s;
+    border-radius: 50%;
+}
+
+.close-btn:hover {
+    transform: rotate(90deg);
+    background: #f7f7f7;
+    color: #222;
+}
+
+.close-btn::before,
+.close-btn::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: #666;
+    transition: background 0.2s;
+}
+
+.close-btn::before {
+    transform: rotate(45deg);
+}
+
+.close-btn::after {
+    transform: rotate(-45deg);
+}
+
+.close-btn:hover::before,
+.close-btn:hover::after {
+    background: #29272a;
+
 }
