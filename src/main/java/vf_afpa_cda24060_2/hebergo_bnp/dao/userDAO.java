@@ -158,7 +158,6 @@ public class userDAO {
             stmt.setString(8, user.getPasswordHash());
             stmt.setBoolean(9, user.isDeleted());
             stmt.setInt(10, user.getIdUser());
-
             return stmt.executeUpdate() > 0;
         }
     }

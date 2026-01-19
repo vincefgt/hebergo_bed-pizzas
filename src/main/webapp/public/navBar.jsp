@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%--
     Created by IntelliJ IDEA.
@@ -11,8 +12,9 @@
     <section class="mb-3">
         <nav class="navbar bg-body-tertiary">
             <div class="container-fluid">
-                <img id="logo" src="${pageContext.request.contextPath}/asset/images/Bed_and_Pizza_logo.jpg" alt="Bed and Pizza">
-
+                <a href="${pageContext.request.contextPath}/index.jsp">
+                <img id="logo" src="${pageContext.request.contextPath}/asset/images/Bed_and_Pizza_logo.jpg" alt="Bed and Pizza logo">
+                </a>
                 <!-- Filtre de recherche -->
                 <div class="search-bar">
                     <div class="search-field" id="destinationField">
@@ -94,21 +96,23 @@
         <!-- Modal hamburger -->
         <div class="hamburger-modal" id="hamburgerModal">
             <div class="hamburger-modal-content">
-                <button class="modal-close-btn" id="closeModal">&times;</button>
+                <button class="modal-close-btn" id="closeModal"></button>
                 <div class="modal-menu">
-                    <a href="#" class="modal-menu-item">
+                    <a href="user-servlet?actionUser=login" class="modal-menu-item">
                         <i class="bi bi-box-arrow-in-right"><span> Se connecter</span></i>
                     </a>
-                    <a href="#" class="modal-menu-item">
+                    <a href="user-servlet?actionUser=signup" class="modal-menu-item" >
                         <i class="bi bi-person-plus"><span> Créer compte</span></i>
                     </a>
-                    <a href="#" class="modal-menu-item">
-                        <i class="bi bi-person-gear"><span> Paramètre</span></i>
-                    </a>
-                    <a href="#" class="modal-menu-item">
-                        <i class="bi bi-box-arrow-left"><span> Déconnexion</span></i>
-                    </a>
                 </div>
+                <c:if test="${not empty sessionScope.user}">
+                <div class="modal-menu">
+                    <a href="user-servlet?actionUser=paramUser" class="modal-menu-item" id="paramMenu" >
+                        <i class="bi bi-person-gear"><span> Paramètre</span></i></a>
+                    <a href="user-servlet?actionUser=logout" class="modal-menu-item" id="logoutMenu" >
+                        <i class="bi bi-box-arrow-left"><span> Déconnexion</span></i></a>
+                </div>
+                </c:if>
             </div>
         </div>
     </section>
