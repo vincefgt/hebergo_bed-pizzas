@@ -16,6 +16,11 @@ public class Addresses {
         this.setIdCity(pIdCity);
     }
 
+    public Addresses(String pNumberStreet, int pIdCity) {
+        this.setNumberStreet(pNumberStreet);
+        this.setIdCity(pIdCity);
+    }
+
     // Getters and Setters
     public int getIdAddress() {
         return idAddress;

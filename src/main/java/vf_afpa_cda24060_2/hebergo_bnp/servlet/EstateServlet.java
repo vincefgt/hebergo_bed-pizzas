@@ -1,6 +1,7 @@
 package vf_afpa_cda24060_2.hebergo_bnp.servlet;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,7 +14,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "estates",value = "/estates")
+@WebServlet(name = "estates",value = "/EstateServlet")
 public class EstateServlet extends HttpServlet {
     private EstateDao estateDao;
     private DataSource dataSource;
@@ -24,9 +25,26 @@ public class EstateServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            String action = request.getParameter("action");
             List<Estate> estates = estateDao.getAllEstates();
             request.setAttribute("list",estates);
-            request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request,response);
+            switch(action){
+                case "carrousel":
+                    EstateDao estateDao = new EstateDao();
+                    List<Estate> estatesList = estateDao.getAllEstates();
+
+                    request.setAttribute("estatesList", estatesList);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/accueil.jsp");
+                    dispatcher.forward(request,response);
+                    break;
+                case "estate":
+                    request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request,response);
+                    break;
+                default:
+                    break;
+            }
+
+
         }catch (Exception e){
             e.printStackTrace();
             response.getWriter().write("error" + e.getMessage());

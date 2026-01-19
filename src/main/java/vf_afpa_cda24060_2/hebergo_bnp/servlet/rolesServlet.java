@@ -7,9 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import vf_afpa_cda24060_2.hebergo_bnp.dao.RentsDAO;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.RolesDAO;
-import vf_afpa_cda24060_2.hebergo_bnp.model.Rents;
 import vf_afpa_cda24060_2.hebergo_bnp.model.Roles;
 
 import javax.sql.DataSource;
