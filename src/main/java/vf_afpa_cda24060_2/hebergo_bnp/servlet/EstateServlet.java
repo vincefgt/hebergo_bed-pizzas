@@ -37,40 +37,44 @@ public class EstateServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EstateDao estateDao = new EstateDao();
-        List<Estate> estate;
+        List<Estate> estatesList;
         String action = request.getParameter("action");
-        HttpSession session = request.getSession(false); // update user in session scope
+
         try {
+            action = request.getParameter("action");
+            List<Estate> estates = estateDao.getAllEstates();
+            request.setAttribute("list",estates);
             switch(action){
                 case "delete":
                    int id = Integer.parseInt(request.getParameter("id"));
                    estateDao.deleteEstate(id);
-                   response.sendRedirect("estate");
+                   response.sendRedirect("estates");
                    break;
                 case "carrousel":
                     estateDao = new EstateDao();
-                    estate = estateDao.getAllEstates();
+                    estatesList = estateDao.getAllEstates();
 
-                    request.setAttribute("estatesList", estate);
+                    request.setAttribute("estatesList", estatesList);
                     RequestDispatcher dispatcher = request.getRequestDispatcher("/accueil.jsp");
                     dispatcher.forward(request,response);
                     break;
                 case "estate":
                     estateDao = new EstateDao();
-                    estate = estateDao.getAllEstates();
-                    request.getRequestDispatcher("/WEB-INF/jsp/estate.jsp").forward(request,response);
+                    estatesList = estateDao.getAllEstates();
+                    request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request,response);
                     break;
                 case "hostList":
                     estateDao = new EstateDao();
-                    session = request.getSession(false);
-                    estate = estateDao.findEstateByHost((User) session.getAttribute("user"));
-                    request.setAttribute("list", estate);
+                    HttpSession session = request.getSession(false); // update user in session scope
+                    estatesList = estateDao.findEstateByHost((User) session.getAttribute("user"));
+                    request.setAttribute("estatesList", estatesList);
+                    
+                    request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
                     break;
                 default:
-                     // List all estate
-                    //estate = estateDao.getAllEstates();
-                    //request.setAttribute("list", estate);
-                    //request.getRequestDispatcher("/WEB-INF/jsp/estate.jsp").forward(request, response);
+                     // List all estates
+                    request.setAttribute("list", estates);
+                    request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request, response);
                     break;
             }
 
