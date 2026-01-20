@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-@WebServlet(name = "estates",value = "/estates")
+@WebServlet(name = "estate_servlet",value = "/EstateServlet")
 
 //we are using this annotation to tell the servlet that files will be posted
 @MultipartConfig(
