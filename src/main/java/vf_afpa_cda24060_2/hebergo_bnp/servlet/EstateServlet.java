@@ -41,7 +41,7 @@ public class EstateServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         try {
-            String action = request.getParameter("action");
+            action = request.getParameter("action");
             List<Estate> estates = estateDao.getAllEstates();
             request.setAttribute("list",estates);
             switch(action){
@@ -49,7 +49,6 @@ public class EstateServlet extends HttpServlet {
                    int id = Integer.parseInt(request.getParameter("id"));
                    estateDao.deleteEstate(id);
                    response.sendRedirect("estates");
-                   return;
                    break;
                 case "carrousel":
                     estateDao = new EstateDao();
@@ -74,7 +73,7 @@ public class EstateServlet extends HttpServlet {
                     break;
                 default:
                      // List all estates
-                    List<Estate> estates = estateDao.getAllEstates();
+                    estates = estateDao.getAllEstates();
                     request.setAttribute("list", estates);
                     request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request, response);
                     break;
