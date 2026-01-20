@@ -12,6 +12,9 @@
     padding: 0;
     font-size: 16px;
 }
+h1 {
+    font-family: fantasy;
+}
 
 /* navBar */
 header {
@@ -129,10 +132,34 @@ header section {
 }
 
 .modal-close-btn:hover {
+    transform: rotate(90deg);
     background: #f7f7f7;
     color: #222;
 }
 
+.modal-close-btn::before,
+.modal-close-btn::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: #666;
+    transition: background 0.2s;
+}
+
+.modal-close-btn::before {
+    transform: rotate(45deg);
+}
+
+.modal-close-btn::after {
+    transform: rotate(-45deg);
+}
+
+.modal-close-btn:hover::before,
+.modal-close-btn:hover::after {
+    background: #29272a;
+
+}
 .modal-menu {
     display: flex;
     flex-direction: column;

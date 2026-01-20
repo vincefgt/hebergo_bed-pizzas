@@ -1,6 +1,6 @@
 #weather-aside {
-    float: right;
-    right: 50px;
+    float: left;
+    margin-left: 30px;
     width: 350px;
     margin-right: 30px;
     margin-bottom: 60px;

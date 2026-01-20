@@ -11,13 +11,12 @@
 </head>
 <body>
     <div class="container">
-        <div id="login">
-            <div>
+        <div id="login" style="width: -webkit-fill-available;">
                 <div class="form-group">
                     <h1>Log In</h1>
                     <p>Bienvenue ! Connectez-vous à votre compte</p>
                 </div>
-                <div class="login-body">
+                <div class="form-group">
                     <!-- Display error message if present -->
                     <c:if test="${not empty error}">
                         <div class="alert alert-error">
@@ -36,7 +35,7 @@
                             <strong>Info :</strong> ${info}
                         </div>
                     </c:if>
-                    <form action="${pageContext.request.contextPath}/user-servlet" method="post" id="loginForm">
+                    <form action="<c:url value="/user-servlet"/>" method="post" id="loginForm">
                         <input name="actionUser" type="hidden" value="login">
                         <div class="form-group">
                             <label for="email">Email<span class="required">*</span></label>
@@ -50,18 +49,15 @@
                                     autocomplete="email"
                             >
                         </div>
-
                         <div class="form-group">
                             <label for="password">Mot de passe<span class="required">*</span></label>
                             <div class="password-wrapper">
-                                <input
-                                        type="password"
+                                <input type="password"
                                         id="password"
                                         name="password"
                                         placeholder="Entrez votre mot de passe"
                                         required
-                                        autocomplete="current-password"
-                                >
+                                        autocomplete="current-password">
                                 <!--https://freefrontend.com/javascript-forms/-->
                                 <button type="button" class="toggle-password" onclick="togglePassword()">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
@@ -70,7 +66,6 @@
                                 </button>
                             </div>
                         </div>
-
                         <div class="remember-forgot">
                             <label class="remember-me">
                                 <input type="checkbox" name="remember" id="remember">
@@ -80,17 +75,15 @@
                                 Mot de passe oublié ?
                             </a>
                         </div>
-
                         <button type="submit" class="btn btn-primary">Se connecter</button>
                     </form>
-
                     <div class="signup-link">
                         Vous n'avez pas de compte ?
                         <a href="user-servlet?actionUser=signup">S'inscrire</a>
                     </div>
-                </div>
             </div>
         </div>
+        <button type="button" class="close-btn" id="close" onclick="window.location.href='${pageContext.request.contextPath}/index.jsp'"></button>
     </div>
 <script>
     /*

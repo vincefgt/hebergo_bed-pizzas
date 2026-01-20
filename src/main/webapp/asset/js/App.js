@@ -12,6 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Ouvrir le modal au lieu du collapse
             if (hamburgerModal) {
                 hamburgerModal.classList.toggle('active');
+                const welcome = document.getElementById("welcome");
+                if (!welcome) {
+                    document.getElementById("paramMenu").classList.add('none');
+                    document.getElementById("logoutMenu").classList.add('none');
+                }
             }
         });
     }
@@ -364,4 +369,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-});
+
+
+    });

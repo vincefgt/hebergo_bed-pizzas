@@ -1,6 +1,7 @@
 package vf_afpa_cda24060_2.hebergo_bnp.servlet;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+
 
 @WebServlet(name = "estates",value = "/estates")
 
@@ -35,20 +37,37 @@ public class EstateServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         try {
-            // Handle Delete
-            if ("delete".equals(action)) {
-                int id = Integer.parseInt(request.getParameter("id"));
-                estateDao.deleteEstate(id);
-                response.sendRedirect("estates");
-                return;
+            String action = request.getParameter("action");
+            List<Estate> estates = estateDao.getAllEstates();
+            request.setAttribute("list",estates);
+            switch(action){
+                case "delete":
+                   int id = Integer.parseInt(request.getParameter("id"));
+                   estateDao.deleteEstate(id);
+                   response.sendRedirect("estates");
+                   return;
+                   break;
+                case "carrousel":
+                    EstateDao estateDao = new EstateDao();
+                    List<Estate> estatesList = estateDao.getAllEstates();
+
+                    request.setAttribute("estatesList", estatesList);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/accueil.jsp");
+                    dispatcher.forward(request,response);
+                    break;
+                case "estate":
+                    request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request,response);
+                    break;
+                default:
+                     // List all estates
+                    List<Estate> estates = estateDao.getAllEstates();
+                    request.setAttribute("list", estates);
+                    request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request, response);
+                    break;
             }
 
-            // List all estates
-            List<Estate> estates = estateDao.getAllEstates();
-            request.setAttribute("list", estates);
-            request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request, response);
 
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
