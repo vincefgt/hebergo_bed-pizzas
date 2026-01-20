@@ -36,6 +36,7 @@
 
             <form method="post"  action="<c:url value="/detailsServlet" />">
                 <div class="row">
+                    <input type="hidden" value="${estate.idEstate}" name="id-estate">
                     <div class="col-3">
                         <h2 ><label>Début du séjour</label></h2>
                         <input type="date" name="start-rent" />
