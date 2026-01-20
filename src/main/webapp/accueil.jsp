@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
@@ -27,7 +28,11 @@
 <c:import url="public/navBar.jsp" />
 
 <main>
-
+    <c:if test="${not empty sessionScope.user}">
+        <div style="justify-content: center; display: flex; align-items: center; flex-direction: column;" id="welcome">
+            <h1>WELCOME BACK ${fn:toUpperCase(sessionScope.user.firstname)} !</h1>
+        </div>
+    </c:if>
   <%-- Le aside de ma meteo API et carte de FRANCE --%>
   <c:import url="public/asideMeteoApi.jsp" />
 

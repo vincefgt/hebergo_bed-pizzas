@@ -43,7 +43,8 @@ public class UserServlet extends HttpServlet {
 
         switch (actionUser) {
         case "paramUser": // ---------------------------- PARAM -------------------------
-            request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+            request.getRequestDispatcher("/EstateServlet?action=hostList").forward(request, response);
+            //request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
             break;
         case "signup": // ---------------------------- SIGN IN -------------------------
             request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response); // otherwise Forward to login page
@@ -74,6 +75,7 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //variable global both signup /login share
+        String adUrl = "index.jsp";
         String password = request.getParameter("password");
         String email = request.getParameter("email");
         String actionUser = request.getParameter("actionUser");
@@ -143,15 +145,11 @@ public class UserServlet extends HttpServlet {
                         user.setEmail(email.trim());
                         user.setPasswordHash(vf_afpa_cda24060_2.hebergo_bnp.util.PasswordUtil.hashPassword(password)); // Hash password w Argon2.id
                         if (idAddressStr != null && !idAddressStr.trim().isEmpty()) {
-                            user.setIdAddress(Integer.parseInt(idAddressStr));
-                            ;
-                        }
+                            user.setIdAddress(Integer.parseInt(idAddressStr));}
                         if (idRoleStr != null && !idRoleStr.trim().isEmpty()) {
-                            user.setIdRole(Integer.parseInt(idRoleStr));
-                        }
+                            user.setIdRole(Integer.parseInt(idRoleStr));}
                         if (idAdminStr != null && !idAdminStr.trim().isEmpty()) {
-                            user.setIdAdmin(Integer.parseInt(idAdminStr));
-                        }
+                            user.setIdAdmin(Integer.parseInt(idAdminStr));}
                         user.setDeleted(false);
 
                         User createdUser = userDAO.create(user); //DAO
@@ -159,6 +157,7 @@ public class UserServlet extends HttpServlet {
                         // Succès - rediriger
                         request.getSession().setAttribute("success", "Utilisateur créé avec succès !");
                         response.sendRedirect(request.getContextPath() + "/index.jsp"); //TODO link to user account
+                        //request.getRequestDispatcher(adUrl).forward(request, response);
 
                     } catch (SQLException e) {
                         request.setAttribute("error", "Erreur lors de la création de l'utilisateur: " + e.getMessage());
@@ -217,7 +216,8 @@ public class UserServlet extends HttpServlet {
                     //userDAO.updateLastLogin(user.getId());   // Update last login timestamp
                     //logger.info("User logged in successfully: {}", username);
                     request.setAttribute("success", "Welcome back! " + user.getFirstname());
-                    request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+                    //request.getRequestDispatcher(adUrl).forward(request, response);
+                    response.sendRedirect(adUrl);
                     /*
                     // Redirect based on user role
                     String redirectUrl = getRedirectUrl(user, request);
@@ -287,7 +287,7 @@ public class UserServlet extends HttpServlet {
                     session.setAttribute("user", updateUser);
                     // Succès - rediriger
                     request.getSession().setAttribute("success", "Utilisateur mis à jour avec succès !");
-                    response.sendRedirect(request.getContextPath() + "/index.jsp"); //TODO link to user account
+                    response.sendRedirect(request.getContextPath() + adUrl);
 
                 } catch (SQLException e) {
                     request.setAttribute("error", "Erreur lors de la création de l'utilisateur: " + e.getMessage());

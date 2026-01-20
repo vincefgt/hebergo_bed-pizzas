@@ -1,6 +1,7 @@
 package vf_afpa_cda24060_2.hebergo_bnp.dao;
 
 import vf_afpa_cda24060_2.hebergo_bnp.model.Estate;
+import vf_afpa_cda24060_2.hebergo_bnp.model.User;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -22,8 +23,7 @@ public class EstateDao {
             InitialContext ctx = new InitialContext();
             dataSource =  (DataSource) ctx.lookup("java:comp/env/jdbc/MyDataSource");
         }catch (Exception e){
-            throw new RuntimeException("Error getting DataSource",e);
-        }
+            throw new RuntimeException("Error getting DataSource",e);}
     }
 
     private Estate mapResultSetToEstate(ResultSet resultSet) throws SQLException {
@@ -120,4 +120,22 @@ public class EstateDao {
         }
     }
 
+    public List<Estate> findEstateByHost(User user) throws SQLException{
+        List<Estate> estatesHost = new ArrayList<>();
+        String sql = "select * from estates e inner join users u on u.id_user=e.id_user where u.id_user = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, user.getIdUser());
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()){
+                while(resultSet.next()){
+                    Estate estate = null;
+                    estate = mapResultSetToEstate(resultSet);
+                    estatesHost.add(estate);}
+            }
+        }catch (Exception e){
+            throw new RuntimeException("Error getting all estates",e);
+        }
+        return estatesHost;
+    }
 }

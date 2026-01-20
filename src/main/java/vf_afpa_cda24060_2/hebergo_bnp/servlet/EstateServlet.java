@@ -8,8 +8,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.EstateDao;
 import vf_afpa_cda24060_2.hebergo_bnp.model.Estate;
+import vf_afpa_cda24060_2.hebergo_bnp.model.User;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -34,6 +36,8 @@ public class EstateServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        EstateDao estateDao = new EstateDao();
+        List<Estate> estatesList;
         String action = request.getParameter("action");
 
         try {
@@ -48,15 +52,25 @@ public class EstateServlet extends HttpServlet {
                    return;
                    break;
                 case "carrousel":
-                    EstateDao estateDao = new EstateDao();
-                    List<Estate> estatesList = estateDao.getAllEstates();
+                    estateDao = new EstateDao();
+                    estatesList = estateDao.getAllEstates();
 
                     request.setAttribute("estatesList", estatesList);
                     RequestDispatcher dispatcher = request.getRequestDispatcher("/accueil.jsp");
                     dispatcher.forward(request,response);
                     break;
                 case "estate":
+                    estateDao = new EstateDao();
+                    estatesList = estateDao.getAllEstates();
                     request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request,response);
+                    break;
+                case "hostList":
+                    estateDao = new EstateDao();
+                    HttpSession session = request.getSession(false); // update user in session scope
+                    estatesList = estateDao.findEstateByHost((User) session.getAttribute("user"));
+                    request.setAttribute("estatesList", estatesList);
+                    
+                    request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
                     break;
                 default:
                      // List all estates
@@ -65,7 +79,6 @@ public class EstateServlet extends HttpServlet {
                     request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request, response);
                     break;
             }
-
 
         }catch (Exception e){
             e.printStackTrace();
