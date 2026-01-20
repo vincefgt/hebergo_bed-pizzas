@@ -1,0 +1,18 @@
+
+
+a {
+    text-decoration: none;
+}
+
+.card-footer p {
+    float: right;
+}
+
+#card-details {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+}
+#card-detail:hover {
+    transform: scale(1.01);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}

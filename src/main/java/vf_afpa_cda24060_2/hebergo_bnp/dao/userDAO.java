@@ -79,19 +79,20 @@ public class userDAO {
     }
 
     // READ - Find by ID
-    public Optional<User> findById(int idUser) throws SQLException {
+    public User findById(int idUser) throws SQLException {
         String sql = "SELECT * FROM USERS WHERE id_user = ?";
+        User  user = null;
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, idUser);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return Optional.of(mapResultSetToUser(rs));
+                    user = mapResultSetToUser(rs);
                 }
             }
         }
-        return Optional.empty();
+        return user;
     }
 
     // READ - Find by Email

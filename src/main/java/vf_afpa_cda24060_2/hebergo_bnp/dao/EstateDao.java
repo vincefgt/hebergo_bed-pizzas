@@ -43,7 +43,7 @@ public class EstateDao {
     public Estate getEstateById(int id) throws NamingException {
 
         Estate estate = null;
-        String sql = "select * from estates where id = ?";
+        String sql = "select * from estates where id_estate = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
