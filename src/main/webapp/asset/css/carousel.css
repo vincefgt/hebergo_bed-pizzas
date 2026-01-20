@@ -10,7 +10,7 @@
 
 .carousel-item {
     padding: 20px;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #c3cfe2 0%, #f5f7fa 50%, #c3cfe2 100%);
     -webkit-transition: -webkit-transform 4.2s ease-in-out !important;
     -o-transition: -o-transform 4.2s ease-in-out !important;
     transition: transform 4.2s ease-in-out !important;

@@ -7,7 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<footer class="bg-body-tertiary">
+<footer>
     <div class="footer-content">
         <div>
             <p><strong>Assistance</strong></p>
