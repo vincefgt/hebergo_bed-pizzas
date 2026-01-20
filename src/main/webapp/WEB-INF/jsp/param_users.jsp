@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Compte - Hebergo</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/asset/css/navBar.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="${pageContext.request.contextPath}/asset/css/navBar.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/asset/css/carousel.css" rel="stylesheet" />
@@ -311,6 +311,7 @@
     <div class="profile-header">
         <h1>Bienvenue, ${sessionScope.user.firstname} ${sessionScope.user.lastname}</h1>
         <p>Gérez votre profil et vos biens immobiliers</p>
+        <p>Rôle: host</p>
     </div>
 
     <!-- Tabs -->
@@ -318,9 +319,8 @@
         <button class="tab-btn active" onclick="switchTab('profile')">
             Mon Profil
         </button>
-        <button class="tab-btn" onclick="switchTab('estates')">
-            Mes Logements
-        </button>
+        <button class="tab-btn" onclick="switchTab('estates')">Mes Logements</button>
+        <button class="tab-btn" onclick="switchTab('admin')">Administration</button>
     </div>
     <!-- Tab Content: Profile -->
     <div id="profile-tab" class="tab-content active">
@@ -382,16 +382,15 @@
         <div class="profile-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
                 <h2 style="margin: 0;">Mes logements</h2>
-                <a href="${pageContext.request.contextPath}/estate/add" class="btn btn-primary"
-                   style="text-decoration: none;">
-                    + Ajouter un logement
-                </a>
+
+                <a href="${pageContext.request.contextPath}/EstateServlet?action=add" class="btn btn-primary"
+                   style="text-decoration: none;">+ Ajouter un logement</a>
             </div>
 
             <c:choose>
-                <c:when test="${not empty estates}">
+                <c:when test="${not empty estate}">
                     <div class="estates-grid">
-                        <c:forEach var="estate" items="${estates}">
+                        <c:forEach var="estate" items="${estatesList}">
                             <div class="estate-card" onclick="viewEstate(${estate.id})">
                                 <div class="estate-image">
                                     <c:choose>
@@ -417,16 +416,10 @@
                                                 ${estate.dailyPrice}€ <span>/ nuit</span>
                                         </div>
                                         <div class="estate-actions" onclick="event.stopPropagation()">
-                                            <button class="icon-btn"
-                                                    onclick="editEstate(${estate.id})"
-                                                    title="Modifier">
-                                                ✏️
-                                            </button>
+                                            <button class="icon-btn" onclick="editEstate(${estate.id})" title="Modifier">✏️</button>
                                             <button class="icon-btn delete"
                                                     onclick="deleteEstate(${estate.id})"
-                                                    title="Supprimer">
-                                                🗑️
-                                            </button>
+                                                    title="Supprimer">🗑️</button>
                                         </div>
                                     </div>
                                 </div>
@@ -447,16 +440,16 @@
             </c:choose>
         </div>
     </div>
+    <!-- Tab Content: Profile -->
+    <div id="admin-tab" class="tab-content active">
+        <div class="profile-section"><h2>Gestion admin</h2></div>
+    </div>
 </div>
 </main>
 
 <jsp:include page="/public/footer.jsp" />
 
 <script> //JS formulair users
-    window.addEventListener('DOMContentLoaded', function (e) {
-
-    })
-
     function switchTab(tabName) {
         // Hide all tabs
         document.querySelectorAll('.tab-content').forEach(tab => {
@@ -473,16 +466,16 @@
     function resetForm() {
         document.querySelector('form').reset();}
     function viewEstate(estateId) {
-        window.location.href = '${pageContext.request.contextPath}/estate/view?id=' + estateId;
+        window.location.href = '${pageContext.request.contextPath}/estate?id=' + estateId;
     }
     function editEstate(estateId) {
-        window.location.href = '${pageContext.request.contextPath}/estate/edit?id=' + estateId;}
+        window.location.href = '${pageContext.request.contextPath}/estate?id=' + estateId;}
     function deleteEstate(estateId) {
         if (confirm('Êtes-vous sûr de vouloir supprimer ce logement ?')) {
             // Create form and submit
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '${pageContext.request.contextPath}/estate/delete';
+            form.action = '${pageContext.request.contextPath}/estate?action=delete';
 
             const input = document.createElement('input');
             input.type = 'hidden';

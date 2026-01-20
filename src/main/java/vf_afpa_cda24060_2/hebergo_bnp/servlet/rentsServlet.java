@@ -19,9 +19,7 @@ import java.util.List;
 
 @WebServlet(name = "rentsServlet", value = "/rentsServlet")
 public class rentsServlet extends HttpServlet {
-
     private RentsDAO rentsDAO;
-
     @Resource(name="jdbc/MyDataSource")
     private DataSource ds;
 
@@ -113,7 +111,6 @@ public class rentsServlet extends HttpServlet {
             default:
                 break;
         }
-
 
         displayRents(request, response);
     }
