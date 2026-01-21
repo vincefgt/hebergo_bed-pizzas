@@ -27,19 +27,41 @@
 
         <div class="col-8 offset-2">
             <img class="col-10 offset-1 mt-3" id="details-img" src="${estate.photoEstate}/photo.jpg">
-            <div class="offset-2">
-                <p>
-                <h2><label>Description: </label></h2>
-                ${estate.description}
-                </p>
-                <p>
-                <h2><label>Votre Hôte: </label></h2>
-                ${user.firstname} ${user.lastname}
-                </p>
+            <div class="container offset-2 mb-5 mt-5">
                 <c:if test="${estate.isValid()}">
                     <form method="post"  action="<c:url value="/detailsServlet" />">
                         <input type="hidden" name="id-estate" value="${estate.idEstate}">
                         <input type="hidden" name="id-user" value="${sessionScope.user.idUser}">
+                        <input type="hidden" id="total-price" name="total-price">
+                        <div class="row">
+                            <div class="col-6">
+                                <h2><label>Description: </label></h2>
+                                <span>${estate.description}</span>
+                            </div>
+                            <div class="col-6">
+                                <h2><label>Nombre de jour: </label></h2>
+                                <span id="range-date"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mt-2">
+                                <h2><label>Votre Hôte: </label></h2>
+                                <span>${user.firstname} ${user.lastname}</span>
+                            </div>
+                            <div class="col-6 mt-2">
+                                <h2><label>Prix par jour</label></h2>
+                                <span>${estate.dailyPrice} €</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+
+                            </div>
+                            <div class="col-6 mt-3">
+                                <h2><label>Prix total: </label></h2>
+                                <span id="total-price-display"></span>
+                            </div>
+                        </div>
 
                         <div class="row">
                             <div class="col-6">
@@ -51,20 +73,36 @@
                             </div>
 
                             <div class="col-6">
-                                <span id="range-date"></span>
-                                <button type="submit" class="btn btn-dark mt-4" id="book">Réserver</button>
+
+
+                                <c:choose>
+                                    <c:when test="${not empty sessionScope.user}">
+                                        <button type="submit" class="btn btn-dark mt-4" id="book">Réserver</button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button type="submit" class="btn btn-secondary mt-4" id="book" disabled>Pour réserver connectez-vous</button>
+                                    </c:otherwise>
+
+                                </c:choose>
+
                             </div>
 
                         </div>
 
                     </form>
-
                 </c:if>
                 <c:if test="${!available}">
                     <div class="alert alert-danger" role="alert">
-                        Cette date est VRAIMENT indisponible c....ard !
+                        Cette date est VRAIMENT indisponible!
                     </div>
                 </c:if>
+
+                <c:if test="${successRents != null}">
+                    <div class="alert alert-success" role="alert">
+                        ${successRents}
+                    </div>
+                </c:if>
+
             </div>
         </div>
     </main>
@@ -118,6 +156,10 @@
                     console.log(rangeDay);
                     const displayRangeDate = document.getElementById("range-date");
                     displayRangeDate.textContent = rangeDay.toString();
+                    const dailyPrice = <c:out value="${estate.dailyPrice}" />;
+                    const totalPrice = dailyPrice * rangeDay;
+                    document.getElementById("total-price").value = totalPrice;
+                    document.getElementById("total-price-display").textContent = totalPrice.toString() + " €";
                 }
             }
         });

@@ -54,6 +54,7 @@ public class detailsServlet extends HttpServlet {
         Integer idEstate = Integer.parseInt(request.getParameter("idEstate"));
         Boolean available = true;
         Estate estate = new Estate();
+        String success =  request.getParameter("successRents");
 
         try {
             estate = estateDao.getEstateById(idEstate);
@@ -79,6 +80,7 @@ public class detailsServlet extends HttpServlet {
         request.setAttribute("rentsList", rentsList);
         request.setAttribute("estate", estate);
         request.setAttribute("user", user);
+        request.setAttribute("successRents", success);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/details.jsp");
         dispatcher.forward(request, response);
@@ -89,11 +91,11 @@ public class detailsServlet extends HttpServlet {
         List<Rents> rentsList = new ArrayList<>();
         LocalDate startRent = LocalDate.parse(request.getParameter("start-rent"));
         LocalDate endRent = LocalDate.parse(request.getParameter("end-rent"));
-        Integer idEstate = Integer.parseInt(request.getParameter("estate"));
+        Integer idEstate = Integer.parseInt(request.getParameter("id-estate"));
         Boolean available = true;
         Rents newRent;
         Integer idUser = Integer.parseInt(request.getParameter("id-user"));
-        Double totalPrice = 0.00;
+        Double totalPrice = Double.valueOf(request.getParameter("total-price"));
 
         try (Connection conn = ds.getConnection()) {
             rentsList = rentsDAO.findByIdEstate(conn, idEstate);
@@ -101,6 +103,7 @@ public class detailsServlet extends HttpServlet {
             System.out.println("Erreur findByIdEstate detailsServlet");
         }
 
+        // vérification de la disponiblité du bien
         for(Rents rent: rentsList){
             if(endRent.isBefore(rent.getStartRent()) || startRent.isAfter(rent.getEndRent())){
                 available = true;
@@ -117,14 +120,27 @@ public class detailsServlet extends HttpServlet {
             } catch (NamingException e) {
                 System.out.println("Erreur findByIdEstate detailsServlet dopost");
             }
+
             newRent = new Rents(idUser, estate.getIdEstate(), LocalDate.now(), startRent, endRent, totalPrice, "benOui");
             //enregistre avec create de rentsdao
+            try(Connection conn = ds.getConnection()){
+                rentsDAO.create(conn, newRent);
+                response.sendRedirect("detailsServlet?idEstate="+idEstate+"&successRents=Votre+demande+reservation+a+ete+pris+en+compte");
+
+            }catch (SQLException sqle) {
+                System.out.println("Erreur createRents detailsServlet dopost");
+            }
+
         }else{
+            // retour de available à false pour affichage alert-danger
             request.setAttribute("available", available);
             RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/details.jsp");
+            dispatcher.forward(request,response);
         }
 
     }
+
+
 
     @Override
     public void destroy() {
