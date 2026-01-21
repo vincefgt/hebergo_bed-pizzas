@@ -7,7 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<aside id="weather-aside">
+<aside class="mt-5" id="weather-aside">
 
     <div id="weather-card">
         <h4 id="meteo-ville">Ville</h4>

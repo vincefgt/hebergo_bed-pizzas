@@ -21,14 +21,16 @@
     </div>
     <div class="carousel-inner">
         <c:forEach var="estate" items="${estatesList}" varStatus="status">
-            <div class="carousel-item ${status.first ? 'active' : ''}">
-                <img src="${estate.photoEstate}/photo.jpg" class="d-block offset-1 w-50" alt="Photo ${status.index + 1}">
-                <div>
-                    <h5>${estate.nameEstate}</h5>
-                    <p>${estate.description}</p>
-                    <p><strong>${estate.dailyPrice} €</strong></p>
+            <a href="detailsServlet?idEstate=${estate.idEstate}">
+                <div class="carousel-item ${status.first ? 'active' : ''}">
+                    <img src="${estate.photoEstate}/photo.jpg" class="d-block offset-1 w-50" alt="Photo ${status.index + 1}">
+                    <div>
+                        <h5 class="text-dark">${estate.nameEstate}</h5>
+                        <p class="text-dark">${estate.description}</p>
+                        <p class="text-dark"><strong>${estate.dailyPrice} €</strong></p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </c:forEach>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
