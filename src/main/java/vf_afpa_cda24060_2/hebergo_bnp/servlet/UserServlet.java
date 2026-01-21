@@ -6,7 +6,9 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.userDAO;
 import vf_afpa_cda24060_2.hebergo_bnp.model.User;
-
+import vf_afpa_cda24060_2.hebergo_bnp.dao.EstateDao;
+import vf_afpa_cda24060_2.hebergo_bnp.model.Estate;
+import java.util.List;
 import javax.management.DynamicMBean;
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -37,21 +39,22 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String actionUser = request.getParameter("actionUser");
+        HttpSession session = request.getSession(false); // update user in session scope
+
         if (actionUser == null) {
             request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response);  // action par défaut
             return;}
 
         switch (actionUser) {
         case "paramUser": // ---------------------------- PARAM -------------------------
-            request.getRequestDispatcher("/EstateServlet?action=hostList").forward(request, response);
-            //request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
-            break;
+                 request.getRequestDispatcher("/EstateServlet?action=hostList").include(request, response);
+                 request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+                break;
         case "signup": // ---------------------------- SIGN IN -------------------------
             request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response); // otherwise Forward to login page
             break;
         case "login": // ------------------- LOG IN ------------------------------------
             // Check if user is already logged in
-            HttpSession session = request.getSession(false);
             if (session != null && session.getAttribute("user") != null) {
                 response.sendRedirect(request.getContextPath() + "/index.jsp"); // return to landing page
                 return;}
