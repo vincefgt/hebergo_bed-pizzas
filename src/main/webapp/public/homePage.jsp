@@ -21,16 +21,14 @@
     </div>
     <div class="carousel-inner">
         <c:forEach var="estate" items="${estatesList}" varStatus="status">
-            <a href="detailsServlet?idEstate=${estate.idEstate}">
-                <div class="carousel-item ${status.first ? 'active' : ''}">
-                    <img src="${estate.photoEstate}/photo.jpg" class="d-block offset-1 w-50" alt="Photo ${status.index + 1}">
-                    <div>
-                        <h5 class="text-dark">${estate.nameEstate}</h5>
-                        <p class="text-dark">${estate.description}</p>
-                        <p class="text-dark"><strong>${estate.dailyPrice} €</strong></p>
-                    </div>
+            <div class="carousel-item ${status.first ? 'active' : ''}">
+                <img src="${estate.photoEstate}/photo.jpg" class="d-block offset-1 w-50" alt="Photo ${status.index + 1}">
+                <div>
+                    <h5>${estate.nameEstate}</h5>
+                    <p>${estate.description}</p>
+                    <p><strong>${estate.dailyPrice} €</strong></p>
                 </div>
-            </a>
+            </div>
         </c:forEach>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
@@ -43,11 +41,11 @@
     </button>
 </div>
 
-<div class="offset-1">
+<div>
     <div class="row">
 
         <c:forEach var="estate" items="${estatesList}">
-            <div id="card-detail" class="card col-3 m-4 shadow p-3 mb-5">
+            <div id="card-detail" class="card col-3 ofsset-1 m-3 shadow p-3 mb-5">
                 <a href="detailsServlet?idEstate=${estate.idEstate}">
                     <img id="card-img" class="col-12 mt-2 rounded" src="${estate.photoEstate}/photo.jpg" alt="Photo 1">
                     <div class="card-body">
@@ -60,6 +58,8 @@
                 </a>
             </div>
         </c:forEach>
+
+
 
     </div>
 </div>

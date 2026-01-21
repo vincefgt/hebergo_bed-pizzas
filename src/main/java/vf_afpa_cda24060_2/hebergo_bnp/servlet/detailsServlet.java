@@ -52,7 +52,9 @@ public class detailsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Integer idEstate = Integer.parseInt(request.getParameter("idEstate"));
+        Boolean available = true;
         Estate estate = new Estate();
+
         try {
             estate = estateDao.getEstateById(idEstate);
         } catch (NamingException ne) {
@@ -66,6 +68,15 @@ public class detailsServlet extends HttpServlet {
             System.out.println("Erreur findById detailsServlet");
         }
 
+        List<Rents> rentsList = new ArrayList<>();
+        try (Connection conn = ds.getConnection()) {
+            rentsList = rentsDAO.findByIdEstate(conn, idEstate);
+        } catch (SQLException e) {
+            System.out.println("Erreur findByIdEstate detailsServlet");
+        }
+
+        request.setAttribute("available", available);
+        request.setAttribute("rentsList", rentsList);
         request.setAttribute("estate", estate);
         request.setAttribute("user", user);
 
@@ -78,7 +89,11 @@ public class detailsServlet extends HttpServlet {
         List<Rents> rentsList = new ArrayList<>();
         LocalDate startRent = LocalDate.parse(request.getParameter("start-rent"));
         LocalDate endRent = LocalDate.parse(request.getParameter("end-rent"));
-        Integer idEstate = Integer.parseInt(request.getParameter("id-estate"));
+        Integer idEstate = Integer.parseInt(request.getParameter("estate"));
+        Boolean available = true;
+        Rents newRent;
+        Integer idUser = Integer.parseInt(request.getParameter("id-user"));
+        Double totalPrice = 0.00;
 
         try (Connection conn = ds.getConnection()) {
             rentsList = rentsDAO.findByIdEstate(conn, idEstate);
@@ -88,10 +103,25 @@ public class detailsServlet extends HttpServlet {
 
         for(Rents rent: rentsList){
             if(endRent.isBefore(rent.getStartRent()) || startRent.isAfter(rent.getEndRent())){
-                // enregistre create rents
+                available = true;
             }else{
-                // renvoyer alerte
+                available = false;
+                break;
             }
+        }
+
+        if(available){
+            Estate estate = new Estate();
+            try {
+                estate = estateDao.getEstateById(idEstate);
+            } catch (NamingException e) {
+                System.out.println("Erreur findByIdEstate detailsServlet dopost");
+            }
+            newRent = new Rents(idUser, estate.getIdEstate(), LocalDate.now(), startRent, endRent, totalPrice, "benOui");
+            //enregistre avec create de rentsdao
+        }else{
+            request.setAttribute("available", available);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/details.jsp");
         }
 
     }
