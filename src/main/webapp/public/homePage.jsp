@@ -22,7 +22,7 @@
     <div class="carousel-inner">
         <c:forEach var="estate" items="${estatesList}" varStatus="status">
             <div class="carousel-item ${status.first ? 'active' : ''}">
-                <img src="${estate.photoEstate}/photo.jpg" class="d-block offset-1 w-50" alt="Photo ${status.index + 1}">
+                <img src="${pageContext.request.contextPath}/${estate.photoEstate}" class="d-block offset-1 w-50" alt="Photo ${status.index + 1}">
                 <div>
                     <h5>${estate.nameEstate}</h5>
                     <p>${estate.description}</p>
@@ -47,7 +47,7 @@
         <c:forEach var="estate" items="${estatesList}">
             <div id="card-detail" class="card col-3 m-4 shadow p-3 mb-5">
                 <a href="detailsServlet?idEstate=${estate.idEstate}">
-                    <img id="card-img" class="col-12 mt-2 rounded" src="${estate.photoEstate}/photo.jpg" alt="Photo 1">
+                    <img id="card-img" class="col-12 mt-2 rounded" src="${pageContext.request.contextPath}/${estate.photoEstate}" alt="Photo ${estate.nameEstate}">
                     <div class="card-body">
                         <h5 class="card-title text-dark">${estate.nameEstate}</h5>
                         <p class="text-dark">${estate.description}</p>

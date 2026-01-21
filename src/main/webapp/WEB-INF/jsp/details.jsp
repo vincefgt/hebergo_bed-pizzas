@@ -20,7 +20,7 @@
 
     <h1 class="offset-1">${estate.nameEstate}</h1>
     <div class="col-6 offset-1">
-        <img src="${estate.photoEstate}/photo.jpg" class="col-10">
+        <img src="${pageContext.request.contextPath}/${estate.photoEstate}" class="col-10">
         <p>${estate.description}</p>
         <p>${user.lastname}</p>
         <form method="post"  action="<c:url value="/detailsServlet" />">

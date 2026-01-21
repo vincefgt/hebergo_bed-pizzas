@@ -4,8 +4,8 @@
 <head>
   <title>Estate Management</title>
   <style>
-    .clickable-row { cursor: pointer; }
-    .clickable-row:hover { background-color: #f5f5f5; }
+    .clickable-row { cursor: pointer;}
+    .clickable-row:hover { background-color: #f5f5f5;}
   </style>
 </head>
 <body>
@@ -42,7 +42,7 @@
 <hr>
 
 <h2>Manage Estate</h2>
-<form id="estateForm" action="estates" method="post" enctype="multipart/form-data">
+<form id="estateForm" action="estates.jsp" method="post" enctype="multipart/form-data">
   <input type="hidden" name="idEstate" id="formId">
 
   <label>Estate Name:</label>
