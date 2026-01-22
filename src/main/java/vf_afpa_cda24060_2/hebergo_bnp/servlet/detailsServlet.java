@@ -8,14 +8,20 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.EstateDao;
+import vf_afpa_cda24060_2.hebergo_bnp.dao.RentsDAO;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.userDAO;
 import vf_afpa_cda24060_2.hebergo_bnp.model.Estate;
+import vf_afpa_cda24060_2.hebergo_bnp.model.Rents;
 import vf_afpa_cda24060_2.hebergo_bnp.model.User;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @WebServlet(name = "detailsServlet", value = "/detailsServlet")
@@ -23,6 +29,7 @@ public class detailsServlet extends HttpServlet {
 
     private EstateDao estateDao;
     private userDAO userDAO;
+    private RentsDAO rentsDAO;
 
     @Resource(name= "jdbc/MyDataSource")
     private DataSource ds;
@@ -35,12 +42,20 @@ public class detailsServlet extends HttpServlet {
         } catch (SQLException e) {
             System.out.println("Erreur dans instance userDAO dans ServletDetails"+e.getMessage());
         }
+        try {
+            rentsDAO = new RentsDAO();
+        } catch (SQLException e) {
+            System.out.println("Erreur dans instance rentsDAO dans ServletDetails"+e.getMessage());
+        }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Integer idEstate = Integer.parseInt(request.getParameter("idEstate"));
+        Boolean available = true;
         Estate estate = new Estate();
+        String success =  request.getParameter("successRents");
+
         try {
             estate = estateDao.getEstateById(idEstate);
         } catch (NamingException ne) {
@@ -54,8 +69,18 @@ public class detailsServlet extends HttpServlet {
             System.out.println("Erreur findById detailsServlet");
         }
 
+        List<Rents> rentsList = new ArrayList<>();
+        try (Connection conn = ds.getConnection()) {
+            rentsList = rentsDAO.findByIdEstate(conn, idEstate);
+        } catch (SQLException e) {
+            System.out.println("Erreur findByIdEstate detailsServlet");
+        }
+
+        request.setAttribute("available", available);
+        request.setAttribute("rentsList", rentsList);
         request.setAttribute("estate", estate);
         request.setAttribute("user", user);
+        request.setAttribute("successRents", success);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/details.jsp");
         dispatcher.forward(request, response);
@@ -63,8 +88,59 @@ public class detailsServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Rents> rentsList = new ArrayList<>();
+        LocalDate startRent = LocalDate.parse(request.getParameter("start-rent"));
+        LocalDate endRent = LocalDate.parse(request.getParameter("end-rent"));
+        Integer idEstate = Integer.parseInt(request.getParameter("id-estate"));
+        Boolean available = true;
+        Rents newRent;
+        Integer idUser = Integer.parseInt(request.getParameter("id-user"));
+        Double totalPrice = Double.valueOf(request.getParameter("total-price"));
+
+        try (Connection conn = ds.getConnection()) {
+            rentsList = rentsDAO.findByIdEstate(conn, idEstate);
+        } catch (SQLException e) {
+            System.out.println("Erreur findByIdEstate detailsServlet");
+        }
+
+        // vérification de la disponiblité du bien
+        for(Rents rent: rentsList){
+            if(endRent.isBefore(rent.getStartRent()) || startRent.isAfter(rent.getEndRent())){
+                available = true;
+            }else{
+                available = false;
+                break;
+            }
+        }
+
+        if(available){
+            Estate estate = new Estate();
+            try {
+                estate = estateDao.getEstateById(idEstate);
+            } catch (NamingException e) {
+                System.out.println("Erreur findByIdEstate detailsServlet dopost");
+            }
+
+            newRent = new Rents(idUser, estate.getIdEstate(), LocalDate.now(), startRent, endRent, totalPrice, "benOui");
+            //enregistre avec create de rentsdao
+            try(Connection conn = ds.getConnection()){
+                rentsDAO.create(conn, newRent);
+                response.sendRedirect("detailsServlet?idEstate="+idEstate+"&successRents=Votre+demande+reservation+a+ete+pris+en+compte");
+
+            }catch (SQLException sqle) {
+                System.out.println("Erreur createRents detailsServlet dopost");
+            }
+
+        }else{
+            // retour de available à false pour affichage alert-danger
+            request.setAttribute("available", available);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/details.jsp");
+            dispatcher.forward(request,response);
+        }
 
     }
+
+
 
     @Override
     public void destroy() {

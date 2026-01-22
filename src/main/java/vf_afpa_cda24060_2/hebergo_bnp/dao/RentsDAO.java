@@ -139,4 +139,31 @@ public class RentsDAO extends DAO<Rents> {
 
         return rentsList;
     }
+
+    public List<Rents> findByIdEstate(Connection connection, Integer idEstate){
+        String sql = "SELECT * FROM rents WHERE id_estate=?";
+        List<Rents> rentsList = new ArrayList<>();
+
+        try{
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, idEstate);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Integer idRents = rs.getInt("id_rents");
+                Integer idUser = rs.getInt("id_user");
+                LocalDate purchaseDate = rs.getDate("purchase_date").toLocalDate();
+                LocalDate startRent =  rs.getDate("start_rent").toLocalDate();
+                LocalDate endRent =  rs.getDate("end_rent").toLocalDate();
+                Double totalPrice = rs.getDouble("total_price");
+                String paymentNumber = rs.getString("payment_number");
+
+                Rents rent =  new Rents(idRents, idUser, idEstate, purchaseDate, startRent, endRent, totalPrice, paymentNumber);
+                rentsList.add(rent);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return rentsList;
+    }
 }
