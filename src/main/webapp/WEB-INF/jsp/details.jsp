@@ -9,6 +9,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détails du biens</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
@@ -22,87 +24,81 @@
     <!-- header -->
     <c:import url="../../public/navBar.jsp" />
 
+
+
     <main>
-        <h1 class="text-center mb-5">${estate.nameEstate}</h1>
+        <h1 class="display-2 text-center mb-5">${estate.nameEstate}</h1>
+            <div class="col-10 offset-1">
+                <img class="col-12 mt-3 col-xl-8 offset-xl-2" id="details-img" src="${estate.photoEstate}/photo.jpg">
+                <div class="container mb-5 mt-5">
+                    <c:if test="${estate.isValid()}">
+                        <form method="post"  action="<c:url value="/detailsServlet" />">
+                            <input type="hidden" name="id-estate" value="${estate.idEstate}">
+                            <input type="hidden" name="id-user" value="${sessionScope.user.idUser}">
+                            <input type="hidden" id="total-price" name="total-price">
+                            <div class="row">
+                                <div>
+                                    <p class="fs-5">Description:</p>
+                                        <p><span class="">${estate.description}</span></p>
+                                    <p class="fs-5">Votre Hôte :
+                                        <span class="">${user.firstname} ${user.lastname}</span>
+                                    </p>
+                                    <p class="fs-5">Prix par jour :
+                                        <span class="">${estate.dailyPrice} €</span>
+                                    </p>
+                                </div>
 
-        <div class="col-8 offset-2">
-            <img class="col-10 offset-1 mt-3" id="details-img" src="${estate.photoEstate}/photo.jpg">
-            <div class="container offset-2 mb-5 mt-5">
-                <c:if test="${estate.isValid()}">
-                    <form method="post"  action="<c:url value="/detailsServlet" />">
-                        <input type="hidden" name="id-estate" value="${estate.idEstate}">
-                        <input type="hidden" name="id-user" value="${sessionScope.user.idUser}">
-                        <input type="hidden" id="total-price" name="total-price">
-                        <div class="row">
-                            <div class="col-6">
-                                <h2><label>Description: </label></h2>
-                                <span>${estate.description}</span>
+                                <!-- remonter input et bouton puis finir par récap et prix total ... -->
+
+                                <div class="col-10">
+                                    <p class="fs-6">Sélectionnez vos dates: </p>
+                                    <input type="text" id="date-range" name="dates"  placeholder="Quand souhaitez-vous partir ?" readonly>
+
+
+                                    <input type="hidden" id="start-date" name="start-rent">
+                                    <input type="hidden" id="end-date" name="end-rent">
+                                </div>
+
+                                <div class="col-12">
+                                    <c:choose>
+                                        <c:when test="${not empty sessionScope.user}">
+                                            <button type="submit" class="btn btn-dark mt-4 col-xl-3 offset-xl-5" id="book">Réserver</button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button type="submit" class="btn btn-secondary mt-4" id="nobook" disabled>Pour réserver connectez-vous</button>
+                                        </c:otherwise>
+
+                                    </c:choose>
+                                </div>
+
+                                <div class="col-6 mt-3">
+                                    <p class="fs-4">Nombre de jour :
+                                        <span class="fs-5" class="" id="range-date"></span>
+                                    </p>
+                                </div>
+
+                                <div class="col-6 mt-3">
+                                    <p class="fs-4">Prix total:
+                                        <span class="fs-5" id="total-price-display"></span>
+                                    </p>
+                                </div>
+
                             </div>
-                            <div class="col-6">
-                                <h2><label>Nombre de jour: </label></h2>
-                                <span id="range-date"></span>
-                            </div>
+
+                        </form>
+                    </c:if>
+                    <c:if test="${!available}">
+                        <div class="alert alert-danger mt-5" role="alert">
+                            Cette date est VRAIMENT indisponible!
                         </div>
-                        <div class="row">
-                            <div class="col-6 mt-2">
-                                <h2><label>Votre Hôte: </label></h2>
-                                <span>${user.firstname} ${user.lastname}</span>
-                            </div>
-                            <div class="col-6 mt-2">
-                                <h2><label>Prix par jour</label></h2>
-                                <span>${estate.dailyPrice} €</span>
-                            </div>
+                    </c:if>
+
+                    <c:if test="${successRents != null}">
+                        <div class="alert alert-success mt-5" role="alert">
+                            ${successRents}
                         </div>
-                        <div class="row">
-                            <div class="col-6">
-
-                            </div>
-                            <div class="col-6 mt-3">
-                                <h2><label>Prix total: </label></h2>
-                                <span id="total-price-display"></span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-6">
-                                <h2><label for="date-range">Sélectionnez vos dates :</label></h2>
-                                <input type="text" id="date-range" name="dates"  placeholder="Quand souhaitez-vous partir ?" readonly>
-
-                                <input type="hidden" id="start-date" name="start-rent">
-                                <input type="hidden" id="end-date" name="end-rent">
-                            </div>
-
-                            <div class="col-6">
-
-
-                                <c:choose>
-                                    <c:when test="${not empty sessionScope.user}">
-                                        <button type="submit" class="btn btn-dark mt-4" id="book">Réserver</button>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <button type="submit" class="btn btn-secondary mt-4" id="book" disabled>Pour réserver connectez-vous</button>
-                                    </c:otherwise>
-
-                                </c:choose>
-
-                            </div>
-
-                        </div>
-
-                    </form>
-                </c:if>
-                <c:if test="${!available}">
-                    <div class="alert alert-danger" role="alert">
-                        Cette date est VRAIMENT indisponible!
-                    </div>
-                </c:if>
-
-                <c:if test="${successRents != null}">
-                    <div class="alert alert-success" role="alert">
-                        ${successRents}
-                    </div>
-                </c:if>
-
+                    </c:if>
+                </div>
             </div>
         </div>
     </main>
