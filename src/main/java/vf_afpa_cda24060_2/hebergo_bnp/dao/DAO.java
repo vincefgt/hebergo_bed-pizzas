@@ -1,5 +1,7 @@
 package vf_afpa_cda24060_2.hebergo_bnp.dao;
 
+import vf_afpa_cda24060_2.hebergo_bnp.model.Addresses;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -36,6 +38,7 @@ public abstract class DAO <T> {
      * @return l'objet T ciblé
      */
     public abstract T findById(Connection connection, Integer pId) throws SQLException;
+
 
     /**
      * recherche global

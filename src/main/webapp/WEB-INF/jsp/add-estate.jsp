@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col">
+                   <!--<div class="col">
                         <label for="idAdmin" class="form-label">ID Admin</label>
                         <input type="number" class="form-control" id="idAdmin" name="idAdmin"
                                value="${estate.idAdmin}" required>
@@ -55,11 +55,21 @@
                         <label for="idUser" class="form-label">ID User</label>
                         <input type="number" class="form-control" id="idUser" name="idUser"
                                value="${estate.idUser}" required>
+                    </div>-->
+                    <div class="col">
+                        <label for="city" class="form-label">city</label>
+                        <input type="text" class="form-control" id="Address" name="city"
+                               value="${estate.address}" required>
                     </div>
                     <div class="col">
-                        <label for="idAddress" class="form-label">ID Address</label>
-                        <input type="number" class="form-control" id="idAddress" name="idAddress"
-                               value="${estate.idAddress}" required>
+                        <label for="zip" class="form-label">code postal</label>
+                        <input type="text" class="form-control" id="postal" name="zip"
+                               value="${estate.zip}" required>
+                    </div>
+                    <div class="col">
+                        <label for="Address" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="Address" name="address"
+                               value="${estate.address}" required>
                     </div>
                 </div>
 
