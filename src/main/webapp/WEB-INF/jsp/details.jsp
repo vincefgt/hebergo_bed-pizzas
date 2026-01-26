@@ -68,6 +68,15 @@
                                     <input type="hidden" id="end-date" name="end-rent">
                                 </div>
 
+                                <!-- Champ de paiement Stripe (caché par défaut) -->
+                                <div class="col-10 mt-3" id="payment-section" style="display:none;">
+                                    <p class="fs-6">Informations de paiement :</p>
+                                    <div id="card-element" style="padding: 12px; border: 1px solid #ced4da; border-radius: 4px; background-color: white;">
+                                        <!-- Stripe injectera le champ de carte ici -->
+                                    </div>
+                                    <div id="card-errors" role="alert" class="text-danger mt-2" style="font-size: 0.875rem;"></div>
+                                </div>
+
                                 <div class="col-12">
                                     <c:choose>
                                         <c:when test="${not empty sessionScope.user}">
@@ -118,12 +127,15 @@
     <!-- script burger -->
     <script src="${pageContext.request.contextPath}/asset/js/App.js"></script>
 
-    <%-- Link bootstrap --%>
+    <%-- script bootstrap --%>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
     </script>
 
-    <!-- flatpickr gestion calendrier -->
+    <!-- script stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <!-- script flatpickr gestion calendrier -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         // 1. Récupération des dates bloquées depuis Java (via JSTL)
@@ -136,8 +148,27 @@
             </c:forEach>
         ];
 
+        let totalPrice;
+        let startDate, endDate;
 
-        // 2. Configuration de Flatpickr
+        // 2. Initialisation Stripe
+        const stripe = Stripe('${applicationScope.stripePublicKey}');
+        const elements = stripe.elements();
+        const cardElement = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#32325d',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
+                    '::placeholder': { color: '#aab7c4' }
+                },
+                invalid: { color: '#fa755a', iconColor: '#fa755a' }
+            }
+        });
+
+        let cardMounted = false;
+
+        // 3. Configuration de Flatpickr
         flatpickr("#date-range", {
             mode: "range",       // Sélection de plage de dates
             minDate: "today",    // Impossible de réserver dans le passé
@@ -150,24 +181,191 @@
                 // Si on a bien sélectionné une plage (début et fin)
                 if (selectedDates.length === 2) {
                     // On remplit nos champs cachés pour la Servlet
-                    document.getElementById('start-date').value = instance.formatDate(selectedDates[0], "Y-m-d");
-                    document.getElementById('end-date').value = instance.formatDate(selectedDates[1], "Y-m-d");
-                    let startDate = new Date(instance.formatDate(selectedDates[0], "Y-m-d"));
-                    let endDate = new Date(instance.formatDate(selectedDates[1], "Y-m-d"));
-                    let rangeDateMs = endDate - startDate;
-                    console.log(rangeDateMs);
+                    startDate = instance.formatDate(selectedDates[0], "Y-m-d");
+                    endDate = instance.formatDate(selectedDates[1], "Y-m-d");
+
+                    document.getElementById('start-date').value = startDate;
+                    document.getElementById('end-date').value = endDate;
+
+                    let startDateObj = new Date(startDate);
+                    let endDateObj = new Date(endDate);
+                    let rangeDateMs = endDateObj - startDateObj;
                     const msParJour = 1000 * 60 * 60 * 24;
                     const rangeDay = (rangeDateMs / msParJour) + 1;
-                    console.log(rangeDay);
                     const displayRangeDate = document.getElementById("range-date");
                     displayRangeDate.textContent = rangeDay.toString();
                     const dailyPrice = <c:out value="${estate.dailyPrice}" />;
-                    const totalPrice = dailyPrice * rangeDay;
+                    totalPrice = dailyPrice * rangeDay;
                     document.getElementById("total-price").value = totalPrice;
                     document.getElementById("total-price-display").textContent = totalPrice.toString() + " €";
+
+                    // Afficher le champ de carte
+                    const paymentSection = document.getElementById('payment-section');
+                    paymentSection.style.display = 'block';
+
+                    // Monter le Card Element (une seule fois)
+                    if (!cardMounted) {
+                        cardElement.mount('#card-element');
+                        cardMounted = true;
+
+                        // Gérer les erreurs de validation en temps réel
+                        cardElement.on('change', function(event) {
+                            const displayError = document.getElementById('card-errors');
+                            if (event.error) {
+                                displayError.textContent = event.error.message;
+                            } else {
+                                displayError.textContent = '';
+                            }
+                        });
+                    }
                 }
             }
         });
+
+        // 4. Fonction de paiement complète
+        async function processPayment() {
+            // Vérifier que totalPrice est défini
+            if (typeof totalPrice === 'undefined' || totalPrice === null || isNaN(totalPrice)) {
+                alert('Veuillez sélectionner des dates de réservation avant de continuer.');
+                return;
+            }
+
+            const bookBtn = document.getElementById('book');
+            const originalBtnText = bookBtn.textContent;
+            bookBtn.disabled = true;
+            bookBtn.textContent = 'Traitement en cours...';
+
+            try {
+                // ÉTAPE 1 : Créer le PaymentIntent
+                console.log('Étape 1 : Création PaymentIntent...');
+                const amountInCents = Math.round(totalPrice * 100);
+
+                const formData1 = new URLSearchParams();
+                formData1.append("action", "create-payment-intent");
+                formData1.append("amount", String(amountInCents));
+
+                const res1 = await fetch('<c:url value="/detailsServlet" />', {
+                    method: "POST",
+                    body: formData1,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                });
+
+                const text1 = await res1.text();
+                console.log('Réponse création PaymentIntent:', text1);
+
+                let data1;
+                try {
+                    data1 = JSON.parse(text1);
+                } catch(e) {
+                    console.error("Réponse non-JSON reçue:", text1);
+                    alert('Erreur serveur: réponse invalide');
+                    return;
+                }
+
+                if (data1.error) {
+                    console.error('Erreur:', data1.error);
+                    alert('Erreur: ' + data1.error);
+                    return;
+                }
+
+                const clientSecret = data1.clientSecret;
+                console.log('Client Secret reçu:', clientSecret);
+
+                // ÉTAPE 2 : Confirmer le paiement avec Stripe
+                console.log('Étape 2 : Confirmation paiement Stripe...');
+                bookBtn.textContent = 'Paiement en cours...';
+
+                const result = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: cardElement,
+                        billing_details: {
+                            name: '<c:out value="${sessionScope.user.firstname} ${sessionScope.user.lastname}" />'
+                        }
+                    }
+                });
+
+                if (result.error) {
+                    // Erreur de paiement
+                    const errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                    alert('Erreur de paiement: ' + result.error.message);
+                    console.error('Erreur paiement:', result.error);
+                    return;
+                }
+
+                if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
+                    console.log('Paiement réussi! PaymentIntent ID:', result.paymentIntent.id);
+
+                    // ÉTAPE 3 : Enregistrer la réservation en BDD
+                    console.log('Étape 3 : Enregistrement en BDD...');
+                    bookBtn.textContent = 'Enregistrement...';
+
+                    const formData2 = new URLSearchParams();
+                    formData2.append("action", "save-booking");
+                    formData2.append("id-estate", document.querySelector('input[name="id-estate"]').value);
+                    formData2.append("id-user", document.querySelector('input[name="id-user"]').value);
+                    formData2.append("start-rent", startDate);
+                    formData2.append("end-rent", endDate);
+                    formData2.append("total-price", totalPrice);
+                    formData2.append("payment-intent-id", result.paymentIntent.id);
+
+                    const res2 = await fetch('<c:url value="/detailsServlet" />', {
+                        method: "POST",
+                        body: formData2,
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        credentials: 'same-origin'
+                    });
+
+                    const text2 = await res2.text();
+                    console.log('Réponse enregistrement:', text2);
+
+                    let data2;
+                    try {
+                        data2 = JSON.parse(text2);
+                    } catch(e) {
+                        console.error("Réponse non-JSON reçue:", text2);
+                        alert('Erreur: la réservation a peut-être été enregistrée mais la réponse est invalide');
+                        return;
+                    }
+
+                    if (data2.success) {
+                        console.log('Réservation enregistrée avec succès!');
+                        alert('Paiement réussi! Votre réservation a été enregistrée.');
+                        // Rediriger vers la page de détails avec message de succès
+                        window.location.href = 'detailsServlet?idEstate=' + data2.idEstate + '&successRents=Votre+réservation+a+été+confirmée';
+                    } else if (data2.error) {
+                        console.error('Erreur enregistrement:', data2.error);
+                        alert('Le paiement a réussi mais l\'enregistrement a échoué: ' + data2.error + '. Contactez le support.');
+                    }
+                }
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue: ' + error.message);
+            } finally {
+                // Réactiver le bouton
+                bookBtn.disabled = false;
+                bookBtn.textContent = originalBtnText;
+            }
+        }
+
+        // 5. Attacher l'événement au bouton
+        const bookBtn = document.getElementById('book');
+        if (bookBtn) {
+            bookBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                processPayment();
+            });
+        }
     </script>
 </body>
 </html>
