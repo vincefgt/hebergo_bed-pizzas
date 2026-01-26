@@ -60,8 +60,10 @@
 
 
 </main>
+
 <%-- L'ajout de mon footer --%>
 <c:import url="public/footer.jsp" />
+
 
 <%-- Link bootstrap --%>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"

@@ -1,6 +1,7 @@
 package vf_afpa_cda24060_2.hebergo_bnp.dao;
 
 import vf_afpa_cda24060_2.hebergo_bnp.model.Addresses;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,6 +93,26 @@ public class AddressesDAO extends DAO<Addresses> {
         }
 
         return null; // Retourner null si non trouvé
+    }
+
+
+    //method added by Mahmoud to be used to check if added estate address exists already in DB
+    public Addresses findAddressByName(Connection connection, String addressName) throws SQLException {
+        String sql = "SELECT * FROM Addresses WHERE number_street = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, addressName);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                Addresses address = new Addresses();
+                address.setIdAddress(rs.getInt("id_address"));
+                address.setNumberStreet(rs.getString("number_street"));
+                address.setIdCity(rs.getInt("id_city"));
+                return address;
+            }
+        }
+        return null;
     }
 
     @Override

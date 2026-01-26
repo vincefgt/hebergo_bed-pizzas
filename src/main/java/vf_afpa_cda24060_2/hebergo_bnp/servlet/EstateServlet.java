@@ -5,80 +5,82 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
+import vf_afpa_cda24060_2.hebergo_bnp.dao.AddressesDAO;
+import vf_afpa_cda24060_2.hebergo_bnp.dao.CitiesDAO;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.EstateDao;
+import vf_afpa_cda24060_2.hebergo_bnp.model.Addresses;
+import vf_afpa_cda24060_2.hebergo_bnp.model.Cities;
 import vf_afpa_cda24060_2.hebergo_bnp.model.Estate;
 import vf_afpa_cda24060_2.hebergo_bnp.model.User;
 
 import javax.sql.DataSource;
+import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-
-@WebServlet(name = "estate_servlet",value = "/EstateServlet")
-
-//we are using this annotation to tell the servlet that files will be posted
+@WebServlet(name = "estate_servlet", value = "/EstateServlet")
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB
         maxFileSize = 1024 * 1024 * 10,      // 10MB
         maxRequestSize = 1024 * 1024 * 50    // 50MB
 )
 public class EstateServlet extends HttpServlet {
-    private EstateDao estateDao;
+
+    @Resource(name = "jdbc/MyDataSource") // Fixed: Injecting the resource correctly
     private DataSource dataSource;
+
+    private EstateDao estateDao;
+
     @Override
-    public void init(){
+    public void init() throws ServletException {
+        // Initialize DAO once
         estateDao = new EstateDao();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EstateDao estateDao = new EstateDao();
-        List<Estate> estatesList;
         String action = request.getParameter("action");
+        if (action == null) action = "list";
 
         try {
-            action = request.getParameter("action");
-            List<Estate> estates = estateDao.getAllEstates();
-            request.setAttribute("list",estates);
-            switch(action){
-                case "delete":
-                   int id = Integer.parseInt(request.getParameter("id"));
-                   estateDao.deleteEstate(id);
-                   response.sendRedirect("estates");
-                   break;
-                case "carrousel":
-                    estateDao = new EstateDao();
-                    estatesList = estateDao.getAllEstates();
+            HttpSession session = request.getSession(false);
+            List<Estate> estatesList;
 
+            switch (action) {
+                case "add":
+                    request.getRequestDispatcher("/WEB-INF/jsp/add-estate.jsp").forward(request, response);
+                    break;
+                case "delete":
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    estateDao.deleteEstate(id);
+                    response.sendRedirect("EstateServlet?action=estate");
+                    break;
+                case "carrousel":
+                    estatesList = estateDao.getAllEstates();
                     request.setAttribute("estatesList", estatesList);
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("/accueil.jsp");
-                    dispatcher.forward(request,response);
+                    request.getRequestDispatcher("/accueil.jsp").forward(request, response);
                     break;
                 case "estate":
-                    estateDao = new EstateDao();
                     estatesList = estateDao.getAllEstates();
-                    request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request,response);
+                    request.setAttribute("list", estatesList);
+                    request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request, response);
                     break;
                 case "hostList":
-                    estateDao = new EstateDao();
-                    HttpSession session = request.getSession(false); // update user in session scope
-                    estatesList = estateDao.findEstateByHost((User) session.getAttribute("user"));
-                    request.setAttribute("estatesList", estatesList);
-                    
+                    if (session != null && session.getAttribute("user") != null) {
+                        estatesList = estateDao.findEstateByHost((User) session.getAttribute("user"));
+                        request.setAttribute("estatesList", estatesList);
+                    }
                     request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
                     break;
                 default:
-                     // List all estates
-                    request.setAttribute("list", estates);
+                    estatesList = estateDao.getAllEstates();
+                    request.setAttribute("list", estatesList);
                     request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request, response);
                     break;
             }
-
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
@@ -87,60 +89,99 @@ public class EstateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            // get params
+            HttpSession session = request.getSession(false);
+            if (session == null || session.getAttribute("user") == null) {
+                response.sendRedirect("login_users.jsp");
+                return;
+            }
+            User user = (User) session.getAttribute("user");
+
+            // Get params from the form values
             String idStr = request.getParameter("idEstate");
             String name = request.getParameter("nameEstate");
             String description = request.getParameter("description");
-            double price =Double.parseDouble(request.getParameter("dailyPrice"));
-            int idUser = Integer.parseInt(request.getParameter("idUser"));
-            int idAddress = Integer.parseInt(request.getParameter("idAddress"));
-            int idAdmin = Integer.parseInt(request.getParameter("idAdmin"));
+            double price = Double.parseDouble(request.getParameter("dailyPrice"));
+            int idUser = user.getIdUser();
 
-            // =============== File Upload Logic ==============
-            // the object filePart has the details of the file
-            jakarta.servlet.http.Part filePart = request.getPart("photoFile");
-            //giving the file a unique name
-            String fileName = request.getParameter("nameEstate") + "_" + System.currentTimeMillis();
+            String city = request.getParameter("city");
+            String address = request.getParameter("address");
+            int zip = Integer.parseInt(request.getParameter("zip"));
 
-            String uploadPath = getServletContext().getRealPath("") + //generates the webapp path dynamically
-                    "asset" +
-                    java.io.File.separator + // it means add / or \ depending on the system
-                    "images";
+            // File Upload Logic
+            Part filePart = request.getPart("photoFile");
+            String fileName = null;
+            String relativePath = null;
 
-            //transmit the file data from the request
-            java.io.File uploadDir = new java.io.File(uploadPath);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
+            if (filePart != null && filePart.getSize() > 0) {
+                String originalName = filePart.getSubmittedFileName();
+                String extension = originalName.substring(originalName.lastIndexOf("."));
+                fileName = name.replaceAll("\\s+", "_") + "_" + System.currentTimeMillis() + extension;
+
+                String uploadPath = getServletContext().getRealPath("/asset/images");
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) uploadDir.mkdirs();
+
+                filePart.write(uploadPath + File.separator + fileName);
+                relativePath = "asset/images/" + fileName;
             }
 
-            // save file in the dynamic path
-            String fullPath = uploadPath + java.io.File.separator + fileName;
-            filePart.write(fullPath);
+            // DB Operation with single Connection and Transaction
+            try (Connection connection = dataSource.getConnection()) {
+                connection.setAutoCommit(false); // start transaction
 
-            //full image path
-            String relativePath = "asset/images/" + fileName;
+                try {
+                    // Create and Get city
+                    Cities myCity = new Cities();
+                    myCity.setLabelCity(city);
+                    myCity.setZipCode(zip);
+                    CitiesDAO citiesDAO = new CitiesDAO();
+                    citiesDAO.create(connection, myCity); // Ensure this method accepts Connection
 
-            Estate estate = new Estate();
-            estate.setNameEstate(name);
-            estate.setDescription(description);
-            estate.setDailyPrice(price);
-            estate.setIdUser(idUser);
-            estate.setIdAddress(idAddress);
-            estate.setIdAdmin(idAdmin);
-            estate.setPhotoEstate(relativePath); // save image path in DB
+                    // Create and Get address
+                    Addresses myAddress = new Addresses();
+                    myAddress.setNumberStreet(address);
+                    myAddress.setIdCity(myCity.getIdCity());
+                    AddressesDAO addressesDAO = new AddressesDAO();
+                    addressesDAO.create(connection, myAddress); // Ensure this method accepts Connection
 
-            // to decide Add or Update
-            if (idStr != null && !idStr.isEmpty()) {
-                estate.setIdEstate(Integer.parseInt(idStr));
-                estateDao.updateEstate(estate);
-            } else {
-                estateDao.addEstate(estate);
+                    // create estate object
+                    Estate estate = new Estate();
+                    estate.setNameEstate(name);
+                    estate.setDescription(description);
+                    estate.setDailyPrice(price);
+                    estate.setIdUser(idUser);
+                    estate.setIdAddress(myAddress.getIdAddress());
+                    estate.setValid(true); // Default to true or based on your logic
+                    estate.setIdAdmin(1); //temporary because the DB doesnt allow idAdmin to be null
+
+                    if (relativePath != null) {
+                        estate.setPhotoEstate(relativePath);
+                    }
+
+                    // Add or Update, not in use right now
+                    if (idStr != null && !idStr.isEmpty()) {
+                        estate.setIdEstate(Integer.parseInt(idStr));
+                        estateDao.updateEstate(connection, estate);
+                    } else {
+                        estateDao.addEstate(connection, estate);
+                    }
+
+                    connection.commit(); // Commit all changes
+                } catch (Exception e) {
+                    connection.rollback(); // Rollback if any part fails
+                    throw e;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error: " + e.getMessage());
+                return;
             }
-            response.sendRedirect("estates");
-        }catch (Exception e){
+
+            response.sendRedirect("index.jsp");
+
+        } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error saving estate: " + e.getMessage());
         }
     }
-
 }

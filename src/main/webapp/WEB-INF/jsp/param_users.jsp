@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -14,12 +13,292 @@
     <link href="${pageContext.request.contextPath}/asset/css/carousel.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/asset/css/asideMeteoApi.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/asset/css/footer.css" rel="stylesheet" />
-    <link href="${pageContext.request.contextPath}/asset/css/styleList.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        .main-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #2d7ef7 0%, #1a5bbf 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(45, 126, 247, 0.2);
+        }
+        .profile-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .profile-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .tab-btn {
+            padding: 15px 30px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+        .tab-btn:hover {
+            color: #2d7ef7;
+        }
+        .tab-btn.active {
+            color: #2d7ef7;
+            border-bottom-color: #2d7ef7;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .profile-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .profile-section h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .form-group input {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #2d7ef7;
+            box-shadow: 0 0 0 3px rgba(45, 126, 247, 0.1);
+        }
+        .form-group input:disabled {
+            background: #f7f7f7;
+            cursor: not-allowed;
+        }
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #2d7ef7;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1a5bbf;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(45, 126, 247, 0.3);
+        }
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        .estates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .estate-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .estate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .estate-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+        }
+        .estate-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .estate-content {
+            padding: 20px;
+        }
+        .estate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        .estate-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .estate-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .estate-status.valid {
+            background: #d4edda;
+            color: #155724;
+        }
+        .estate-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .estate-address {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .estate-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .estate-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .estate-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2d7ef7;
+        }
+        .estate-price span {
+            font-size: 14px;
+            font-weight: 400;
+            color: #666;
+        }
+        .estate-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .icon-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 8px;
+            background: #f7f7f7;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .icon-btn:hover {
+            background: #2d7ef7;
+            color: white;
+        }
+        .icon-btn.delete:hover {
+            background: #dc3545;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            font-size: 15px;
+        }
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
 
+            .estates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs-container {
+                overflow-x: auto;
+            }
+        }
+    </style>
 </head>
 <body>
 <c:if test="${empty sessionScope.user}">
@@ -37,7 +316,9 @@
 
     <!-- Tabs -->
     <div class="tabs-container">
-        <button class="tab-btn active" onclick="switchTab('profile')">Mon Profil</button>
+        <button class="tab-btn active" onclick="switchTab('profile')">
+            Mon Profil
+        </button>
         <button class="tab-btn" onclick="switchTab('estates')">Mes Logements</button>
         <button class="tab-btn" onclick="switchTab('admin')">Administration</button>
     </div>
@@ -107,43 +388,45 @@
             </div>
 
             <c:choose>
-                <c:when test="${not empty list}">
+                <c:when test="${not empty estate}">
                     <div class="estates-grid">
-                        <c:forEach var="estate" items="${list}">
-                               <div class="estate-card">
-                                   <div class="estate-image">
-                                               <c:choose>
-                                                   <c:when test="${not empty estate.photoEstate}">
-                                                       <img src="${estate.photoEstate}/photo.jpg" alt="${estate.nameEstate}">
-                                                   </c:when>
-                                                   <c:otherwise>
-                                                       Pas d'image disponible
-                                                   </c:otherwise>
-                                               </c:choose>
-                                   </div>
-                                   <div class="estate-content">
-                                          <div class="estate-header">
-                                              <div>
-                                              <h3 class="estate-title">${estate.nameEstate}</h3>
-                                              <div class="estate-price">${estate.dailyPrice}€ <span>/ nuit</span></div>
-                                              <%--<div class="estate-address">${estate.address}</div>--%>
-                                              </div>
-                                              <span class="estate-status ${estate.valid ? 'valid' : 'pending'}">
-                                                      ${estate.valid ? 'Validé' : 'En attente'}
-                                              </span>
-                                          </div>
-                                       <div class="estate-footer">
-                                                <div class="estate-actions" onclick="event.stopPropagation()">
-                                                    <button class="icon-btn" onclick="editEstate(${estate.id})" title="Modifier">✏️</button>
-                                                    <button class="icon-btn delete" onclick="deleteEstate(${estate.id})" title="Supprimer">🗑️</button>
-                                               </div>
-                                       </div>
-                                   </div>
-                               </div>
-
+                        <c:forEach var="estate" items="${estatesList}">
+                            <div class="estate-card" onclick="viewEstate(${estate.id})">
+                                <div class="estate-image">
+                                    <c:choose>
+                                        <c:when test="${not empty estate.photoEstate}">
+                                            <img src="${estate.photoEstate}" alt="${estate.nameEstate}">
+                                        </c:when>
+                                        <c:otherwise>
+                                            Pas d'image disponible
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div class="estate-content">
+                                    <div class="estate-header">
+                                        <h3 class="estate-title">${estate.nameEstate}</h3>
+                                        <span class="estate-status ${estate.valid ? 'valid' : 'pending'}">
+                                                ${estate.valid ? 'Validé' : 'En attente'}
+                                        </span>
+                                    </div>
+                                    <p class="estate-address">📍 ${estate.address}</p>
+                                    <p class="estate-description">${estate.description}</p>
+                                    <div class="estate-footer">
+                                        <div class="estate-price">
+                                                ${estate.dailyPrice}€ <span>/ nuit</span>
+                                        </div>
+                                        <div class="estate-actions" onclick="event.stopPropagation()">
+                                            <button class="icon-btn" onclick="editEstate(${estate.id})" title="Modifier">✏️</button>
+                                            <button class="icon-btn delete"
+                                                    onclick="deleteEstate(${estate.id})"
+                                                    title="Supprimer">🗑️</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </c:forEach>
                     </div>
-               </c:when>
+                </c:when>
                 <c:otherwise>
                     <div class="empty-state">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -153,12 +436,12 @@
                         <h3>Aucun logement pour le moment</h3>
                         <p>Commencez par ajouter votre premier bien immobilier</p>
                     </div>
-               </c:otherwise>
+                </c:otherwise>
             </c:choose>
         </div>
     </div>
     <!-- Tab Content: Profile -->
-    <div id="admin-tab" class="tab-content">
+    <div id="admin-tab" class="tab-content active">
         <div class="profile-section"><h2>Gestion admin</h2></div>
     </div>
 </div>
@@ -166,7 +449,7 @@
 
 <jsp:include page="/public/footer.jsp" />
 
-<script>
+<script> //JS formulair users
     function switchTab(tabName) {
         // Hide all tabs
         document.querySelectorAll('.tab-content').forEach(tab => {
@@ -179,8 +462,7 @@
         // Show selected tab
         document.getElementById(tabName + '-tab').classList.add('active');
         // Add active class to clicked button
-        event.target.classList.add('active');
-    }
+        event.target.classList.add('active');}
     function resetForm() {
         document.querySelector('form').reset();}
     function viewEstate(estateId) {

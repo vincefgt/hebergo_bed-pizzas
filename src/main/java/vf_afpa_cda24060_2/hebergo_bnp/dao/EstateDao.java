@@ -17,13 +17,15 @@ public class EstateDao {
 
     private DataSource dataSource;
 
-    //constructor
+    // Constructor
     public EstateDao(){
         try {
             InitialContext ctx = new InitialContext();
-            dataSource =  (DataSource) ctx.lookup("java:comp/env/jdbc/MyDataSource");
-        }catch (Exception e){
-            throw new RuntimeException("Error getting DataSource",e);}
+            dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/MyDataSource");
+        } catch (Exception e) {
+            // Note: If running on Tomcat 10+, ensure context.xml is correctly configured
+            // we don't throw exception here to allow manual connection passing
+        }
     }
 
     private Estate mapResultSetToEstate(ResultSet resultSet) throws SQLException {
@@ -35,13 +37,12 @@ public class EstateDao {
         estate.setValid(resultSet.getBoolean("is_valid"));
         estate.setDailyPrice(resultSet.getDouble("daily_price"));
         estate.setPhotoEstate(resultSet.getString("photo_estate"));
-        estate.setIdAddress(resultSet.getInt("id_address")); // another dao that gets address object should be put here
+        estate.setIdAddress(resultSet.getInt("id_address"));
         estate.setIdUser(resultSet.getInt("id_user"));
         return estate;
     }
 
     public Estate getEstateById(int id) throws NamingException {
-
         Estate estate = null;
         String sql = "select * from estates where id_estate = ?";
         try (Connection connection = dataSource.getConnection();
@@ -54,8 +55,8 @@ public class EstateDao {
                     estate = mapResultSetToEstate(resultSet);
                 }
             }
-        }catch (Exception e){
-            throw new RuntimeException("Error getting estate by id",e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error getting estate by id", e);
         }
         return estate;
     }
@@ -64,77 +65,93 @@ public class EstateDao {
         List<Estate> estates = new ArrayList<>();
         String sql = "select * from estates";
         try (Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()){
                 while(resultSet.next()){
-                    Estate estate = null;
-                    estate = mapResultSetToEstate(resultSet);
-                    estates.add(estate);
+                    estates.add(mapResultSetToEstate(resultSet));
                 }
             }
-        }catch (Exception e){
-            throw new RuntimeException("Error getting all estates",e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error getting all estates", e);
         }
         return estates;
     }
 
     private void setEstateParams(Estate estate, PreparedStatement preparedStatement) throws SQLException {
+        // Handling potential null for idAdmin
+        if (estate.getIdAdmin() == 0) {
+            preparedStatement.setNull(1, java.sql.Types.INTEGER);
+        } else {
             preparedStatement.setInt(1, estate.getIdAdmin());
-            preparedStatement.setString(2, estate.getNameEstate());
-            preparedStatement.setString(3, estate.getDescription());
-            preparedStatement.setBoolean(4, estate.isValid());
-            preparedStatement.setDouble(5, estate.getDailyPrice());
-            preparedStatement.setString(6, estate.getPhotoEstate());
-            preparedStatement.setInt(7, estate.getIdAddress());
-            preparedStatement.setInt(8, estate.getIdUser());
+        }
+        preparedStatement.setString(2, estate.getNameEstate());
+        preparedStatement.setString(3, estate.getDescription());
+        preparedStatement.setBoolean(4, estate.isValid());
+        preparedStatement.setDouble(5, estate.getDailyPrice());
+        preparedStatement.setString(6, estate.getPhotoEstate());
+        preparedStatement.setInt(7, estate.getIdAddress());
+        preparedStatement.setInt(8, estate.getIdUser());
     }
 
-    public void addEstate(Estate estate) throws SQLException{
-            String sql = "insert into estates(id_admin, name_estate, descriptions, is_valid, daily_price, photo_estate, id_address, id_user) values(?,?,?,?,?,?,?,?)";
-            try (Connection connection = dataSource.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(sql)){
-                setEstateParams(estate, preparedStatement);
-                preparedStatement.executeUpdate();
-            }
-    }
-
-    public void updateEstate(Estate estate) throws SQLException{
-            String sql = "update estates set id_admin = ?, name_estate = ?, descriptions = ?, is_valid = ?, daily_price = ?, photo_estate = ?, id_address = ?, id_user = ? where id_estate = ?";
-            try (Connection connection = dataSource.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(sql)){
-                setEstateParams(estate, preparedStatement);
-                preparedStatement.setInt(9, estate.getIdEstate());
-                preparedStatement.executeUpdate();
-            }
-    }
-
-    public void deleteEstate(int id) throws SQLException{
-        String sql = "delete from estates where id_estate = ?";
-        try (Connection connection = dataSource.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
-            preparedStatement.setInt(1, id);
+    // New method to support Transactions from Servlet
+    public void addEstate(Connection connection, Estate estate) throws SQLException {
+        String sql = "insert into estates(id_admin, name_estate, descriptions, is_valid, daily_price, photo_estate, id_address, id_user) values(?,?,?,?,?,?,?,?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            setEstateParams(estate, preparedStatement);
             preparedStatement.executeUpdate();
-        }catch (Exception e){
-            throw new RuntimeException("Error deleting estate" + id,e);
         }
     }
 
-    public List<Estate> findEstateByHost(User user) throws SQLException{
+    // Overloaded method for backward compatibility
+    public void addEstate(Estate estate) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            addEstate(connection, estate);
+        }
+    }
+
+    // New method to support Transactions from Servlet
+    public void updateEstate(Connection connection, Estate estate) throws SQLException {
+        String sql = "update estates set id_admin = ?, name_estate = ?, descriptions = ?, is_valid = ?, daily_price = ?, photo_estate = ?, id_address = ?, id_user = ? where id_estate = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            setEstateParams(estate, preparedStatement);
+            preparedStatement.setInt(9, estate.getIdEstate());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    // Overloaded method for backward compatibility
+    public void updateEstate(Estate estate) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            updateEstate(connection, estate);
+        }
+    }
+
+    public void deleteEstate(int id) throws SQLException {
+        String sql = "delete from estates where id_estate = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting estate " + id, e);
+        }
+    }
+
+    public List<Estate> findEstateByHost(User user) throws SQLException {
         List<Estate> estatesHost = new ArrayList<>();
-        String sql = "select * from estates e inner join users u on u.id_user=e.id_user where u.id_user = ?";
+        String sql = "select * from estates where id_user = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, user.getIdUser());
 
             try (ResultSet resultSet = preparedStatement.executeQuery()){
                 while(resultSet.next()){
-                    Estate estate = null;
-                    estate = mapResultSetToEstate(resultSet);
-                    estatesHost.add(estate);}
+                    estatesHost.add(mapResultSetToEstate(resultSet));
+                }
             }
-        }catch (Exception e){
-            throw new RuntimeException("Error getting all estates",e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error finding estates by host", e);
         }
         return estatesHost;
     }

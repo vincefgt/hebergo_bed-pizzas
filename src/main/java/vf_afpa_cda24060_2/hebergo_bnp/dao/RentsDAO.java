@@ -1,5 +1,6 @@
 package vf_afpa_cda24060_2.hebergo_bnp.dao;
 
+import vf_afpa_cda24060_2.hebergo_bnp.model.Addresses;
 import vf_afpa_cda24060_2.hebergo_bnp.model.Rents;
 
 import java.sql.*;
@@ -107,6 +108,7 @@ public class RentsDAO extends DAO<Rents> {
         }
         return rents;
     }
+
 
     @Override
     public List findAll(Connection connection) throws SQLException {
