@@ -5,23 +5,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-  <link href="${pageContext.request.contextPath}/asset/css/navBar.css" rel="stylesheet" />
-  <link href="${pageContext.request.contextPath}/asset/css/carousel.css" rel="stylesheet" />
-  <link href="${pageContext.request.contextPath}/asset/css/asideMeteoApi.css" rel="stylesheet" />
-  <link href="${pageContext.request.contextPath}/asset/css/footer.css" rel="stylesheet" />
-  <link href="${pageContext.request.contextPath}/asset/css/card-detail.css" rel="stylesheet" />
-  <script
-          src="https://code.jquery.com/jquery-3.7.1.js"
-          integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-          crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin=""/>
-  <title>Bed&Pizzas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="${pageContext.request.contextPath}/asset/css/navBar.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/asset/css/carousel.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/asset/css/asideMeteoApi.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/asset/css/footer.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/asset/css/card-detail.css" rel="stylesheet" />
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <title>Bed&Pizzas</title>
 </head>
 <body>
 

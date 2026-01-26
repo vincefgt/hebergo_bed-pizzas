@@ -10,502 +10,328 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="${pageContext.request.contextPath}/asset/css/navBar.css" rel="stylesheet" />
-    <link href="${pageContext.request.contextPath}/asset/css/carousel.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/asset/css/asideMeteoApi.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/asset/css/footer.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/asset/css/styleList.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/asset/css/styleAdmin.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <style>
-        .main-container {
-            max-width: 1400px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        .profile-header {
-            background: linear-gradient(135deg, #2d7ef7 0%, #1a5bbf 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 20px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(45, 126, 247, 0.2);
-        }
-        .profile-header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-        .profile-header p {
-            font-size: 16px;
-            opacity: 0.9;
-        }
-        .tabs-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-        .tab-btn {
-            padding: 15px 30px;
-            background: transparent;
-            border: none;
-            border-bottom: 3px solid transparent;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            color: #666;
-            transition: all 0.3s;
-        }
-        .tab-btn:hover {
-            color: #2d7ef7;
-        }
-        .tab-btn.active {
-            color: #2d7ef7;
-            border-bottom-color: #2d7ef7;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .profile-section {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .profile-section h2 {
-            font-size: 24px;
-            margin-bottom: 30px;
-            color: #333;
-        }
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-        .form-group label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-        }
-        .form-group input {
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: all 0.3s;
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: #2d7ef7;
-            box-shadow: 0 0 0 3px rgba(45, 126, 247, 0.1);
-        }
-        .form-group input:disabled {
-            background: #f7f7f7;
-            cursor: not-allowed;
-        }
-        .form-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-        }
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-primary {
-            background: #2d7ef7;
-            color: white;
-        }
-        .btn-primary:hover {
-            background: #1a5bbf;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(45, 126, 247, 0.3);
-        }
-        .btn-secondary {
-            background: #e0e0e0;
-            color: #333;
-        }
-        .btn-secondary:hover {
-            background: #d0d0d0;
-        }
-        .estates-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-        }
-        .estate-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        .estate-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-        .estate-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-            font-size: 14px;
-        }
-        .estate-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .estate-content {
-            padding: 20px;
-        }
-        .estate-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 10px;
-        }
-        .estate-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        .estate-status {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .estate-status.valid {
-            background: #d4edda;
-            color: #155724;
-        }
-        .estate-status.pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        .estate-address {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 15px;
-        }
-        .estate-description {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 15px;
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .estate-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 15px;
-            border-top: 1px solid #e0e0e0;
-        }
-        .estate-price {
-            font-size: 20px;
-            font-weight: 700;
-            color: #2d7ef7;
-        }
-        .estate-price span {
-            font-size: 14px;
-            font-weight: 400;
-            color: #666;
-        }
-        .estate-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .icon-btn {
-            width: 35px;
-            height: 35px;
-            border: none;
-            border-radius: 8px;
-            background: #f7f7f7;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        .icon-btn:hover {
-            background: #2d7ef7;
-            color: white;
-        }
-        .icon-btn.delete:hover {
-            background: #dc3545;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-        .empty-state svg {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
-        .empty-state h3 {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-        .empty-state p {
-            font-size: 15px;
-        }
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .estates-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .tabs-container {
-                overflow-x: auto;
-            }
-        }
-    </style>
 </head>
 <body>
 <c:if test="${empty sessionScope.user}">
     <c:redirect url="/index.jsp"/>
 </c:if>
+// Show success message if present
+<c:if test="${not empty successMessage}">
+    alert('${successMessage}');
+</c:if>
+// Show error message if present
+<c:if test="${not empty errorMessage}">
+    alert('${errorMessage}');
+</c:if>
 <c:import url="/public/navBar.jsp" />
+
 <main>
-<div class="main-container">
-    <!-- Header Profile -->
-    <div class="profile-header">
-        <h1>Bienvenue, ${sessionScope.user.firstname} ${sessionScope.user.lastname}</h1>
-        <p>Gérez votre profil et vos biens immobiliers</p>
-        <p>Rôle: host</p>
-    </div>
-
-    <!-- Tabs -->
-    <div class="tabs-container">
-        <button class="tab-btn active" onclick="switchTab('profile')">
-            Mon Profil
-        </button>
-        <button class="tab-btn" onclick="switchTab('estates')">Mes Logements</button>
-        <button class="tab-btn" onclick="switchTab('admin')">Administration</button>
-    </div>
-    <!-- Tab Content: Profile -->
-    <div id="profile-tab" class="tab-content active">
-        <div class="profile-section">
-            <h2>Informations personnelles</h2>
-            <form action="${pageContext.request.contextPath}/user-servlet?actionUser=update" method="post">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="firstname">Prénom<span class="required">*</span></label>
-                        <input type="text" id="firstname" name="firstname"
-                               value="${sessionScope.user.firstname}" required>
+    <div class="main-container">
+        <!-- Header Profile -->
+        <div class="profile-header">
+            <h1>Bienvenue, ${sessionScope.user.firstname} ${sessionScope.user.lastname}</h1>
+            <p>Gérez votre profil et vos biens immobiliers</p>
+            <p>Rôle: host</p>
+        </div>
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <button class="tab-btn active" data-tab="profile">Mon Profil</button>
+            <button class="tab-btn" data-tab="estates">Mes Logements</button>
+            <button class="tab-btn" data-tab="admin">Administration</button>
+        </div>
+        <!-- Tab Content: Profile -->
+        <div id="profile-tab" class="tab-content active">
+            <div class="profile-section">
+                <h2>Informations personnelles</h2>
+                <form action="${pageContext.request.contextPath}/user-servlet?actionUser=update" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="firstname">Prénom<span class="required">*</span></label>
+                            <input type="text" id="firstname" name="firstname"
+                                   value="${sessionScope.user.firstname}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname">Nom<span class="required">*</span></label>
+                            <input type="text" id="lastname" name="lastname"
+                                   value="${sessionScope.user.lastname}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email<span class="required">*</span></label>
+                            <input type="email" id="email" name="email"
+                                   value="${sessionScope.user.email}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Téléphone<span class="required">*</span></label>
+                            <input type="tel" id="phone" name="phone"
+                                   value="${sessionScope.user.phone}" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="currentPassword">Mot de passe actuel</label>
+                            <input type="password" id="currentPassword" name="currentPassword" required minlength="8">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="newPassword">Nouveau mot de passe (vide = inchangé)</label>
+                            <input type="password" id="newPassword" name="newPassword" placeholder="" minlength="8">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirmer nouveau mot de passe</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" minlength="8">
+                        </div>
+                        <div class="form-group full-width">
+                            <a href="${pageContext.request.contextPath}/index.jsp">
+                                <button type="button" class="btn btn-secondary">Supprimer compte</button>
+                            </a>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="lastname">Nom<span class="required">*</span></label>
-                        <input type="text" id="lastname" name="lastname"
-                               value="${sessionScope.user.lastname}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email<span class="required">*</span></label>
-                        <input type="email" id="email" name="email"
-                               value="${sessionScope.user.email}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Téléphone<span class="required">*</span></label>
-                        <input type="tel" id="phone" name="phone"
-                               value="${sessionScope.user.phone}" required>
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="password">Mot de passe</label>
-                        <input type="password" id="password" name="password" required minlength="8">
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="password">Nouveau mot de passe (empty = unchanged)</label>
-                        <input type="password" id="password" name="password"
-                               placeholder="" minlength="8">  <!--TODO SAISIE CONFIRMATION PWD-->
-                    </div>
-                    <div class="form-group">
-                        <label for="confirmPassword">Confirmer nouveau mot de passe</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword"
-                               minlength="8">
-                    </div>
-                    <div class="form-group full-width">
+                    <div class="form-actions">
                         <a href="${pageContext.request.contextPath}/index.jsp">
-                        <button type="button" class="btn btn-secondary" onclick="">Supprimer compte</button>
+                            <button type="button" class="btn btn-secondary">Annuler</button>
                         </a>
+                        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
                     </div>
-                </div>
-                <div class="form-actions">
-                    <a href="${pageContext.request.contextPath}/index.jsp">
-                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Annuler</button>
-                    </a>
-                    <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    <!-- Tab Content: Estates -->
-    <div id="estates-tab" class="tab-content">
-        <div class="profile-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <h2 style="margin: 0;">Mes logements</h2>
-
-                <a href="${pageContext.request.contextPath}/EstateServlet?action=add" class="btn btn-primary"
-                   style="text-decoration: none;">+ Ajouter un logement</a>
+                </form>
             </div>
+        </div>
+        <!-- Tab Content: Estates -->
+        <div id="estates-tab" class="tab-content">
+            <div class="profile-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 style="margin: 0;">Mes logements</h2>
+                    <a href="${pageContext.request.contextPath}/EstateServlet?action=add" class="btn btn-primary"
+                       style="text-decoration: none;">+ Ajouter un logement</a>
+                </div>
 
-            <c:choose>
-                <c:when test="${not empty estate}">
-                    <div class="estates-grid">
-                        <c:forEach var="estate" items="${estatesList}">
-                            <div class="estate-card" onclick="viewEstate(${estate.id})">
-                                <div class="estate-image">
-                                    <c:choose>
-                                        <c:when test="${not empty estate.photoEstate}">
-                                            <img src="${estate.photoEstate}" alt="${estate.nameEstate}">
-                                        </c:when>
-                                        <c:otherwise>
-                                            Pas d'image disponible
-                                        </c:otherwise>
-                                    </c:choose>
-                                </div>
-                                <div class="estate-content">
-                                    <div class="estate-header">
-                                        <h3 class="estate-title">${estate.nameEstate}</h3>
-                                        <span class="estate-status ${estate.valid ? 'valid' : 'pending'}">
-                                                ${estate.valid ? 'Validé' : 'En attente'}
-                                        </span>
-                                    </div>
-                                    <p class="estate-address">📍 ${estate.address}</p>
-                                    <p class="estate-description">${estate.description}</p>
-                                    <div class="estate-footer">
-                                        <div class="estate-price">
-                                                ${estate.dailyPrice}€ <span>/ nuit</span>
+                <c:choose>
+                    <c:when test="${not empty listHost}">
+                        <div class="estates-grid">
+                            <c:forEach var="estate" items="${listHost}">
+                               <%-- <a href="${pageContext.request.contextPath}/detailsServlet?idEstate=${estate.id}"> --%>
+                                    <div class="estate-card">
+                                        <a href="detailsServlet?idEstate=${estate.idEstate}" style="text-decoration: none;">
+                                        <div class="estate-image">
+                                            <c:choose>
+                                                <c:when test="${not empty estate.photoEstate}">
+                                                    <img src="${estate.photoEstate}/photo.jpg" alt="${estate.nameEstate}">
+                                                </c:when>
+                                                <c:otherwise>
+                                                    Pas d'image disponible
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
-                                        <div class="estate-actions" onclick="event.stopPropagation()">
-                                            <button class="icon-btn" onclick="editEstate(${estate.id})" title="Modifier">✏️</button>
-                                            <button class="icon-btn delete"
-                                                    onclick="deleteEstate(${estate.id})"
-                                                    title="Supprimer">🗑️</button>
+                                        <div class="estate-content">
+                                            <div class="estate-header">
+                                                <div>
+                                                    <h3 class="estate-title">${estate.nameEstate}</h3>
+                                                    <div class="estate-price" >${estate.dailyPrice}€ <span>/ nuit</span></div>
+                                                </div>
+                                                <span class="estate-status ${estate.valid ? 'valid' : 'pending'}">
+                                                        ${estate.valid ? 'Actif' : 'Non actif'}
+                                                </span>
+                                            </div>
+                                            <div class="estate-footer">
+                                                <div class="estate-actions">
+                                                    <button class="icon-btn" onclick="editEstate(${estate.idEstate})" title="Modifier">✏️</button>
+                                                    <button class="icon-btn delete" onclick="deleteEstate(${estate.idEstate})" title="Supprimer">🗑️</button>
+                                                </div>
+                                            </div>
                                         </div>
+                                        </a>
                                     </div>
-                                </div>
+                            </c:forEach>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="empty-state">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                            <h3>Aucun logement pour le moment</h3>
+                            <p>Commencez par ajouter votre premier bien immobilier</p>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+        </div>
+        <!-- Tab Content: Admin -->
+        <div id="admin-tab" class="tab-content">
+            <div class="profile-section">
+                <div style="display: flex; flex-direction:column; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 style="margin: 0;">Admin</h2>
+                    <!-- Estate Management Section -->
+                    <div class="admin-section">
+                        <h3>Logements</h3>
+                        <div class="search-container">
+                            <label for="searchEstateId">Recherche ID Logement</label>
+                            <input type="text" id="searchEstateId" placeholder="Entrez l'ID du logement">
+                            <button class="btn-search" onclick="searchEstate()">Recherche</button>
+                        </div>
+
+                        <div id="estateResults">
+                            <table class="results-table" id="estateTable" style="display: none;">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Logement</th>
+                                    <th>Propriétaire</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody id="estateTableBody">
+                                <!-- Results will be inserted here -->
+                                </tbody>
+                            </table>
+                            <div id="estateEmptyState" class="empty-results">
+                                Aucun résultat. Effectuez une recherche pour afficher les logements.
                             </div>
-                        </c:forEach>
+                        </div>
+                        <table class="results-table" id="estateTable" style="display: none;">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Logement</th>
+                                <th>Propriétaire</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="estateTableBody">
+                            <!-- Results will be inserted here -->
+                            </tbody>
+                        </table>
+                        <div class="table-responsive" style="overflow: auto; max-height: 400px; margin: auto;">
+                            <table class="table table-striped table-hover" id="estateTable">
+                                <thead style="position: sticky; top: 0;">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Photo</th>
+                                    <th>Name</th>
+                                    <th>Daily Price</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="estate" items="${list}">
+                                    <tr  onclick="populateForm('${estate.idEstate}','${estate.nameEstate}','${estate.dailyPrice}',
+                                                '${estate.description}','${estate.idAdmin}','${estate.idUser}',
+                                                '${estate.idAddress}','${estate.photoEstate}')" style="overflow: hidden; cursor: pointer;">
+                                        <td>${estate.idEstate}</td>
+                                        <td class="estate-image-admin" ><img src="${pageContext.request.contextPath}/${estate.photoEstate}/photo.jpg" alt=${estate.photoEstate}/></td>
+                                        <td class="estate-title">${estate.nameEstate}</td>
+                                        <td class="estate-price">${estate.dailyPrice} €</td>
+                                        <td> <span class="estate-status ${estate.valid ? 'valid' : 'pending'}">
+                                                ${estate.valid ? 'Actif' : 'Non actif'}
+                                        </span></td>
+                                        <td>
+                                            <%--<a href="${pageContext.request.contextPath}/EstateServlet?action=delete&id=${estate.idEstate}"
+                                               onclick="return confirm('Are you sure you want to delete this?')">Delete</a>--%>
+                                                <button class="btn-action btn-delete" onclick="deleteUserAdmin(${estate.idEstate})">Supprimer</button>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </c:when>
-                <c:otherwise>
-                    <div class="empty-state">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                        <h3>Aucun logement pour le moment</h3>
-                        <p>Commencez par ajouter votre premier bien immobilier</p>
+
+                    <!-- User Management Section -->
+                    <div class="admin-section">
+                        <h3>Recherche ID Guest / Host</h3>
+                        <div class="search-container">
+                            <label for="searchUserId">Recherche ID Guest / Host</label>
+                            <input type="text" id="searchUserId" placeholder="Entrez l'ID de l'utilisateur">
+                            <button class="btn-search" onclick="searchUser()">Recherche</button>
+                        </div>
+
+                        <div id="userResults">
+                            <table class="results-table" id="userTable" style="display: none;">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Type</th>
+                                    <th>Nom</th>
+                                    <th>Email</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody id="userTableBody">
+                                <!-- Results will be inserted here -->
+                                </tbody>
+                            </table>
+                            <div id="userEmptyState" class="empty-results">
+                                Aucun résultat. Effectuez une recherche pour afficher les utilisateurs.
+                            </div>
+                        </div>
+
+                        <div class="table-responsive" style="overflow: auto; max-height: 400px;">
+                            <table class="table table-striped table-hover" id="usersTable">
+                                <thead style="position: sticky; top: 0;">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Firstname</th>
+                                    <th>Lastname</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="user" items="${listUsers}">
+                                     <tr  onclick="populateForm('${user.idUser}','${user.idAdmin}','${user.idRole}',
+                                             '${user.idAddress}','${user.firstname}','${user.lastname}',
+                                             '${user.phone}','${user.email}','${user.isDeleted}')"
+                                              style="overflow: hidden; cursor: pointer;">
+                                         <td>${user.idUser}</td>
+                                         <td style="font-weight: bold">${user.firstname}</td>
+                                         <td style="font-weight: bold">${user.lastname}</td>
+                                         <td style="font-size: 12px">${user.email}</td>
+                                         <td><span class="estate-status ${user.isDeleted ? 'pending' : 'valid'}">
+                                                 ${user.isDeleted ? 'Non actif' : 'Actif'}</span>
+                                         </td>
+                                         <td><button class="btn-action btn-delete" onclick="deleteUserAdmin(${user.idUser})">Supprimer</button>
+                                         </td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+
                     </div>
-                </c:otherwise>
-            </c:choose>
+
+                    <!-- Footer Actions -->
+                    <div class="admin-footer">
+                        <button class="btn-footer btn-return" onclick="window.location.href='${pageContext.request.contextPath}/index.jsp'">
+                            Retour</button>
+                        <button class="btn-footer btn-add" onclick="addNewItem()">Ajouter</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- Tab Content: Profile -->
-    <div id="admin-tab" class="tab-content active">
-        <div class="profile-section"><h2>Gestion admin</h2></div>
-    </div>
-</div>
 </main>
 
 <jsp:include page="/public/footer.jsp" />
 
-<script> //JS formulair users
-    function switchTab(tabName) {
-        // Hide all tabs
-        document.querySelectorAll('.tab-content').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        // Remove active class from all buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        // Show selected tab
-        document.getElementById(tabName + '-tab').classList.add('active');
-        // Add active class to clicked button
-        event.target.classList.add('active');}
-    function resetForm() {
-        document.querySelector('form').reset();}
-    function viewEstate(estateId) {
-        window.location.href = '${pageContext.request.contextPath}/estate?id=' + estateId;
-    }
-    function editEstate(estateId) {
-        window.location.href = '${pageContext.request.contextPath}/estate?id=' + estateId;}
-    function deleteEstate(estateId) {
-        if (confirm('Êtes-vous sûr de vouloir supprimer ce logement ?')) {
-            // Create form and submit
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '${pageContext.request.contextPath}/estate?action=delete';
-
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'id';
-            input.value = estateId;
-
-            form.appendChild(input);
-            document.body.appendChild(form);
-            form.submit();
-        }
-    }
-    // Show success message if present
-    <c:if test="${not empty successMessage}">
-    alert('${successMessage}');
-    </c:if>
-    // Show error message if present
-    <c:if test="${not empty errorMessage}">
-    alert('${errorMessage}');
-    </c:if>
-</script>
+// function in AdminJS
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<%-- Link Javascript --%>
 <script src="${pageContext.request.contextPath}/asset/js/map.js"></script>
 <script src="${pageContext.request.contextPath}/asset/js/weather.js"></script>
 <script src="${pageContext.request.contextPath}/asset/js/App.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script src="${pageContext.request.contextPath}/asset/js/adminJS.js"></script>
 <script type="module" src="asset/js/UserJS.js"></script>
 </body>
 </html>

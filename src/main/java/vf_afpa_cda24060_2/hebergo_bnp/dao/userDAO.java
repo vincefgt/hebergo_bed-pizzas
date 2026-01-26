@@ -41,7 +41,7 @@ public class userDAO {
             stmt.setString(4, user.getPhone());
             stmt.setString(5, user.getEmail());
             stmt.setString(6, user.getPasswordHash());
-            stmt.setBoolean(7, user.isDeleted());
+            stmt.setBoolean(7, user.getIsDeleted());
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
@@ -157,7 +157,7 @@ public class userDAO {
             stmt.setString(6, user.getPhone());
             stmt.setString(7, user.getEmail());
             stmt.setString(8, user.getPasswordHash());
-            stmt.setBoolean(9, user.isDeleted());
+            stmt.setBoolean(9, user.getIsDeleted());
             stmt.setInt(10, user.getIdUser());
             return stmt.executeUpdate() > 0;
         }
@@ -186,7 +186,6 @@ public class userDAO {
     // Helper method to map ResultSet to User object
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         User user = new User();
-
         user.setIdUser(rs.getInt("id_user"));
         int idAdmin = rs.getInt("id_admin");
         user.setIdAdmin(rs.wasNull() ? null : idAdmin);
@@ -198,7 +197,6 @@ public class userDAO {
         user.setEmail(rs.getString("email"));
         user.setPasswordHash(rs.getString("password_hash"));
         user.setDeleted(rs.getBoolean("is_deleted"));
-
         return user;
     }
 

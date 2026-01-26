@@ -102,13 +102,12 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public boolean isDeleted() {
+    public boolean getIsDeleted() {
         return isDeleted;
     }
 
     public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
+        isDeleted = deleted;}
 
     @Override
     public String toString() {

@@ -37,45 +37,85 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String actionUser = request.getParameter("actionUser");
+        HttpSession session = request.getSession(false); // update user in session scope
+        String urlReturn = "/index.jsp"; // url to return to home page
         if (actionUser == null) {
             request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response);  // action par défaut
-            return;}
+            return;
+        }
+        try {
+            switch (actionUser) {
+                case "paramUser": // ---------------------------- PARAM -------------------------
+                    request.getRequestDispatcher("/EstateServlet?action=estate").include(request, response);
+                    request.getRequestDispatcher("/EstateServlet?action=hostList").include(request, response);
+                    request.setAttribute("listUsers", userDAO.findAll());
+                    request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+                    break;
+                case "signup": // ---------------------------- SIGN IN -------------------------
+                    request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response); // otherwise Forward to login page
+                    break;
+                case "login": // ------------------- LOG IN ------------------------------------
+                    // Check if user is already logged in
+                    if (session != null && session.getAttribute("user") != null) {
+                        response.sendRedirect(request.getContextPath() + urlReturn); // return to landing page
+                        return;}
+                    request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response); // otherwise Forward to login page
+                    break;
+                case "logout": // ---------------------- LOG OUT -------------------------------
+                    session = request.getSession(false);
+                    if (session != null && session.getAttribute("user") != null) {
+                        session.invalidate();
+                        response.sendRedirect(request.getContextPath() + urlReturn); // return to landing page
+                        return;}
+                    break;
+                case "searchUser":
+                    User user = (User) session.getAttribute("user");
+                    userDAO.findById(user.getIdUser());
+                    break;
+                case "allUsers":
+                    request.setAttribute("listUsers", userDAO.findAll());
+                    break;
+                case "researchUser":
+                    String userIdParam = request.getParameter("idUser");
+                    if (userIdParam == null || userIdParam.trim().isEmpty()) {
+                        request.setAttribute("errorMessage", "ID utilisateur manquant");
+                        request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+                        return;
+                    }
+                    try {
+                        int userId = Integer.parseInt(userIdParam);
+                        User foundUser = userDAO.findById(userId);
 
-        switch (actionUser) {
-        case "paramUser": // ---------------------------- PARAM -------------------------
-            request.getRequestDispatcher("/EstateServlet?action=hostList").forward(request, response);
-            //request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
-            break;
-        case "signup": // ---------------------------- SIGN IN -------------------------
-            request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response); // otherwise Forward to login page
-            break;
-        case "login": // ------------------- LOG IN ------------------------------------
-            // Check if user is already logged in
-            HttpSession session = request.getSession(false);
-            if (session != null && session.getAttribute("user") != null) {
-                response.sendRedirect(request.getContextPath() + "/index.jsp"); // return to landing page
-                return;}
-            request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response); // otherwise Forward to login page
-            break;
-        case "logout": // ---------------------- LOG OUT -------------------------------
-            HttpSession sessionOut = request.getSession(false);
-            if (sessionOut != null && sessionOut.getAttribute("user") != null) {
-                sessionOut.invalidate();
-                response.sendRedirect(request.getContextPath() + "/index.jsp"); // return to landing page
-                return;}
-            break;
-        default:
-            request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response);
-            break;
+                        if (foundUser != null) {
+                            request.setAttribute("foundUser", foundUser);
+                            request.setAttribute("successMessage", "Utilisateur trouvé : " + foundUser.getFirstname() + " " + foundUser.getLastname());
+                        } else {
+                            request.setAttribute("errorMessage", "Aucun utilisateur trouvé avec l'ID : " + userId);
+                        }
+                        // Recharger les listes complètes
+                        // Rediriger vers la page param avec l'onglet admin actif
+                        request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+
+                    } catch (NumberFormatException e) {
+                        request.setAttribute("errorMessage", "Format d'ID invalide");
+                        request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+               }
+                    break;
+                default:
+                    request.getRequestDispatcher("index.jsp").forward(request, response);
+                    break;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    // managing forms
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //variable global both signup /login share
-        String adUrl = "index.jsp";
+        String adUrl = "/index.jsp"; // index for reload carrousel
         String password = request.getParameter("password");
         String email = request.getParameter("email");
         String actionUser = request.getParameter("actionUser");
@@ -156,7 +196,7 @@ public class UserServlet extends HttpServlet {
 
                         // Succès - rediriger
                         request.getSession().setAttribute("success", "Utilisateur créé avec succès !");
-                        response.sendRedirect(request.getContextPath() + "/index.jsp"); //TODO link to user account
+                        response.sendRedirect(request.getContextPath() + adUrl); //TODO link to user account
                         //request.getRequestDispatcher(adUrl).forward(request, response);
 
                     } catch (SQLException e) {
@@ -165,7 +205,7 @@ public class UserServlet extends HttpServlet {
                         request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response);
                     } catch (NumberFormatException e) {
                         request.setAttribute("error", "Format de nombre invalide.");
-                        request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response);
+                        request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response);
                     }
                 break;
             case "login": // ---------------------- LOG IN -----------------------------
@@ -188,7 +228,7 @@ public class UserServlet extends HttpServlet {
                     User user = userDAO.findByEmail(email.trim());
                     if (user == null) {
                         //getLogger.warn("Login attempt with non-existent username: {}", email); //TODO logger
-                        request.setAttribute("error", "Nom d'utilisateur ou mot de passe incorrect");
+                        request.setAttribute("error", "Nom d'utilisateur inconnu");
                         request.setAttribute("username", email);
                         request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response); // stay on log in page
                         return;}
@@ -196,15 +236,15 @@ public class UserServlet extends HttpServlet {
                     boolean isPasswordValid = vf_afpa_cda24060_2.hebergo_bnp.util.PasswordUtil.verifyPassword(user.getPasswordHash(), password);
                     if (!isPasswordValid) {
                         //logger.warn("Failed login attempt for user: {}", email); //TODO logger
-                        request.setAttribute("error", "Nom d'utilisateur ou mot de passe incorrect");
+                        request.setAttribute("error", "Mot de passe incorrect");
                         request.setAttribute("username", email);
-                        request.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(request, response); //TODO info use to index page
+                        request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response); //TODO info use to index page
                         return;}
                     // Check if user account is active
-                    if (user.isDeleted()) {
+                    if (user.getIsDeleted()) {
                         // logger.warn("Login attempt for inactive account: {}", email); //TODO logger
                         request.setAttribute("error", "Votre compte est désactivé. Veuillez contacter l'administrateur.");
-                        request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response);
+                        request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response);
                         return;}
                     // Successful login - create session
                     HttpSession session = request.getSession(true);
@@ -216,8 +256,7 @@ public class UserServlet extends HttpServlet {
                     //userDAO.updateLastLogin(user.getId());   // Update last login timestamp
                     //logger.info("User logged in successfully: {}", username);
                     request.setAttribute("success", "Welcome back! " + user.getFirstname());
-                    //request.getRequestDispatcher(adUrl).forward(request, response);
-                    response.sendRedirect(adUrl);
+                    response.sendRedirect("index.jsp");
                     /*
                     // Redirect based on user role
                     String redirectUrl = getRedirectUrl(user, request);
@@ -226,7 +265,7 @@ public class UserServlet extends HttpServlet {
                 } catch (Exception e) {
                     //logger.error("Error during login process", e);
                     request.setAttribute("error", "Une erreur s'est produite lors de la connexion. Veuillez réessayer.");
-                    request.getRequestDispatcher("/WEB-INF/jsp/signup_users.jsp").forward(request, response);}
+                    request.getRequestDispatcher("index.jsp").forward(request, response);}
                 break;
             case "update": //--------------------------------- update user -------------------------------
                 request.setCharacterEncoding("UTF-8");
@@ -287,7 +326,7 @@ public class UserServlet extends HttpServlet {
                     session.setAttribute("user", updateUser);
                     // Succès - rediriger
                     request.getSession().setAttribute("success", "Utilisateur mis à jour avec succès !");
-                    response.sendRedirect(request.getContextPath() + adUrl);
+                    response.sendRedirect(request.getContextPath() + "/WEB-INF/jsp/login_users.jsp");
 
                 } catch (SQLException e) {
                     request.setAttribute("error", "Erreur lors de la création de l'utilisateur: " + e.getMessage());
@@ -306,7 +345,6 @@ public class UserServlet extends HttpServlet {
     /**
      * Determine redirect URL based on user role
      */
-
     private String getRedirectUrl(User user, HttpServletRequest request) {
         String contextPath = request.getContextPath();
 
