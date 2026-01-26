@@ -324,8 +324,8 @@ header section {
     box-shadow: 0 5px 10px rgba(0,0,0,0.1);
     overflow: visible;
     position: relative;
-    width: 100%;
-    max-width: 850px;
+    /*width: 100%;*/
+    /*max-width: 850px;*/
     margin: 0 auto;
 }
 
@@ -430,7 +430,7 @@ header section {
     padding: 30px;
     display: none;
     z-index: 1000;
-    width: 850px;
+    width: 500px;
     max-width: 90vw;
 }
 
@@ -495,7 +495,7 @@ header section {
 
 .calendars-container {
     display: flex;
-    gap: 40px;
+    gap: 20px;
 }
 
 .calendar {
@@ -875,4 +875,47 @@ header section {
     transform: rotate(-45deg);
     top: 21px;
     left: 8px;
+}
+
+section {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+
+@media (max-width: 425px) {
+    /* CSS mobile ici */
+
+    .search-bar {
+        flex-direction: column;
+        margin-top: 30px;
+    }
+
+    label {
+        font-size: 16px !important;
+    }
+
+    .calendars-container {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .options-and-price-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #priceFilterSection {
+        width: 315px;
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
+}
+
+@media (min-width: 426px) and (max-width: 1023px) {
+    #calendarDropdown {
+        margin: 70px;
+    }
 }

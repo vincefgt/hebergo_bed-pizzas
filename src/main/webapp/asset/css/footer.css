@@ -16,6 +16,7 @@ footer {
     align-items: flex-start;
     gap: 6rem;
     transform: translateZ(0);
+    text-align: center;
 }
 
 .footer-content > div {

@@ -19,9 +19,6 @@ $("#destinationInput").on("keypress", function (e) {
 });
 
 
-
-
-
 function getWeather(city) {
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=fr&appid=${API_KEY}`;
 

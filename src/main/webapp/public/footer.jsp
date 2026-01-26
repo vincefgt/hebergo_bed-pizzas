@@ -8,8 +8,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <footer>
-    <div class="footer-content">
-        <div>
+    <div class="footer-content flex-md-row">
+        <div class="col-12 col-md-3 offset-lg-0">
             <p><strong>Assistance</strong></p>
             <ul>
                 <li><a href="https://www.airbnb.fr/help">Centre d'aide</a></li>
@@ -18,7 +18,7 @@
                 <li><a href="https://www.airbnb.fr/help/article/1320">Options d'annulation</a></li>
             </ul>
         </div>
-        <div>
+        <div class="col-12 col-md-4">
             <p><strong>Accueil de voyageurs</strong></p>
             <ul>
                 <li><a href="https://www.airbnb.fr/host/homes?from_footer=1">Mettez votre logement sur Airbnb</a></li>
@@ -27,7 +27,7 @@
                 <li><a href="https://www.airbnb.fr/aircover-for-hosts">AirCover pour les hôtes</a></li>
             </ul>
         </div>
-        <div>
+        <div class="col-12 col-md-3">
             <p><strong>Airbnb</strong></p>
             <ul>
                 <li><a href="https://www.airbnb.fr/release">Édition été 2025</a></li>

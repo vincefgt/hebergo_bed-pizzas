@@ -36,18 +36,26 @@
   </c:if>
 
   <div class="row">
-    <div class="col-2">
+    <div class="col-10 col-lg-3 offset-1 offset-lg-0 mb-5">
       <%-- Le aside de ma meteo API et carte de FRANCE --%>
       <c:import url="public/asideMeteoApi.jsp" />
+
     </div>
 
-    <div class="col-8 offset-1">
-      <section id="group-card">
+    <div class="col-10 col-lg-7 offset-1 offset-xl-0 d-flex flex-sm-column">
+      <c:import url="public/carrousel.jsp" />
+    </div>
+
+  </div>
+
+
+  <section>
+
         <%-- Le body de ma Home page --%>
         <jsp:include page="public/homePage.jsp" />
-      </section>
-    </div>
-  </div>
+
+
+  </section>
 
 
 

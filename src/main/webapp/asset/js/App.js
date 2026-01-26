@@ -102,11 +102,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function selectCity(city) {
-        destinationInput.value = city;
-        destinationDropdown.classList.remove('active');
-    }
-
     // Gestion calendrier
     const dateField = document.getElementById('dateField');
     const dateInput = document.getElementById('dateInput');
@@ -368,7 +363,5 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
         });
     }
-
-
 
     });

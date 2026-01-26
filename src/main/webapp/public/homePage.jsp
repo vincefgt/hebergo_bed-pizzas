@@ -8,58 +8,26 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel" data-bs-interval="8000">
-    <!-- Indicateurs de slides -->
-    <div class="carousel-indicators">
-        <c:forEach var="estate" items="${estatesList}" varStatus="status">
-            <button type="button"
-                    data-bs-target="#carouselExampleAutoplaying"
-                    data-bs-slide-to="${status.index}"
-                    class="${status.first ? 'active' : ''}"
-                    aria-current="${status.first ? 'true' : 'false'}"></button>
-        </c:forEach>
-    </div>
-    <div class="carousel-inner">
-        <c:forEach var="estate" items="${estatesList}" varStatus="status">
-            <div class="carousel-item ${status.first ? 'active' : ''}">
-                <img src="${estate.photoEstate}/photo.jpg" class="d-block offset-1 w-50" alt="Photo ${status.index + 1}">
-                <div>
-                    <h5>${estate.nameEstate}</h5>
-                    <p>${estate.description}</p>
-                    <p><strong>${estate.dailyPrice} €</strong></p>
+<div class="container-fluid px-3">
+    <div class="row justify-content-center g-3 g-md-4 mb-5">
+        <c:forEach var="estate" items="${estatesList}">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
+                <div id="card-detail" class="card shadow h-100 w-100" style="max-width: 350px;">
+                    <a href="detailsServlet?idEstate=${estate.idEstate}" class="text-decoration-none">
+                        <div class="card-img-top">
+                            <img id="card-img" class="p-2 mt-2 w-100" src="${estate.photoEstate}/photo.jpg" alt="Photo ${estate.nameEstate}">
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title text-dark">${estate.nameEstate}</h5>
+                            <p class="card-text text-dark flex-grow-1">${estate.description}</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top">
+                            <p class="text-dark text-end mb-0"><strong>${estate.dailyPrice} €</strong></p>
+                        </div>
+                    </a>
                 </div>
             </div>
         </c:forEach>
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
-</div>
-
-<div>
-    <div class="row">
-
-        <c:forEach var="estate" items="${estatesList}">
-            <div id="card-detail" class="card col-3 ofsset-1 m-3 shadow p-3 mb-5">
-                <a href="detailsServlet?idEstate=${estate.idEstate}">
-                    <img id="card-img" class="col-12 mt-2 rounded" src="${estate.photoEstate}/photo.jpg" alt="Photo 1">
-                    <div class="card-body">
-                        <h5 class="card-title text-dark">${estate.nameEstate}</h5>
-                        <p class="text-dark">${estate.description}</p>
-                    </div>
-                    <div class="card-footer">
-                        <p class="text-dark"><strong>${estate.dailyPrice} €</strong></p>
-                    </div>
-                </a>
-            </div>
-        </c:forEach>
-
-
-
     </div>
 </div>
