@@ -30,7 +30,7 @@
 }
 
 #carouselExampleAutoplaying .carousel-item img {
-    width: calc(33.333% - 10px);
+    width: calc(100% - 10px);
     height: 180px;
     object-fit: cover;
     border-radius: 15px;

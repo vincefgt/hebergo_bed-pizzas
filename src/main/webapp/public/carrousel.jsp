@@ -26,8 +26,8 @@
             <a href="detailsServlet?idEstate=${estate.idEstate}">
                 <div class="carousel-item ${status.first ? 'active' : ''}">
                     <div class="row">
-                        <div class="col-12">
-                            <img src="${estate.photoEstate}/photo.jpg" class="d-block w-100" alt="Photo ${status.index + 1}">
+                        <div>
+                            <img src="${estate.photoEstate}/photo.jpg" class="d-block col-12" alt="Photo ${status.index + 1}">
                         </div>
                         <div class="col-12 mt-4">
                             <h5 class="text-dark">${estate.nameEstate}</h5>

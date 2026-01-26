@@ -42,7 +42,7 @@
 
     </div>
 
-    <div class="col-10 col-lg-7 offset-1 offset-xl-0 d-flex flex-sm-column">
+    <div class="col-10 col-lg-6 offset-1 d-flex flex-sm-column">
       <c:import url="public/carrousel.jsp" />
     </div>
 
