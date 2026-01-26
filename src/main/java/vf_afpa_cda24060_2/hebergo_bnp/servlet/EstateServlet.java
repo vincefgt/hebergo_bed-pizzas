@@ -13,7 +13,6 @@ import vf_afpa_cda24060_2.hebergo_bnp.model.Addresses;
 import vf_afpa_cda24060_2.hebergo_bnp.model.Cities;
 import vf_afpa_cda24060_2.hebergo_bnp.model.Estate;
 import vf_afpa_cda24060_2.hebergo_bnp.model.User;
-
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
@@ -73,6 +72,10 @@ public class EstateServlet extends HttpServlet {
                         request.setAttribute("estatesList", estatesList);
                     }
                     request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+                    break;
+                case "searchEstate":
+                    id = Integer.parseInt(request.getParameter("idEstate"));
+                    estateDao.getEstateById(id);
                     break;
                 default:
                     estatesList = estateDao.getAllEstates();
