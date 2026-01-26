@@ -14,25 +14,16 @@
     <title>Détails du biens</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="${pageContext.request.contextPath}/asset/css/navBar.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/asset/css/footer.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/asset/css/footer.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/asset/css/details.css">
 
 </head>
 <body>
     <!-- header -->
     <c:import url="../../public/navBar.jsp" />
-
-    <h1 class="offset-1">${estate.nameEstate}</h1>
-    <div class="col-6 offset-1">
-        <img src="${pageContext.request.contextPath}/${estate.photoEstate}" class="col-10">
-        <p>${estate.description}</p>
-        <p>${user.lastname}</p>
-        <form method="post"  action="<c:url value="/detailsServlet" />">
-            <input type="date" name="start-rent" />
-            <input type="date" name="end-rent" />
-        </form>
-
-    </div>
 
 
     <main>
