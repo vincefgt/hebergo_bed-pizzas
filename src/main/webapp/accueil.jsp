@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
     <title>Bed&Pizzas</title>
 </head>
 <body>
@@ -47,16 +48,20 @@
       <c:import url="public/carrousel.jsp" />
     </div>
 
-  </div>
-  <section>
+</div>
+    <section>
         <%-- Le body de ma Home page --%>
         <jsp:include page="public/homePage.jsp" />
-  </section>
+
+        <div id="scrollUp">
+            <a href="#top"><i class="h1 bi bi-arrow-up-circle-fill"></i></a>
+        </div>
+
+    </section>
 </main>
 
 <%-- L'ajout de mon footer --%>
 <c:import url="public/footer.jsp" />
-
 
 <%-- Link bootstrap --%>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"

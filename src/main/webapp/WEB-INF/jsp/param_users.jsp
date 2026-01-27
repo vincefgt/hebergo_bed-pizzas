@@ -32,7 +32,7 @@
 <c:import url="/public/navBar.jsp" />
 
 <main>
-    <div class="main-container">
+    <div class="main-container pt-4">
         <!-- Header Profile -->
         <div class="profile-header">
             <h1>Bienvenue, ${sessionScope.user.firstname} ${sessionScope.user.lastname}</h1>
@@ -318,11 +318,14 @@
             </div>
         </div>
     </div>
+
+    <div id="scrollUp">
+        <a href="#top"><i class="h1 bi bi-arrow-up-circle-fill"></i></a>
+    </div>
 </main>
 
 <jsp:include page="/public/footer.jsp" />
 
-// function in AdminJS
 <script>
     // Define contextPath globally before loading admin.js
     window.contextPath = '${pageContext.request.contextPath}';

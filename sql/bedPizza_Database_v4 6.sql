@@ -60,16 +60,16 @@ CREATE TABLE IF NOT EXISTS ESTATES(
 -- creation table rents  
 CREATE TABLE IF NOT EXISTS rents(
    id_rents INT AUTO_INCREMENT, 
-   id_user INT NOT NULL,
-   id_estate INT NOT NULL,
+   id_user INT,
+   id_estate INT,
    PRIMARY KEY(id_rents),
    purchase_date DATETIME NOT NULL,
    start_rent DATETIME NOT NULL,
    end_rent DATETIME NOT NULL,
    total_price DOUBLE NOT NULL,
    payment_number VARCHAR(50) NOT NULL,
-   FOREIGN KEY(id_estate) REFERENCES Estates(id_estate),
-   FOREIGN KEY(id_user) REFERENCES Users(id_user)
+   FOREIGN KEY(id_estate) REFERENCES Estates(id_estate) ON DELETE SET NULL,
+   FOREIGN KEY(id_user) REFERENCES Users(id_user) ON DELETE SET NULL
 );
 
 
