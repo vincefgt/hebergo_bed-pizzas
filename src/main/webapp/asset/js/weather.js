@@ -10,14 +10,11 @@ function searchCity() {
 
 $("#searchField").on("click", searchCity);
 
-
-
 $("#destinationInput").on("keypress", function (e) {
     if (e.which === 13) {
         searchCity();
     }
 });
-
 
 function getWeather(city) {
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=fr&appid=${API_KEY}`;

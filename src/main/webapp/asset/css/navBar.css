@@ -890,6 +890,21 @@ section {
     .search-bar {
         flex-direction: column;
         margin-top: 30px;
+        border: none;
+        box-shadow: none;
+    }
+
+    #destinationField {
+        border-radius: 0;
+    }
+
+    #searchField {
+        border-radius: 0;
+    }
+
+    .search-field {
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
     }
 
     label {
