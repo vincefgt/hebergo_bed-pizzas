@@ -1,5 +1,6 @@
 package vf_afpa_cda24060_2.hebergo_bnp.dao;
 
+import vf_afpa_cda24060_2.hebergo_bnp.model.Addresses;
 import vf_afpa_cda24060_2.hebergo_bnp.model.Rents;
 
 import java.sql.*;
@@ -108,6 +109,7 @@ public class RentsDAO extends DAO<Rents> {
         return rents;
     }
 
+
     @Override
     public List findAll(Connection connection) throws SQLException {
         List<Rents> rentsList = new ArrayList<Rents>();
@@ -133,6 +135,33 @@ public class RentsDAO extends DAO<Rents> {
             }
         }catch(SQLException sqle){
             System.out.println("Erreur findAll RentsDAO: " + sqle.getMessage());
+        }
+
+        return rentsList;
+    }
+
+    public List<Rents> findByIdEstate(Connection connection, Integer idEstate){
+        String sql = "SELECT * FROM rents WHERE id_estate=?";
+        List<Rents> rentsList = new ArrayList<>();
+
+        try{
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, idEstate);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Integer idRents = rs.getInt("id_rents");
+                Integer idUser = rs.getInt("id_user");
+                LocalDate purchaseDate = rs.getDate("purchase_date").toLocalDate();
+                LocalDate startRent =  rs.getDate("start_rent").toLocalDate();
+                LocalDate endRent =  rs.getDate("end_rent").toLocalDate();
+                Double totalPrice = rs.getDouble("total_price");
+                String paymentNumber = rs.getString("payment_number");
+
+                Rents rent =  new Rents(idRents, idUser, idEstate, purchaseDate, startRent, endRent, totalPrice, paymentNumber);
+                rentsList.add(rent);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
         return rentsList;

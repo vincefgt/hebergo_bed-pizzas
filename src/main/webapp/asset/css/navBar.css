@@ -1,6 +1,6 @@
 /* Variable */
 :root {
-    --main-bg-color: #fff;
+    --main-bg-color: linear-gradient(to right top, #a3a3a3, #aeaeae, #b9b9b9, #c4c4c4, #cfcfcf, #cfcfd1, #cecfd4, #cdd0d6, #bcc7d0, #aabfc7, #97b6bb, #88aeab);
     --main-bg-color-hover: #fff;
     --main-bg-color-active: #fff;
 }
@@ -13,8 +13,13 @@
     font-size: 16px;
 }
 
-body {
-    padding-bottom: 250px;
+body main {
+    background-image: var(--main-bg-color);
+    padding-bottom: 50px;
+}
+
+h1 {
+    font-family: fantasy;
 }
 
 /* navBar */
@@ -31,6 +36,7 @@ header section {
     min-height: 140px;
     display: flex;
     align-items: center;
+    background-color: var(--main-bg-color) !important;
 }
 
 .container-fluid {
@@ -133,10 +139,34 @@ header section {
 }
 
 .modal-close-btn:hover {
+    transform: rotate(90deg);
     background: #f7f7f7;
     color: #222;
 }
 
+.modal-close-btn::before,
+.modal-close-btn::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: #666;
+    transition: background 0.2s;
+}
+
+.modal-close-btn::before {
+    transform: rotate(45deg);
+}
+
+.modal-close-btn::after {
+    transform: rotate(-45deg);
+}
+
+.modal-close-btn:hover::before,
+.modal-close-btn:hover::after {
+    background: #29272a;
+
+}
 .modal-menu {
     display: flex;
     flex-direction: column;
@@ -150,6 +180,7 @@ header section {
     gap: 15px;
     padding: 18px 20px;
     background: white;
+    text-decoration: none;
     border: 2px solid #e0e0e0;
     border-radius: 12px;
     cursor: pointer;
@@ -290,11 +321,12 @@ header section {
     display: flex;
     background: white;
     border-radius: 50px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border: 1px solid #bfbfbf;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
     overflow: visible;
     position: relative;
-    width: 100%;
-    max-width: 850px;
+    /*width: 100%;*/
+    /*max-width: 850px;*/
     margin: 0 auto;
 }
 
@@ -399,7 +431,7 @@ header section {
     padding: 30px;
     display: none;
     z-index: 1000;
-    width: 850px;
+    width: 500px;
     max-width: 90vw;
 }
 
@@ -464,7 +496,7 @@ header section {
 
 .calendars-container {
     display: flex;
-    gap: 40px;
+    gap: 20px;
 }
 
 .calendar {
@@ -844,4 +876,47 @@ header section {
     transform: rotate(-45deg);
     top: 21px;
     left: 8px;
+}
+
+section {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+
+@media (max-width: 425px) {
+    /* CSS mobile ici */
+
+    .search-bar {
+        flex-direction: column;
+        margin-top: 30px;
+    }
+
+    label {
+        font-size: 16px !important;
+    }
+
+    .calendars-container {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .options-and-price-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #priceFilterSection {
+        width: 315px;
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
+}
+
+@media (min-width: 426px) and (max-width: 1023px) {
+    #calendarDropdown {
+        margin: 70px;
+    }
 }

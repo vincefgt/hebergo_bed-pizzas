@@ -1,0 +1,86 @@
+#card-detail {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 450px; /* Hauteur fixe au lieu de min-height */
+    transition: ease-out 0.5s;
+}
+
+#card-detail a {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+}
+
+#card-detail .card-body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Évite le débordement */
+}
+
+#card-detail .card-text {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limite à 3 lignes */
+    -webkit-box-orient: vertical;
+}
+
+#card-detail .card-footer {
+    margin-top: auto;
+    background-color: transparent;
+    border-top: 1px solid rgba(0,0,0,.125);
+    flex-shrink: 0; /* Empêche la compression du footer */
+}
+
+#card-detail:hover {
+    transform: scale(1.03);
+    box-shadow: 0 5px 10px #c3cfe2 !important;
+}
+
+#card-img {
+    border-radius: 20px;
+    object-fit: cover;
+    height: 200px;
+    flex-shrink: 0; /* Empêche la compression de l'image */
+}
+
+.card-footer p {
+    margin-bottom: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    #card-detail {
+        height: 380px; /* Hauteur fixe pour mobile */
+        max-width: 90% !important;
+        margin: 0 auto;
+    }
+
+    #card-img {
+        height: 160px;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    #card-detail {
+        height: 420px; /* Hauteur fixe pour tablette */
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    #card-detail {
+        height: 440px; /* Hauteur fixe pour tablette large */
+    }
+}

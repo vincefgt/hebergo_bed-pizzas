@@ -10,14 +10,15 @@
 
 .carousel-item {
     padding: 20px;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    height: 480px !important;
+    background: linear-gradient(135deg, #c3cfe2 0%, #f5f7fa 50%, #c3cfe2 100%);
     -webkit-transition: -webkit-transform 4.2s ease-in-out !important;
     -o-transition: -o-transform 4.2s ease-in-out !important;
     transition: transform 4.2s ease-in-out !important;
 }
 
-.carousel-item div img {
-    width: 443px !important;
+.carousel-item img {
+    height: 310px !important;
 }
 
 /* Flexbox uniquement sur le slide actif */
@@ -29,7 +30,7 @@
 }
 
 #carouselExampleAutoplaying .carousel-item img {
-    width: calc(33.333% - 10px);
+    width: calc(100% - 10px);
     height: 180px;
     object-fit: cover;
     border-radius: 15px;
@@ -100,15 +101,11 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .carousel-item {
+        position: relative;
         flex-direction: column;
         gap: 10px;
-    }
-
-    #carouselExampleAutoplaying .carousel-item img {
-        width: 100%;
-        height: 300px;
     }
 
     .carousel-control-prev,
@@ -123,5 +120,67 @@
 
     .carousel-control-next {
         right: 10px;
+    }
+
+    .carousel-item {
+        height: 520px;
+    }
+
+    .carousel-footer p strong {
+        position: absolute;
+        bottom: 0;
+        padding: 10px;
+    }
+}
+
+/* ===== Version mobil S ===== */
+@media (max-width: 320px) {
+    .carousel-item {
+        position: relative;
+    }
+
+    .carousel-item {
+        min-height: 530px;
+    }
+
+    .carousel-footer {
+        position: absolute;
+        bottom: 0;
+        padding: 10px;
+    }
+
+    .carousel-footer p {
+        margin-left: 165px;
+    }
+}
+
+/* ===== Version mobil M ===== */
+@media (min-width: 321px) and (max-width: 375px) {
+    .carousel-item {
+        position: relative;
+    }
+
+    .carousel-item {
+        min-height: 500px;
+    }
+
+    .carousel-footer {
+        position: absolute;
+        bottom: 0;
+        padding: 10px;
+    }
+
+    .carousel-footer p {
+        margin-left: 210px;
+    }
+}
+
+@media (min-width: 768px) {
+    #card-details {
+        margin-left: 30px;
+    }
+
+    .carousel-footer p {
+        float: right;
     }
 }

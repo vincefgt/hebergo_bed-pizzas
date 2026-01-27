@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS USERS (
    id_user INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
    id_admin INT,
    id_role INT NOT NULL DEFAULT 1,
-   id_address INT UNIQUE NOT NULL,
+   id_address INT,
    firstname VARCHAR(50) NOT NULL,
    lastname VARCHAR(50) NOT NULL,
    phone VARCHAR(10) UNIQUE NOT NULL,
