@@ -25,9 +25,10 @@
 </head>
 <body>
 
-<main>
-  <%-- L'ajout de la navBar --%>
-  <c:import url="public/navBar.jsp" />
+<%-- L'ajout de la navBar --%>
+<c:import url="public/navBar.jsp" />
+
+<main class="pt-4">
 
   <c:if test="${not empty sessionScope.user}">
     <div style="justify-content: center; display: flex; align-items: center; flex-direction: column;" id="welcome">

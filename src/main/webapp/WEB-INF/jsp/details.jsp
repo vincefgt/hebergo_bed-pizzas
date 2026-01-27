@@ -25,7 +25,6 @@
     <!-- header -->
     <c:import url="../../public/navBar.jsp" />
 
-
     <main>
         <h1 class="display-2 text-center mb-5">${estate.nameEstate}</h1>
             <div class="col-10 offset-1">
@@ -53,7 +52,6 @@
                                 <div class="col-10">
                                     <p class="fs-6">Sélectionnez vos dates: </p>
                                     <input type="text" id="date-range" name="dates"  placeholder="Quand souhaitez-vous partir ?" readonly>
-
 
                                     <input type="hidden" id="start-date" name="start-rent">
                                     <input type="hidden" id="end-date" name="end-rent">

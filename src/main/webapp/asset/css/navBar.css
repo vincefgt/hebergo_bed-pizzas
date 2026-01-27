@@ -1,6 +1,6 @@
 /* Variable */
 :root {
-    --main-bg-color: #f8f4f1;
+    --main-bg-color: linear-gradient(to right top, #a3a3a3, #aeaeae, #b9b9b9, #c4c4c4, #cfcfcf, #cfcfd1, #cecfd4, #cdd0d6, #bcc7d0, #aabfc7, #97b6bb, #88aeab);
     --main-bg-color-hover: #fff;
     --main-bg-color-active: #fff;
 }
@@ -12,6 +12,12 @@
     padding: 0;
     font-size: 16px;
 }
+
+body main {
+    background-image: var(--main-bg-color);
+    padding-bottom: 50px;
+}
+
 h1 {
     font-family: fantasy;
 }

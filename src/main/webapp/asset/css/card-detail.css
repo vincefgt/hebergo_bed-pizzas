@@ -3,7 +3,7 @@
     display: flex;
     flex-direction: column;
     height: 450px; /* Hauteur fixe au lieu de min-height */
-    transition: ease-in-out 0.5s;
+    transition: ease-out 0.5s;
 }
 
 #card-detail a {

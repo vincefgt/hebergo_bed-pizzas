@@ -9,7 +9,7 @@
 --%>
 
 <header>
-    <nav class="navbar bg-body-tertiary mb-3">
+    <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
             <a href="${pageContext.request.contextPath}/index.jsp">
             <img id="logo" src="${pageContext.request.contextPath}/asset/images/Bed_and_Pizza_logo.jpg" alt="Bed and Pizza logo">
@@ -66,7 +66,6 @@
             </div>
         </div>
 
-
         <!-- Lien Options supplémentaires et filtres prix -->
         <div class="options-and-price-wrapper">
             <div class="additional-options-container">
@@ -99,6 +98,7 @@
     <div class="hamburger-modal" id="hamburgerModal">
         <div class="hamburger-modal-content">
             <button class="modal-close-btn" id="closeModal"></button>
+            <c:if test="${empty sessionScope.user}">
             <div class="modal-menu">
                 <a href="user-servlet?actionUser=login" class="modal-menu-item">
                     <i class="bi bi-box-arrow-in-right"><span> Se connecter</span></i>
@@ -107,6 +107,7 @@
                     <i class="bi bi-person-plus"><span> Créer compte</span></i>
                 </a>
             </div>
+            </c:if>
             <c:if test="${not empty sessionScope.user}">
             <div class="modal-menu">
                 <a href="user-servlet?actionUser=paramUser" class="modal-menu-item" id="paramMenu" >
