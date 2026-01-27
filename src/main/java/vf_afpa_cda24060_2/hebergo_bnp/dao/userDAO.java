@@ -8,7 +8,6 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class userDAO {
     @Resource(name = "jdbc/MyDataSource")
@@ -174,7 +173,7 @@ public class userDAO {
     }
 
     // DELETE - Hard delete
-    public boolean delete(int idUser) throws SQLException {
+    public boolean deleteById(int idUser) throws SQLException {
         String sql = "DELETE FROM USERS WHERE id_user = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -232,4 +231,6 @@ public class userDAO {
         }
         return false;
     }
+
+
 }

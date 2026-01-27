@@ -41,8 +41,7 @@ public class EstateServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        //if (action == null) action = "list";
-
+        int idEstate;
         try {
             HttpSession session = request.getSession(false);
             List<Estate> estatesList;
@@ -52,9 +51,8 @@ public class EstateServlet extends HttpServlet {
                     request.getRequestDispatcher("/WEB-INF/jsp/add-estate.jsp").forward(request, response);
                     break;
                 case "delete":
-                    int idEstate = Integer.parseInt(request.getParameter("idEstate"));
-                    estateDao.deleteEstate(idEstate);
-                    //TODO if provenance
+                    estateDao.deleteEstate(Integer.parseInt(request.getParameter("idEstate")));
+                    //TODO if provenance do ...
                     //response.sendRedirect("EstateServlet?action=estate");
                     break;
                 case "carrousel":

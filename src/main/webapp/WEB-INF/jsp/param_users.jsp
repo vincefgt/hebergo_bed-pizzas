@@ -19,15 +19,13 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
-<body>
+<body data-context-path="${pageContext.request.contextPath}">
 <c:if test="${empty sessionScope.user}">
     <c:redirect url="/index.jsp"/>
 </c:if>
-// Show success message if present
 <c:if test="${not empty successMessage}">
     alert('${successMessage}');
 </c:if>
-// Show error message if present
 <c:if test="${not empty errorMessage}">
     alert('${errorMessage}');
 </c:if>
@@ -113,7 +111,6 @@
                     <c:when test="${not empty estatesList}">
                         <div class="estates-grid">
                             <c:forEach var="estate" items="${estatesList}">
-                               <%-- <a href="${pageContext.request.contextPath}/detailsServlet?idEstate=${estate.id}"> --%>
                                     <div class="estate-card">
                                         <a href="detailsServlet?idEstate=${estate.idEstate}" style="text-decoration: none;">
                                         <div class="estate-image">
@@ -222,9 +219,11 @@
                                 </thead>
                                 <tbody>
                                 <c:forEach var="estate" items="${list}">
-                                    <tr  onclick="populateForm('${estate.idEstate}','${estate.nameEstate}','${estate.dailyPrice}',
+                                    <tr onclick="window.location.href='${pageContext.request.contextPath}/detailsServlet?idEstate=${estate.idEstate}'"
+                                        style="cursor: pointer;">
+                                    <%-- <tr  onclick="populateForm('${estate.idEstate}','${estate.nameEstate}','${estate.dailyPrice}',
                                                 '${estate.description}','${estate.idAdmin}','${estate.idUser}',
-                                                '${estate.idAddress}','${estate.photoEstate}')" style="overflow: hidden; cursor: pointer;">
+                                                '${estate.idAddress}','${estate.photoEstate}')" style="overflow: hidden; cursor: pointer;">--%>
                                         <td>${estate.idEstate}</td>
                                         <td class="estate-image-admin" ><img src="${pageContext.request.contextPath}/${estate.photoEstate}" alt=${estate.photoEstate}/></td>
                                         <td class="estate-title">${estate.nameEstate}</td>
@@ -235,7 +234,7 @@
                                         <td>
                                             <%--<a href="${pageContext.request.contextPath}/EstateServlet?action=delete&id=${estate.idEstate}"
                                                onclick="return confirm('Are you sure you want to delete this?')">Delete</a>--%>
-                                                <button class="btn-action btn-delete" onclick="deleteUserAdmin(${estate.idEstate})">Supprimer</button>
+                                                <button class="btn-action btn-delete" onclick="event.stopPropagation(); deleteEstateAdmin(${estate.idEstate}, event)">Supprimer</button>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -299,7 +298,7 @@
                                          <td><span class="estate-status ${user.isDeleted ? 'pending' : 'valid'}">
                                                  ${user.isDeleted ? 'Non actif' : 'Actif'}</span>
                                          </td>
-                                         <td><button class="btn-action btn-delete" onclick="deleteUserAdmin(${user.idUser})">Supprimer</button>
+                                         <td><button class="btn-action btn-delete" onclick="event.stopPropagation(); deleteUserAdmin(${user.idUser},event)">Supprimer</button>
                                          </td>
                                     </tr>
                                 </c:forEach>
@@ -324,6 +323,10 @@
 <jsp:include page="/public/footer.jsp" />
 
 // function in AdminJS
+<script>
+    // Define contextPath globally before loading admin.js
+    window.contextPath = '${pageContext.request.contextPath}';
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"

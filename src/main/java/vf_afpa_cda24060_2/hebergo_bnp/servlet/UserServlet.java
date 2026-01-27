@@ -98,8 +98,10 @@ public class UserServlet extends HttpServlet {
 
                     } catch (NumberFormatException e) {
                         request.setAttribute("errorMessage", "Format d'ID invalide");
-                        request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
-               }
+                        request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);}
+                    break;
+                case "deleteUser":
+                    userDAO.deleteById(Integer.parseInt(request.getParameter("idUser")));
                     break;
                 default:
                     request.getRequestDispatcher("index.jsp").forward(request, response);

@@ -35,6 +35,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
     }
 });
 
+function getContextPath() {
+    return document.body.getAttribute('data-context-path') || '';
+}
+
 // Search Estate by ID
 async function searchEstate() {
     const estateId = document.getElementById('searchEstateId').value.trim();
@@ -43,11 +47,9 @@ async function searchEstate() {
         alert('Veuillez entrer un ID de logement');
         return;
     }
-
     try {
         const response = await fetch(window.contextPath + '/AdminServlet?action=searchEstate&id=' + estateId);
         const data = await response.json();
-
         const tableBody = document.getElementById('estateTableBody');
         const table = document.getElementById('estateTable');
         const emptyState = document.getElementById('estateEmptyState');
@@ -206,43 +208,57 @@ function modifyUser(userId) {
 }
 
 // Delete Estate (Admin)
-async function deleteEstateAdmin(estateId) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce logement ?')) {
+async function deleteEstateAdmin(estateId, event) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce logement id ' + estateId + ' ?')) {
         try {
-            const response = await fetch(window.contextPath + '/EstateServlet?action=delete&idEstate=' + estateId);
-
+            const response = await fetch(getContextPath()+ '/EstateServlet?action=delete&idEstate=' + estateId);
             if (response.ok) {
-                alert('Logement supprimé avec succès');
-                document.getElementById('searchEstateId').value = '';
-                document.getElementById('estateTable').style.display = 'none';
-                document.getElementById('estateEmptyState').style.display = 'block';
-                document.getElementById('estateEmptyState').textContent = 'Aucun résultat. Effectuez une recherche pour afficher les logements.';
-            } else {
-                alert('Erreur lors de la suppression du logement');
+                const row = event.target.closest('tr');
+                if (row) {
+                    setTimeout(() => {
+                        row.remove();
+                        // Vérifier s'il reste des lignes dans le tableau
+                        const tableBody = document.querySelector('#estateTable');
+                        if (tableBody && tableBody.children.length === 0) {
+                            document.getElementById('estateTable').style.display = 'none';
+                            const emptyState = document.getElementById('estateEmptyState');
+                            if (emptyState) {
+                                emptyState.style.display = 'block';
+                                emptyState.textContent = 'Aucun logement disponible.';
+                            }
+                        }
+                    }, 300);
+                    alert('Logement supprimé avec succès');
+                }
             }
         } catch (error) {
             console.error('Erreur:', error);
-            alert('Erreur lors de la suppression du logement');
+            alert('Erreur lors de la suppression du logement !');
         }
     }
 }
 
 // Delete User (Admin)
-async function deleteUserAdmin(userId) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+async function deleteUserAdmin(userId, event) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur id '+userId+'?')) {
         try {
-            const response = await fetch(window.contextPath + '/AdminServlet?action=deleteUser&id=' + userId, {
-                method: 'POST'
-            });
-
+            const response = await fetch(getContextPath()+ '/user-servlet?action=delete&idUser=' + userId);
             if (response.ok) {
-                alert('Utilisateur supprimé avec succès');
-                document.getElementById('searchUserId').value = '';
-                document.getElementById('userTable').style.display = 'none';
-                document.getElementById('userEmptyState').style.display = 'block';
-                document.getElementById('userEmptyState').textContent = 'Aucun résultat. Effectuez une recherche pour afficher les utilisateurs.';
-            } else {
-                alert('Erreur lors de la suppression de l\'utilisateur');
+                const rowUser = event.target.closest('tr');
+                if (rowUser) {
+                    rowUser.remove();
+                    // Vérifier s'il reste des lignes dans le tableau
+                    const tableBody = document.querySelector('#usersTable');
+                    if (tableBody && tableBody.children.length === 0) {
+                        document.getElementById('userTable').style.display = 'none';
+                        const emptyState = document.getElementById('estateEmptyState');
+                        if (emptyState) {
+                            emptyState.style.display = 'block';
+                            emptyState.textContent = 'Aucun logement disponible.';
+                        }
+                    }
+                }
+                alert('User supprimé avec succès');
             }
         } catch (error) {
             console.error('Erreur:', error);
@@ -278,7 +294,7 @@ async function deleteEstate(estateId) {
             card.style.pointerEvents = 'none';
         }
         // Use fetch API to delete without page reload
-        await fetch(window.contextPath+'/EstateServlet?action=delete&idEstate=' + estateId, {
+        await fetch(getContextPath() +'/EstateServlet?action=delete&idEstate=' + estateId, {
             method: 'GET',
             headers: {'X-Requested-With': 'XMLHttpRequest'}
         })
@@ -330,12 +346,3 @@ async function deleteEstate(estateId) {
     }
 }
 
-// admin
-function searchUser() {
-    const userIdInput = document.getElementById('searchUserId');
-    const userId = userIdInput.value.trim();
-    if (!userId) {
-        alert('Veuillez entrer un ID utilisateur');
-        return;}
-    window.location.href = window.contextPath + '/user-servlet?actionUser=researchUser&idUser=' + userId;
-}
