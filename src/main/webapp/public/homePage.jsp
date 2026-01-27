@@ -15,7 +15,7 @@
                 <div id="card-detail" class="card shadow h-100 w-100">
                     <a href="detailsServlet?idEstate=${estate.idEstate}" class="text-decoration-none">
                         <div class="card-img-top">
-                            <img id="card-img" class="p-2 mt-2 w-100" src="${estate.photoEstate}/photo.jpg" alt="Photo ${estate.nameEstate}">
+                            <img id="card-img" class="p-2 mt-2 w-100" src="${estate.photoEstate}" alt="Photo ${estate.nameEstate}">
                         </div>
 
                         <div class="card-body d-flex flex-column">

@@ -110,16 +110,16 @@
                 </div>
 
                 <c:choose>
-                    <c:when test="${not empty listHost}">
+                    <c:when test="${not empty estatesList}">
                         <div class="estates-grid">
-                            <c:forEach var="estate" items="${listHost}">
+                            <c:forEach var="estate" items="${estatesList}">
                                <%-- <a href="${pageContext.request.contextPath}/detailsServlet?idEstate=${estate.id}"> --%>
                                     <div class="estate-card">
                                         <a href="detailsServlet?idEstate=${estate.idEstate}" style="text-decoration: none;">
                                         <div class="estate-image">
                                             <c:choose>
                                                 <c:when test="${not empty estate.photoEstate}">
-                                                    <img src="${estate.photoEstate}/photo.jpg" alt="${estate.nameEstate}">
+                                                    <img src="${estate.photoEstate}" alt="${estate.nameEstate}">
                                                 </c:when>
                                                 <c:otherwise>
                                                     Pas d'image disponible
@@ -226,7 +226,7 @@
                                                 '${estate.description}','${estate.idAdmin}','${estate.idUser}',
                                                 '${estate.idAddress}','${estate.photoEstate}')" style="overflow: hidden; cursor: pointer;">
                                         <td>${estate.idEstate}</td>
-                                        <td class="estate-image-admin" ><img src="${pageContext.request.contextPath}/${estate.photoEstate}/photo.jpg" alt=${estate.photoEstate}/></td>
+                                        <td class="estate-image-admin" ><img src="${pageContext.request.contextPath}/${estate.photoEstate}" alt=${estate.photoEstate}/></td>
                                         <td class="estate-title">${estate.nameEstate}</td>
                                         <td class="estate-price">${estate.dailyPrice} €</td>
                                         <td> <span class="estate-status ${estate.valid ? 'valid' : 'pending'}">

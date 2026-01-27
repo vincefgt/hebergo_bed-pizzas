@@ -28,7 +28,7 @@
     <main>
         <h1 class="display-2 text-center mb-5">${estate.nameEstate}</h1>
             <div class="col-10 offset-1">
-                <img class="col-12 mt-3 col-xl-8 offset-xl-2" id="details-img" src="${estate.photoEstate}/photo.jpg">
+                <img class="col-12 mt-3 col-xl-8 offset-xl-2" id="details-img" src="${estate.photoEstate}">
                 <div class="container mb-5 mt-5">
                     <c:if test="${estate.isValid()}">
                         <form method="post"  action="<c:url value="/detailsServlet" />">

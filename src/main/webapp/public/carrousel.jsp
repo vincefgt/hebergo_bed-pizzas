@@ -27,7 +27,7 @@
                 <div class="carousel-item ${status.first ? 'active' : ''}">
                     <div class="row">
                         <div>
-                            <img src="${estate.photoEstate}/photo.jpg" class="d-block col-12" alt="Photo ${status.index + 1}">
+                            <img src="${estate.photoEstate}" class="d-block col-12" alt="Photo ${status.index + 1}">
                         </div>
                         <div class="col-12 mt-4">
                             <h5 class="text-dark">${estate.nameEstate}</h5>
