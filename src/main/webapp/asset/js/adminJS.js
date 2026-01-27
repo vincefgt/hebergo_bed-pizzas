@@ -45,7 +45,7 @@ async function searchEstate() {
     }
 
     try {
-        const response = await fetch('${pageContext.request.contextPath}/AdminServlet?action=searchEstate&id=' + estateId);
+        const response = await fetch(window.contextPath + '/AdminServlet?action=searchEstate&id=' + estateId);
         const data = await response.json();
 
         const tableBody = document.getElementById('estateTableBody');
@@ -105,7 +105,7 @@ async function searchUser() {
         return;}
 
     try {
-        const response = await fetch('${pageContext.request.contextPath}/user-servlet?actionUser=researchUser&idUser=' + userId);
+        const response = await fetch(window.contextPath + '/user-servlet?actionUser=researchUser&idUser=' + userId);
         const data = await response.json();
         const tableBody = document.getElementById('userTableBody');
         const table = document.getElementById('userTable');
@@ -160,7 +160,7 @@ async function searchUser() {
 // Toggle Estate Status
 async function toggleEstateStatus(estateId, currentStatus) {
     try {
-        const response = await fetch('${pageContext.request.contextPath}/AdminServlet?action=toggleEstateStatus&id=' + estateId + '&status=' + !currentStatus, {
+        const response = await fetch(window.contextPath + '/AdminServlet?action=toggleEstateStatus&id=' + estateId + '&status=' + !currentStatus, {
             method: 'POST'
         });
 
@@ -179,7 +179,7 @@ async function toggleEstateStatus(estateId, currentStatus) {
 // Toggle User Status
 async function toggleUserStatus(userId, currentStatus) {
     try {
-        const response = await fetch('${pageContext.request.contextPath}/AdminServlet?action=toggleUserStatus&id=' + userId + '&status=' + !currentStatus, {
+        const response = await fetch(window.contextPath + '/AdminServlet?action=toggleUserStatus&id=' + userId + '&status=' + !currentStatus, {
             method: 'POST'
         });
 
@@ -202,14 +202,14 @@ function modifyEstate(estateId) {
 
 // Modify User
 function modifyUser(userId) {
-    window.location.href = '${pageContext.request.contextPath}/user-servlet?actionUser=edit&id=' + userId;
+    window.location.href = window.contextPath + '/user-servlet?actionUser=edit&id=' + userId;
 }
 
 // Delete Estate (Admin)
 async function deleteEstateAdmin(estateId) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce logement ?')) {
         try {
-            const response = await fetch('${pageContext.request.contextPath}/EstateServlet?action=delete&idEstate=' + estateId);
+            const response = await fetch(window.contextPath + '/EstateServlet?action=delete&idEstate=' + estateId);
 
             if (response.ok) {
                 alert('Logement supprimé avec succès');
@@ -231,7 +231,7 @@ async function deleteEstateAdmin(estateId) {
 async function deleteUserAdmin(userId) {
     if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
         try {
-            const response = await fetch('${pageContext.request.contextPath}/AdminServlet?action=deleteUser&id=' + userId, {
+            const response = await fetch(window.contextPath + '/AdminServlet?action=deleteUser&id=' + userId, {
                 method: 'POST'
             });
 
@@ -257,7 +257,7 @@ function addNewItem() {
 
     // You can customize this based on what should be added
     if (confirm('Voulez-vous ajouter un nouveau logement ?')) {
-        window.location.href = '${pageContext.request.contextPath}/EstateServlet?action=add';
+        window.location.href = window.contextPath + '/EstateServlet?action=add';
     }
 }
 
@@ -337,5 +337,5 @@ function searchUser() {
     if (!userId) {
         alert('Veuillez entrer un ID utilisateur');
         return;}
-    window.location.href = '/user-servlet?actionUser=researchUser&idUser=' + userId;
+    window.location.href = window.contextPath + '/user-servlet?actionUser=researchUser&idUser=' + userId;
 }
