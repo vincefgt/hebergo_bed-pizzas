@@ -197,7 +197,7 @@ async function toggleUserStatus(userId, currentStatus) {
 
 // Modify Estate
 function modifyEstate(estateId) {
-    window.location.href = '${pageContext.request.contextPath}/detailsServlet?idEstate=' + estateId;
+    window.location.href = window.contextPath + '/detailsServlet?idEstate=' + estateId;
 }
 
 // Modify User
@@ -266,8 +266,8 @@ function resetForm() {
     document.querySelector('form').reset();}
 
 function editEstate(estateId) {
-    window.location.href = '${pageContext.request.contextPath}/detailsServlet?idEstate=' + estateId;}
-
+    window.location.href =  window.contextPath + "/detailsServlet?idEstate=" + estateId;
+}
 //hostList
 async function deleteEstate(estateId) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce logement ?')) {
@@ -278,7 +278,7 @@ async function deleteEstate(estateId) {
             card.style.pointerEvents = 'none';
         }
         // Use fetch API to delete without page reload
-        await fetch('${pageContext.request.contextPath}/EstateServlet?action=delete&idEstate=' + estateId, {
+        await fetch(window.contextPath+'/EstateServlet?action=delete&idEstate=' + estateId, {
             method: 'GET',
             headers: {'X-Requested-With': 'XMLHttpRequest'}
         })

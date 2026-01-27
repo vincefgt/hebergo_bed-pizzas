@@ -41,7 +41,7 @@ public class EstateServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        if (action == null) action = "list";
+        //if (action == null) action = "list";
 
         try {
             HttpSession session = request.getSession(false);
@@ -52,9 +52,10 @@ public class EstateServlet extends HttpServlet {
                     request.getRequestDispatcher("/WEB-INF/jsp/add-estate.jsp").forward(request, response);
                     break;
                 case "delete":
-                    int id = Integer.parseInt(request.getParameter("id"));
-                    estateDao.deleteEstate(id);
-                    response.sendRedirect("EstateServlet?action=estate");
+                    int idEstate = Integer.parseInt(request.getParameter("idEstate"));
+                    estateDao.deleteEstate(idEstate);
+                    //TODO if provenance
+                    //response.sendRedirect("EstateServlet?action=estate");
                     break;
                 case "carrousel":
                     estatesList = estateDao.getAllEstates();
@@ -64,23 +65,17 @@ public class EstateServlet extends HttpServlet {
                 case "estate":
                     estatesList = estateDao.getAllEstates();
                     request.setAttribute("list", estatesList);
-                    request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request, response);
                     break;
                 case "hostList":
                     if (session != null && session.getAttribute("user") != null) {
                         estatesList = estateDao.findEstateByHost((User) session.getAttribute("user"));
-                        request.setAttribute("estatesList", estatesList);
-                    }
-                    request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+                        request.setAttribute("estatesList", estatesList);}
                     break;
                 case "searchEstate":
-                    id = Integer.parseInt(request.getParameter("idEstate"));
-                    estateDao.getEstateById(id);
+                    idEstate = Integer.parseInt(request.getParameter("idEstate"));
+                    estateDao.getEstateById(idEstate);
                     break;
                 default:
-                    estatesList = estateDao.getAllEstates();
-                    request.setAttribute("list", estatesList);
-                    request.getRequestDispatcher("/WEB-INF/jsp/estates.jsp").forward(request, response);
                     break;
             }
         } catch (Exception e) {
@@ -93,6 +88,7 @@ public class EstateServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             HttpSession session = request.getSession(false);
+
             if (session == null || session.getAttribute("user") == null) {
                 response.sendRedirect("login_users.jsp");
                 return;

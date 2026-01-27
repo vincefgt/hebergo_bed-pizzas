@@ -47,18 +47,10 @@
     </div>
 
   </div>
-
-
   <section>
-
         <%-- Le body de ma Home page --%>
         <jsp:include page="public/homePage.jsp" />
-
-
   </section>
-
-
-
 </main>
 
 <%-- L'ajout de mon footer --%>
