@@ -46,30 +46,28 @@
                 </div>
 
                 <div class="row mb-3">
-                   <!--<div class="col">
+                    <!--<div class="col">
                         <label for="idAdmin" class="form-label">ID Admin</label>
                         <input type="number" class="form-control" id="idAdmin" name="idAdmin"
                                value="${estate.idAdmin}" required>
-                    </div>
-                        <div class="col">
-                        <label for="idUser" class="form-label">ID User</label>
-                        <input type="number" class="form-control" id="idUser" name="idUser"
-                               value="${estate.idUser}" required>
                     </div>-->
+                    <input type="hidden"  class="form-control" id="idUser" name="idUser"
+                           value="${estate.idUser}" required>
+
                     <div class="col">
                         <label for="city" class="form-label">city</label>
                         <input type="text" class="form-control" id="Address" name="city"
-                               value="${estate.address}" required>
+                               value="${cityObj != null ? cityObj.labelCity : ''}" required>
                     </div>
                     <div class="col">
                         <label for="zip" class="form-label">code postal</label>
                         <input type="text" class="form-control" id="postal" name="zip"
-                               value="${estate.zip}" required>
+                               value="${cityObj != null ? cityObj.zipCode : ''}" required>
                     </div>
                     <div class="col">
                         <label for="Address" class="form-label">Address</label>
                         <input type="text" class="form-control" id="Address" name="address"
-                               value="${estate.address}" required>
+                               value="${addressObj != null ? addressObj.numberStreet : ''}" required>
                     </div>
                 </div>
 

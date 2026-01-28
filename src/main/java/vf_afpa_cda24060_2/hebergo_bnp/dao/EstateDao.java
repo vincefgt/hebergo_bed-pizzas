@@ -134,7 +134,7 @@ public class EstateDao {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (Exception e) {
-            throw new RuntimeException("Error deleting estate " + id, e);
+            throw new RuntimeException("Error deleting estate " + id + e);
         }
     }
 
@@ -155,4 +155,5 @@ public class EstateDao {
         }
         return estatesHost;
     }
+
 }

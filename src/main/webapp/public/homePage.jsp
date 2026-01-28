@@ -8,7 +8,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<div class="offset-1">
+<div class="col-10 offset-1">
     <div class="row">
         <c:forEach var="estate" items="${estatesList}">
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center mb-4">

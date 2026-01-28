@@ -10,8 +10,6 @@ function searchCity() {
 
 $("#searchField").on("click", searchCity);
 
-
-
 $("#destinationInput").on("keypress", function (e) {
     if (e.which === 13) {
         searchCity();

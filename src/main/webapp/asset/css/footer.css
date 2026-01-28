@@ -6,7 +6,6 @@ footer {
     width: 100%;
     background-color: #f8f4f1 !important;
     z-index: 1000;
-    contain: layout style paint;
 }
 
 /* Conteneur des colonnes du footer */

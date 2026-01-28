@@ -1,5 +1,6 @@
 package vf_afpa_cda24060_2.hebergo_bnp.servlet;
 
+import com.google.gson.Gson;
 import jakarta.annotation.Resource;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -9,10 +10,9 @@ import jakarta.servlet.http.*;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.AddressesDAO;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.CitiesDAO;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.EstateDao;
-import vf_afpa_cda24060_2.hebergo_bnp.model.Addresses;
-import vf_afpa_cda24060_2.hebergo_bnp.model.Cities;
-import vf_afpa_cda24060_2.hebergo_bnp.model.Estate;
-import vf_afpa_cda24060_2.hebergo_bnp.model.User;
+import vf_afpa_cda24060_2.hebergo_bnp.dao.userDAO;
+import vf_afpa_cda24060_2.hebergo_bnp.model.*;
+
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
@@ -41,8 +41,7 @@ public class EstateServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        //if (action == null) action = "list";
-
+        int idEstate;
         try {
             HttpSession session = request.getSession(false);
             List<Estate> estatesList;
@@ -52,10 +51,39 @@ public class EstateServlet extends HttpServlet {
                     request.getRequestDispatcher("/WEB-INF/jsp/add-estate.jsp").forward(request, response);
                     break;
                 case "delete":
-                    int idEstate = Integer.parseInt(request.getParameter("idEstate"));
+                    idEstate = Integer.parseInt(request.getParameter("idEstate"));
                     estateDao.deleteEstate(idEstate);
+                    // send response when delete is successful
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.getWriter().write("Success");
                     //TODO if provenance
                     //response.sendRedirect("EstateServlet?action=estate");
+                    break;
+                case "edit":
+                    try (Connection connection = dataSource.getConnection()) {
+                        idEstate = Integer.parseInt(request.getParameter("idEstate"));
+                        Estate estate = estateDao.getEstateById(idEstate);
+
+                        if (estate != null) {
+                            request.setAttribute("estate", estate);
+
+                            // get address
+                            AddressesDAO addressesDAO = new AddressesDAO();
+                            Addresses address = addressesDAO.findById(connection, estate.getIdAddress());
+                            request.setAttribute("addressObj", address);
+
+                            if (address != null) {
+                                // get city
+                                CitiesDAO citiesDAO = new CitiesDAO();
+                                Cities city = citiesDAO.findById(connection, address.getIdCity());
+                                request.setAttribute("cityObj", city);
+                            }
+                        }
+                        request.getRequestDispatcher("/WEB-INF/jsp/add-estate.jsp").forward(request, response);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    }
                     break;
                 case "carrousel":
                     estatesList = estateDao.getAllEstates();
@@ -72,8 +100,74 @@ public class EstateServlet extends HttpServlet {
                         request.setAttribute("estatesList", estatesList);}
                     break;
                 case "searchEstate":
-                    idEstate = Integer.parseInt(request.getParameter("idEstate"));
-                    estateDao.getEstateById(idEstate);
+                    try {
+                        String idEstateParam = request.getParameter("idEstate");
+                        if (idEstateParam == null || idEstateParam.trim().isEmpty()) {
+                            request.setAttribute("searchError", "ID de logement manquant");
+                            request.getRequestDispatcher("/user-servlet?actionUser=paramUser").forward(request, response);
+                            return;}
+
+                        idEstate = Integer.parseInt(idEstateParam);
+                        Estate estateFound = estateDao.getEstateById(idEstate);
+
+                        if (estateFound != null) {
+                            request.setAttribute("estateFound", estateFound);
+                            request.setAttribute("searchSuccess", true);
+                        } else {
+                            request.setAttribute("searchError", "Aucun logement trouvé avec l'ID : " + idEstate);}
+
+                        // Recharger toutes les données nécessaires pour la page param
+                        List<Estate> allEstates = estateDao.getAllEstates();
+                        request.setAttribute("list", allEstates);
+
+                        // Recharger les utilisateurs
+                        userDAO userDao = new userDAO();
+                        request.setAttribute("listUsers", userDao.findAll());
+
+                        // Recharger les estates de l'hôte si connecté
+                        if (session != null && session.getAttribute("user") != null) {
+                            List<Estate> hostEstates = estateDao.findEstateByHost((User) session.getAttribute("user"));
+                            request.setAttribute("estatesList", hostEstates);}
+                        request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+
+                    } catch (NumberFormatException e) {
+                        request.setAttribute("searchError", "Format d'ID invalide");
+                        request.getRequestDispatcher("/user-servlet?actionUser=paramUser").forward(request, response);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        request.setAttribute("searchError", "Erreur lors de la recherche : " + e.getMessage());
+                        request.getRequestDispatcher("/user-servlet?actionUser=paramUser").forward(request, response);}
+                    break;
+                case "searchEstate2":
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    try {
+                        String idParam = request.getParameter("idEstate");
+
+                        if (idParam == null || idParam.trim().isEmpty()) {
+                            response.getWriter().write("{}");
+                            return;
+                        }
+
+                        idEstate = Integer.parseInt(idParam);
+                        Estate estate = estateDao.getEstateById(idEstate);
+
+                        if (estate != null) {
+                            // Utiliser Gson ou Jackson pour convertir en JSON
+                            Gson gson = new Gson();
+                            String json = gson.toJson(estate);
+                            response.getWriter().write(json);
+                        } else {
+                            response.getWriter().write("{}");
+                        }
+
+                    } catch (NumberFormatException e) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        response.getWriter().write("{\"error\": \"ID invalide\"}");
+                    } catch (Exception e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.getWriter().write("{\"error\": \"Erreur serveur\"}");
+                    }
                     break;
                 default:
                     break;

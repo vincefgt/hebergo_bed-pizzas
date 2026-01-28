@@ -19,22 +19,20 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
-<body>
+<body data-context-path="${pageContext.request.contextPath}">
 <c:if test="${empty sessionScope.user}">
     <c:redirect url="/index.jsp"/>
 </c:if>
-// Show success message if present
 <c:if test="${not empty successMessage}">
     alert('${successMessage}');
 </c:if>
-// Show error message if present
 <c:if test="${not empty errorMessage}">
     alert('${errorMessage}');
 </c:if>
 <c:import url="/public/navBar.jsp" />
 
 <main>
-    <div class="main-container">
+    <div class="main-container pt-4">
         <!-- Header Profile -->
         <div class="profile-header">
             <h1>Bienvenue, ${sessionScope.user.firstname} ${sessionScope.user.lastname}</h1>
@@ -81,15 +79,16 @@
                             <label for="newPassword">Nouveau mot de passe (vide = inchangé)</label>
                             <input type="password" id="newPassword" name="newPassword" placeholder="" minlength="8">
                         </div>
+                        <%-- TODO delete button
                         <div class="form-group">
-                            <label for="confirmPassword">Confirmer nouveau mot de passe</label>
-                            <input type="password" id="confirmPassword" name="confirmPassword" minlength="8">
-                        </div>
-                        <div class="form-group full-width">
-                            <a href="${pageContext.request.contextPath}/index.jsp">
-                                <button type="button" class="btn btn-secondary">Supprimer compte</button>
-                            </a>
-                        </div>
+                             <label for="confirmPassword">Confirmer nouveau mot de passe</label>
+                             <input type="password" id="confirmPassword" name="confirmPassword" minlength="8">
+                         </div>
+                           <div class="form-group full-width">
+                             <a href="${pageContext.request.contextPath}/index.jsp">
+                                 <button type="button" class="btn btn-secondary">Supprimer compte</button>
+                             </a>
+                        </div>--%>
                     </div>
                     <div class="form-actions">
                         <a href="${pageContext.request.contextPath}/index.jsp">
@@ -100,7 +99,7 @@
                 </form>
             </div>
         </div>
-        <!-- Tab Content: Estates -->
+        <!-- Tab Content: Estates  CARDS-->
         <div id="estates-tab" class="tab-content">
             <div class="profile-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
@@ -113,7 +112,6 @@
                     <c:when test="${not empty estatesList}">
                         <div class="estates-grid">
                             <c:forEach var="estate" items="${estatesList}">
-                               <%-- <a href="${pageContext.request.contextPath}/detailsServlet?idEstate=${estate.id}"> --%>
                                     <div class="estate-card">
                                         <a href="detailsServlet?idEstate=${estate.idEstate}" style="text-decoration: none;">
                                         <div class="estate-image">
@@ -138,8 +136,8 @@
                                             </div>
                                             <div class="estate-footer">
                                                 <div class="estate-actions">
-                                                    <button class="icon-btn" onclick="editEstate(${estate.idEstate})" title="Modifier">✏️</button>
-                                                    <button class="icon-btn delete" onclick="deleteEstate(${estate.idEstate})" title="Supprimer">🗑️</button>
+                                                    <button class="icon-btn" onclick="editEstate(${estate.idEstate}); event.stopPropagation()" title="Modifier">✏️</button>
+                                                    <button class="icon-btn delete" onclick="deleteEstate(${estate.idEstate}); event.stopPropagation()" title="Supprimer">🗑️</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -169,45 +167,88 @@
                     <!-- Estate Management Section -->
                     <div class="admin-section">
                         <h3>Logements</h3>
+                        <!-- searchBar -->
                         <div class="search-container">
                             <label for="searchEstateId">Recherche ID Logement</label>
-                            <input type="text" id="searchEstateId" placeholder="Entrez l'ID du logement">
-                            <button class="btn-search" onclick="searchEstate()">Recherche</button>
-                        </div>
-
-                        <div id="estateResults">
-                            <table class="results-table" id="estateTable" style="display: none;">
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Logement</th>
-                                    <th>Propriétaire</th>
-                                    <th>Statut</th>
-                                    <th>Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody id="estateTableBody">
-                                <!-- Results will be inserted here -->
-                                </tbody>
-                            </table>
-                            <div id="estateEmptyState" class="empty-results">
-                                Aucun résultat. Effectuez une recherche pour afficher les logements.
+                            <div class="search-input-group" style="display: flex; align-items: center; justify-content: center; gap: 2rem;">
+                                <input type="text"
+                                       id="searchEstateId"
+                                       class="form-control"
+                                       placeholder="Entrez l'ID du logement"
+                                       autocomplete="off"
+                                       value="${param.idEstate}">
+                                <button class="btn btn-primary" onclick="searchEstate3()">
+                                    <i class="bi bi-search"></i> Rechercher
+                                </button>
+                                <button class="btn btn-secondary" onclick="resetSearchEstate()">
+                                    <i class="bi bi-x-circle"></i> Réinitialiser
+                                </button>
                             </div>
                         </div>
-                        <table class="results-table" id="estateTable" style="display: none;">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Logement</th>
-                                <th>Propriétaire</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody id="estateTableBody">
-                            <!-- Results will be inserted here -->
-                            </tbody>
-                        </table>
+                        <!-- Affichage des résultats de recherche -->
+                        <div id="searchResults" style="margin-top: 20px;">
+                            <!-- Message de succès -->
+                            <c:if test="${not empty searchSuccess and searchSuccess}">
+                                <div class="alert alert-success" role="alert">Logement trouvé avec succès !</div>
+                            </c:if>
+                            <!-- Message d'erreur -->
+                            <c:if test="${not empty searchError}">
+                                <div class="alert alert-warning" role="alert">${searchError}</div>
+                            </c:if>
+                            <!-- Tableau des résultats -->
+                            <c:choose>
+                                <c:when test="${not empty estateFound}">
+                                    <table class="results-table table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Photo</th>
+                                            <th>Nom</th>
+                                            <th>Prix/jour</th>
+                                            <th>Statut</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr onclick="window.location.href='${pageContext.request.contextPath}/detailsServlet?idEstate=${estateFound.idEstate}'"
+                                            style="cursor: pointer;">
+                                            <td>${estateFound.idEstate}</td>
+                                            <td class="estate-image-admin">
+                                                <c:choose>
+                                                    <c:when test="${not empty estateFound.photoEstate}">
+                                                        <img src="${pageContext.request.contextPath}/${estateFound.photoEstate}"
+                                                             alt="${estateFound.nameEstate}"
+                                                             style="max-width: 80px; height: auto;">
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span>Pas d'image</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td class="estate-title">${estateFound.nameEstate}</td>
+                                            <td class="estate-price">${estateFound.dailyPrice} €</td>
+                                            <td><span class="estate-status ${estateFound.valid ? 'valid' : 'pending'}">
+                                                    ${estateFound.valid ? 'Actif' : 'Non actif'}
+                                            </span></td>
+                                            <td>
+                                                <button class="btn-action btn-delete"
+                                                        onclick="event.stopPropagation(); deleteEstateAdmin(${estateFound.idEstate}, event)">Supprimer
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="empty-results" id="estateEmptyState">
+                                        <i class="bi bi-search" style="font-size: 48px; color: #6c757d;"></i>
+                                        <p>Utilisez le formulaire ci-dessus pour rechercher un logement.</p>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                        <hr style="margin: 30px 0;"> <!-- Séparateur -->
+                        <!-- listTable Estate-->
                         <div class="table-responsive" style="overflow: auto; max-height: 400px; margin: auto;">
                             <table class="table table-striped table-hover" id="estateTable">
                                 <thead style="position: sticky; top: 0;">
@@ -222,9 +263,11 @@
                                 </thead>
                                 <tbody>
                                 <c:forEach var="estate" items="${list}">
-                                    <tr  onclick="populateForm('${estate.idEstate}','${estate.nameEstate}','${estate.dailyPrice}',
+                                    <tr onclick="window.location.href='${pageContext.request.contextPath}/detailsServlet?idEstate=${estate.idEstate}'"
+                                        style="cursor: pointer;">
+                                    <%-- <tr  onclick="populateForm('${estate.idEstate}','${estate.nameEstate}','${estate.dailyPrice}',
                                                 '${estate.description}','${estate.idAdmin}','${estate.idUser}',
-                                                '${estate.idAddress}','${estate.photoEstate}')" style="overflow: hidden; cursor: pointer;">
+                                                '${estate.idAddress}','${estate.photoEstate}')" style="overflow: hidden; cursor: pointer;">--%>
                                         <td>${estate.idEstate}</td>
                                         <td class="estate-image-admin" ><img src="${pageContext.request.contextPath}/${estate.photoEstate}" alt=${estate.photoEstate}/></td>
                                         <td class="estate-title">${estate.nameEstate}</td>
@@ -235,7 +278,7 @@
                                         <td>
                                             <%--<a href="${pageContext.request.contextPath}/EstateServlet?action=delete&id=${estate.idEstate}"
                                                onclick="return confirm('Are you sure you want to delete this?')">Delete</a>--%>
-                                                <button class="btn-action btn-delete" onclick="deleteUserAdmin(${estate.idEstate})">Supprimer</button>
+                                                <button class="btn-action btn-delete" onclick="event.stopPropagation(); deleteEstateAdmin(${estate.idEstate}, event)">Supprimer</button>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -248,69 +291,104 @@
                     <div class="admin-section">
                         <h3>Recherche ID Guest / Host</h3>
                         <div class="search-container">
-                            <label for="searchUserId">Recherche ID Guest / Host</label>
-                            <input type="text" id="searchUserId" placeholder="Entrez l'ID de l'utilisateur">
-                            <button class="btn-search" onclick="searchUser()">Recherche</button>
+                        <label for="searchUserId">Recherche ID User</label>
+                        <div class="search-input-group" style="display: flex; align-items: center; justify-content: center; gap: 2rem;">
+                            <input type="text"
+                                   id="searchUserId"
+                                   class="form-control"
+                                   placeholder="Entrez l'ID du User"
+                                   autocomplete="off"
+                                   value="${param.idUser}">
+                            <button class="btn btn-primary" onclick="searchUser2(); event.stopPropagation()">
+                                <i class="bi bi-search"></i> Rechercher
+                            </button>
+                            <button class="btn btn-secondary" onclick="resetSearchUser(); event.stopPropagation()">
+                                <i class="bi bi-x-circle"></i> Réinitialiser
+                            </button>
                         </div>
-
-                        <div id="userResults">
-                            <table class="results-table" id="userTable" style="display: none;">
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Type</th>
-                                    <th>Nom</th>
-                                    <th>Email</th>
-                                    <th>Statut</th>
-                                    <th>Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody id="userTableBody">
-                                <!-- Results will be inserted here -->
-                                </tbody>
-                            </table>
-                            <div id="userEmptyState" class="empty-results">
-                                Aucun résultat. Effectuez une recherche pour afficher les utilisateurs.
-                            </div>
+                    </div>
+                        <!-- Affichage des résultats de recherche -->
+                        <div id="searchResultsUser" style="margin-top: 20px;">
+                            <!-- Message de succès -->
+                            <c:if test="${not empty userSearchSuccess and userSearchSuccess}">
+                                <div class="alert alert-success" role="alert">User trouvé avec succès !</div>
+                            </c:if>
+                            <!-- Message d'erreur -->
+                            <c:if test="${not empty userSearchError}">
+                                <div class="alert alert-warning" role="alert">${userSearchError}</div>
+                            </c:if>
+                            <!-- Tableau des résultats -->
+                            <c:choose>
+                                <c:when test="${not empty userFound}">
+                                    <table class="results-table table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Firstname</th>
+                                            <th>Lastname</th>
+                                            <th>Email</th>
+                                            <th>Statut</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>${userFound.idUser}</td>
+                                            <td>${userFound.firstname}</td>
+                                            <td>${userFound.lastname}</td>
+                                            <td>${userFound.email}</td>
+                                            <td><span class="estate-status ${userFound.isDeleted ? 'pending' : 'valid'}">
+                                                    ${userFound.isDeleted ? 'Non actif' : 'Actif'}</span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="empty-results" id="userEmptyState">
+                                        <i class="bi bi-search" style="font-size: 48px; color: #6c757d;"></i>
+                                        <p>Utilisez le formulaire ci-dessus pour rechercher un user.</p>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
-
-                        <div class="table-responsive" style="overflow: auto; max-height: 400px;">
-                            <table class="table table-striped table-hover" id="usersTable">
-                                <thead style="position: sticky; top: 0;">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Firstname</th>
-                                    <th>Lastname</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:forEach var="user" items="${listUsers}">
-                                     <tr  onclick="populateForm('${user.idUser}','${user.idAdmin}','${user.idRole}',
-                                             '${user.idAddress}','${user.firstname}','${user.lastname}',
-                                             '${user.phone}','${user.email}','${user.isDeleted}')"
-                                              style="overflow: hidden; cursor: pointer;">
-                                         <td>${user.idUser}</td>
-                                         <td style="font-weight: bold">${user.firstname}</td>
-                                         <td style="font-weight: bold">${user.lastname}</td>
-                                         <td style="font-size: 12px">${user.email}</td>
-                                         <td><span class="estate-status ${user.isDeleted ? 'pending' : 'valid'}">
-                                                 ${user.isDeleted ? 'Non actif' : 'Actif'}</span>
-                                         </td>
-                                         <td><button class="btn-action btn-delete" onclick="deleteUserAdmin(${user.idUser})">Supprimer</button>
-                                         </td>
+                        <hr style="margin: 30px 0;"> <!-- Séparateur -->
+                            <div class="table-responsive" style="overflow: auto; max-height: 400px;">
+                                <table class="table table-striped table-hover" id="usersTable">
+                                    <thead style="position: sticky; top: 0;">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Firstname</th>
+                                        <th>Lastname</th>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                       <%-- <th>Action</th>--%>
                                     </tr>
-                                </c:forEach>
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                    <c:forEach var="user" items="${listUsers}">
+                                         <tr  onclick="populateForm('${user.idUser}','${user.idAdmin}','${user.idRole}',
+                                                 '${user.idAddress}','${user.firstname}','${user.lastname}',
+                                                 '${user.phone}','${user.email}','${user.isDeleted}')"
+                                                  style="overflow: hidden; cursor: pointer;">
+                                             <td>${user.idUser}</td>
+                                             <td style="font-weight: bold">${user.firstname}</td>
+                                             <td style="font-weight: bold">${user.lastname}</td>
+                                             <td style="font-size: 12px">${user.email}</td>
+                                             <td><span class="estate-status ${user.isDeleted ? 'pending' : 'valid'}">
+                                                     ${user.isDeleted ? 'Non actif' : 'Actif'}</span>
+                                             </td>
+                                             <%--<td><button class="btn-action btn-delete" onclick="event.stopPropagation(); deleteUserAdmin(${user.idUser},event)">Supprimer</button>--%>
+                                             </td>
+                                        </tr>
+                                    </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
 
                     </div>
 
                     <!-- Footer Actions -->
-                    <div class="admin-footer">
+                    <div class="admin-footer" style="display: none;">
                         <button class="btn-footer btn-return" onclick="window.location.href='${pageContext.request.contextPath}/index.jsp'">
                             Retour</button>
                         <button class="btn-footer btn-add" onclick="addNewItem()">Ajouter</button>
@@ -323,7 +401,11 @@
 
 <jsp:include page="/public/footer.jsp" />
 
-// function in AdminJS
+<!-- function in AdminJS -->
+<script>
+    // Define contextPath globally before loading admin.js
+    window.contextPath = '${pageContext.request.contextPath}';
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"

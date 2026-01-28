@@ -23,10 +23,10 @@
         </div>
 
         <!-- Filtre de recherche -->
-        <div class="search-bar col-10 col-lg-6 offset-1">
+        <div class="search-bar col-10 col-xl-8 offset-1">
             <div class="search-field" id="destinationField">
                 <label>Destination</label>
-                <input type="text" id="destinationInput" placeholder="Rechercher une destination">
+                <input type="text" id="destinationInput" placeholder="Ou ?">
             </div>
 
             <div class="search-field" id="dateField">
@@ -52,8 +52,8 @@
 
             <div class="search-field" id="guestsField">
                 <label>Voyageurs</label>
-                <input type="text" id="guestsInput" placeholder="Ajouter des voyageurs" readonly>
-                <div class="guests-dropdown" id="guestsDropdown">
+                <input type="text" id="guestsInput" placeholder="Nombre ?" readonly>
+                <div class="guests-dropdown col-12" id="guestsDropdown">
                     <div class="guest-input-group">
                         <label for="guestsNumber">Nombre de voyageurs</label>
                         <input type="number" id="guestsNumber" min="1" max="20" value="1">
@@ -62,7 +62,7 @@
                 </div>
             </div>
             <div class="search-field" id="searchField">
-                <p>Valider<img class="ms-3" src="${pageContext.request.contextPath}/asset/images/loupe.png" alt="Recherche logo"></p>
+                <p >Valider<img class="ms-3" src="${pageContext.request.contextPath}/asset/images/loupe.png" alt="Recherche logo"></p>
             </div>
         </div>
 

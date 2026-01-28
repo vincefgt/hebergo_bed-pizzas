@@ -39,26 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Actions des boutons du modal
-    const loginBtn = document.getElementById('loginBtn');
-    const settingsBtn = document.getElementById('settingsBtn');
-
-    if (loginBtn) {
-        loginBtn.addEventListener('click', function() {
-            console.log('Connexion demandée');
-            // Ajoutez ici votre logique de connexion
-            alert('Redirection vers la page de connexion...');
-        });
-    }
-
-    if (settingsBtn) {
-        settingsBtn.addEventListener('click', function() {
-            console.log('Paramètres demandés');
-            // Ajoutez ici votre logique de paramètres
-            alert('Ouverture des paramètres...');
-        });
-    }
-
     // Gestion des options supplémentaires (prix)
     const toggleAdditionalOptions = document.getElementById('toggleAdditionalOptions');
     const priceFilterSection = document.getElementById('priceFilterSection');
@@ -330,8 +310,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 maxPrice: maxPrice
             };
 
-            console.log('Recherche lancée avec les paramètres:', searchParams);
-
             alert(`Recherche lancée:\nDestination: ${destination}\nDates: ${dates || 'Non spécifiées'}\nVoyageurs: ${guests || 'Non spécifié'}\nPrix: ${minPrice || '0'}€ - ${maxPrice || '∞'}€`);
         });
     }
@@ -364,4 +342,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    });
+
+    jQuery(function(){
+        $(function () {
+            $(window).scroll(function () { //Fonction appelée quand on descend la page
+                if ($(this).scrollTop() > 400 ) {  // Quand on est à 400px du haut de page,
+                    $('#scrollUp').css('right','30px'); // Replace à 10pixels de la droite l'image
+                } else {
+                    $('#scrollUp').removeAttr( 'style' ); // Enlève les attributs CSS affectés par javascript
+                }
+            });
+        });
     });
