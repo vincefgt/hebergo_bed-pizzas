@@ -50,9 +50,39 @@ public class EstateServlet extends HttpServlet {
                     request.getRequestDispatcher("/WEB-INF/jsp/add-estate.jsp").forward(request, response);
                     break;
                 case "delete":
-                    estateDao.deleteEstate(Integer.parseInt(request.getParameter("idEstate")));
-                    //TODO if provenance do ...
+                    idEstate = Integer.parseInt(request.getParameter("idEstate"));
+                    estateDao.deleteEstate(idEstate);
+                    // send response when delete is successful
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.getWriter().write("Success");
+                    //TODO if provenance
                     //response.sendRedirect("EstateServlet?action=estate");
+                    break;
+                case "edit":
+                    try (Connection connection = dataSource.getConnection()) {
+                        idEstate = Integer.parseInt(request.getParameter("idEstate"));
+                        Estate estate = estateDao.getEstateById(idEstate);
+
+                        if (estate != null) {
+                            request.setAttribute("estate", estate);
+
+                            // get address
+                            AddressesDAO addressesDAO = new AddressesDAO();
+                            Addresses address = addressesDAO.findById(connection, estate.getIdAddress());
+                            request.setAttribute("addressObj", address);
+
+                            if (address != null) {
+                                // get city
+                                CitiesDAO citiesDAO = new CitiesDAO();
+                                Cities city = citiesDAO.findById(connection, address.getIdCity());
+                                request.setAttribute("cityObj", city);
+                            }
+                        }
+                        request.getRequestDispatcher("/WEB-INF/jsp/add-estate.jsp").forward(request, response);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    }
                     break;
                 case "carrousel":
                     estatesList = estateDao.getAllEstates();
@@ -183,7 +213,6 @@ public class EstateServlet extends HttpServlet {
                     estate.setIdUser(idUser);
                     estate.setIdAddress(myAddress.getIdAddress());
                     estate.setValid(true); // Default to true or based on your logic
-                    estate.setIdAdmin(1); //temporary because the DB doesnt allow idAdmin to be null
 
                     if (relativePath != null) {
                         estate.setPhotoEstate(relativePath);

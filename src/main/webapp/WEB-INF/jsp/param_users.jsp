@@ -112,7 +112,7 @@
                         <div class="estates-grid">
                             <c:forEach var="estate" items="${estatesList}">
                                     <div class="estate-card">
-                                        <a href="detailsServlet?idEstate=${estate.idEstate}" style="text-decoration: none;">
+                                        <a href="${pageContext.request.contextPath}/detailsServlet?idEstate=${estate.idEstate}" style="text-decoration: none;">
                                         <div class="estate-image">
                                             <c:choose>
                                                 <c:when test="${not empty estate.photoEstate}">
@@ -135,8 +135,20 @@
                                             </div>
                                             <div class="estate-footer">
                                                 <div class="estate-actions">
-                                                    <button class="icon-btn" onclick="editEstate(${estate.idEstate})" title="Modifier">✏️</button>
-                                                    <button class="icon-btn delete" onclick="deleteEstate(${estate.idEstate})" title="Supprimer">🗑️</button>
+
+                                                    <c:url var="editUrl" value="/EstateServlet">
+                                                        <c:param name="action" value="edit" />
+                                                        <c:param name="idEstate" value="${estate.idEstate}" />
+                                                    </c:url>
+
+                                                    <a href="${editUrl}"
+                                                       onclick="event.stopPropagation();"
+                                                       class="icon-btn"
+                                                       title="Modifier">
+                                                        <span style="font-size: 20px;">✏️</span>
+                                                    </a>
+                                                    <!--<button class="icon-btn" onclick="editEstate(event,${estate.idEstate})" title="Modifier">✏️</button>-->
+                                                    <button class="icon-btn delete" onclick="deleteEstate(event,${estate.idEstate})" title="Supprimer">🗑️</button>
                                                 </div>
                                             </div>
                                         </div>

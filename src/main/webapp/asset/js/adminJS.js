@@ -210,11 +210,25 @@ function addNewItem() {
     }
 }
 
-function editEstate(estateId) {
-    window.location.href =  window.contextPath + "/detailsServlet?idEstate=" + estateId;
+function editEstate(event, estateId) {
+
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    const context = (window.contextPath || '').trim();
+
+    const url = context + "/EstateServlet?action=edit&idEstate=" + estateId;
+
+    console.log("Navigating directly to:", url);
+
+
+    window.location.href = url;
 }
+
 //hostList
-async function deleteEstate(estateId) {
+/*async function deleteEstate(estateId) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce logement ?')) {
         // Show loading state
         const card = event.target.closest('.estate-card');
@@ -272,6 +286,63 @@ async function deleteEstate(estateId) {
                     card.style.pointerEvents = 'auto';
                 }
             });
+    }
+}*/
+
+async function deleteEstate(event, estateId) {
+
+    if (event && event.preventDefault) event.preventDefault();
+
+    // confirm before delete
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce logement ?')) return;
+
+    const btn = event ? event.currentTarget : null;
+    const card = btn ? btn.closest('.estate-card') : null;
+
+    if (card) {
+        card.style.opacity = '0.5';
+        card.style.pointerEvents = 'none';
+    }
+
+    // get path
+    const context = window.contextPath || '/hebergo_bnp_war_exploded';
+    const url = `${context}/EstateServlet?action=delete&idEstate=${estateId}`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+        // delete with animation effect
+        if (card) {
+            card.style.transition = 'all 0.4s ease';
+            card.style.transform = 'scale(0.9)';
+            card.style.opacity = '0';
+
+            setTimeout(() => {
+                card.remove();
+
+                // if the grid is empty, display "Aucun logement pour le moment ..."
+                const grid = document.querySelector('.estates-grid');
+                if (grid && grid.children.length === 0) {
+                    location.reload();
+                }
+            }, 400);
+        } else {
+            location.reload();
+        }
+
+    } catch (error) {
+        console.error('Erreur lors de la suppression:', error);
+        alert('Erreur: Impossible de supprimer le logement.');
+
+        if (card) {
+            card.style.opacity = '1';
+            card.style.pointerEvents = 'auto';
+        }
     }
 }
 
