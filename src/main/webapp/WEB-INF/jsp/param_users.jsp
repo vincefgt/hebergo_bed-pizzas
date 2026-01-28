@@ -32,7 +32,7 @@
 <c:import url="/public/navBar.jsp" />
 
 <main>
-    <div class="main-container">
+    <div class="main-container pt-4">
         <!-- Header Profile -->
         <div class="profile-header">
             <h1>Bienvenue, ${sessionScope.user.firstname} ${sessionScope.user.lastname}</h1>
@@ -79,15 +79,16 @@
                             <label for="newPassword">Nouveau mot de passe (vide = inchangé)</label>
                             <input type="password" id="newPassword" name="newPassword" placeholder="" minlength="8">
                         </div>
+                        <%-- TODO delete button
                         <div class="form-group">
-                            <label for="confirmPassword">Confirmer nouveau mot de passe</label>
-                            <input type="password" id="confirmPassword" name="confirmPassword" minlength="8">
-                        </div>
-                        <div class="form-group full-width">
-                            <a href="${pageContext.request.contextPath}/index.jsp">
-                                <button type="button" class="btn btn-secondary">Supprimer compte</button>
-                            </a>
-                        </div>
+                             <label for="confirmPassword">Confirmer nouveau mot de passe</label>
+                             <input type="password" id="confirmPassword" name="confirmPassword" minlength="8">
+                         </div>
+                           <div class="form-group full-width">
+                             <a href="${pageContext.request.contextPath}/index.jsp">
+                                 <button type="button" class="btn btn-secondary">Supprimer compte</button>
+                             </a>
+                        </div>--%>
                     </div>
                     <div class="form-actions">
                         <a href="${pageContext.request.contextPath}/index.jsp">
@@ -98,7 +99,7 @@
                 </form>
             </div>
         </div>
-        <!-- Tab Content: Estates -->
+        <!-- Tab Content: Estates  CARDS-->
         <div id="estates-tab" class="tab-content">
             <div class="profile-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
@@ -112,7 +113,7 @@
                         <div class="estates-grid">
                             <c:forEach var="estate" items="${estatesList}">
                                     <div class="estate-card">
-                                        <a href="${pageContext.request.contextPath}/detailsServlet?idEstate=${estate.idEstate}" style="text-decoration: none;">
+                                        <a href="detailsServlet?idEstate=${estate.idEstate}" style="text-decoration: none;">
                                         <div class="estate-image">
                                             <c:choose>
                                                 <c:when test="${not empty estate.photoEstate}">
@@ -135,20 +136,8 @@
                                             </div>
                                             <div class="estate-footer">
                                                 <div class="estate-actions">
-
-                                                    <c:url var="editUrl" value="/EstateServlet">
-                                                        <c:param name="action" value="edit" />
-                                                        <c:param name="idEstate" value="${estate.idEstate}" />
-                                                    </c:url>
-
-                                                    <a href="${editUrl}"
-                                                       onclick="event.stopPropagation();"
-                                                       class="icon-btn"
-                                                       title="Modifier">
-                                                        <span style="font-size: 20px;">✏️</span>
-                                                    </a>
-                                                    <!--<button class="icon-btn" onclick="editEstate(event,${estate.idEstate})" title="Modifier">✏️</button>-->
-                                                    <button class="icon-btn delete" onclick="deleteEstate(event,${estate.idEstate})" title="Supprimer">🗑️</button>
+                                                    <button class="icon-btn" onclick="editEstate(${estate.idEstate}); event.stopPropagation()" title="Modifier">✏️</button>
+                                                    <button class="icon-btn delete" onclick="deleteEstate(${estate.idEstate}); event.stopPropagation()" title="Supprimer">🗑️</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -188,10 +177,10 @@
                                        placeholder="Entrez l'ID du logement"
                                        autocomplete="off"
                                        value="${param.idEstate}">
-                                <button class="btn btn-primary" onclick="searchEstate()">
+                                <button class="btn btn-primary" onclick="searchEstate3()">
                                     <i class="bi bi-search"></i> Rechercher
                                 </button>
-                                <button class="btn btn-secondary" onclick="resetSearch()">
+                                <button class="btn btn-secondary" onclick="resetSearchEstate()">
                                     <i class="bi bi-x-circle"></i> Réinitialiser
                                 </button>
                             </div>
@@ -310,97 +299,91 @@
                                    placeholder="Entrez l'ID du User"
                                    autocomplete="off"
                                    value="${param.idUser}">
-                            <button class="btn btn-primary" onclick="searchUser()">
+                            <button class="btn btn-primary" onclick="searchUser2(); event.stopPropagation()">
                                 <i class="bi bi-search"></i> Rechercher
                             </button>
-                            <button class="btn btn-secondary" onclick="resetSearch()">
+                            <button class="btn btn-secondary" onclick="resetSearchUser(); event.stopPropagation()">
                                 <i class="bi bi-x-circle"></i> Réinitialiser
                             </button>
                         </div>
                     </div>
-                    <!-- Affichage des résultats de recherche -->
-                    <div id="searchResults" style="margin-top: 20px;">
-                        <!-- Message de succès -->
-                        <c:if test="${not empty userSearchSuccess and userSearchSuccess}">
-                            <div class="alert alert-success" role="alert">User trouvé avec succès !</div>
-                        </c:if>
-                        <!-- Message d'erreur -->
-                        <c:if test="${not empty userSearchError}">
-                            <div class="alert alert-warning" role="alert">${userSearchError}</div>
-                        </c:if>
-                        <!-- Tableau des résultats -->
-                        <c:choose>
-                            <c:when test="${not empty userFound}">
-                                <table class="results-table table table-striped">
-                                    <thead>
+                        <!-- Affichage des résultats de recherche -->
+                        <div id="searchResultsUser" style="margin-top: 20px;">
+                            <!-- Message de succès -->
+                            <c:if test="${not empty userSearchSuccess and userSearchSuccess}">
+                                <div class="alert alert-success" role="alert">User trouvé avec succès !</div>
+                            </c:if>
+                            <!-- Message d'erreur -->
+                            <c:if test="${not empty userSearchError}">
+                                <div class="alert alert-warning" role="alert">${userSearchError}</div>
+                            </c:if>
+                            <!-- Tableau des résultats -->
+                            <c:choose>
+                                <c:when test="${not empty userFound}">
+                                    <table class="results-table table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Firstname</th>
+                                            <th>Lastname</th>
+                                            <th>Email</th>
+                                            <th>Statut</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>${userFound.idUser}</td>
+                                            <td>${userFound.firstname}</td>
+                                            <td>${userFound.lastname}</td>
+                                            <td>${userFound.email}</td>
+                                            <td><span class="estate-status ${userFound.isDeleted ? 'pending' : 'valid'}">
+                                                    ${userFound.isDeleted ? 'Non actif' : 'Actif'}</span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="empty-results" id="userEmptyState">
+                                        <i class="bi bi-search" style="font-size: 48px; color: #6c757d;"></i>
+                                        <p>Utilisez le formulaire ci-dessus pour rechercher un user.</p>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                        <hr style="margin: 30px 0;"> <!-- Séparateur -->
+                            <div class="table-responsive" style="overflow: auto; max-height: 400px;">
+                                <table class="table table-striped table-hover" id="usersTable">
+                                    <thead style="position: sticky; top: 0;">
                                     <tr>
                                         <th>ID</th>
                                         <th>Firstname</th>
                                         <th>Lastname</th>
                                         <th>Email</th>
-                                        <th>Statut</th>
-                                        <th>Actions</th>
+                                        <th>Status</th>
+                                       <%-- <th>Action</th>--%>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td>${userFound.idUser}</td>
-                                        <td>${userFound.firstname}</td>
-                                        <td>${userFound.lastname}</td>
-                                        <td>${userFound.email}</td>
-                                        <td><span class="estate-status ${userFound.isDeleted ? 'pending' : 'valid'}">
-                                                ${userFound.isDeleted ? 'Non actif' : 'Actif'}</span>
-                                        </td>
-                                        <td>
-                                            <button class="btn-action btn-delete"
-                                                    onclick="event.stopPropagation(); deleteUserAdmin(${userFound.idUser}, event)">Supprimer
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    <c:forEach var="user" items="${listUsers}">
+                                         <tr  onclick="populateForm('${user.idUser}','${user.idAdmin}','${user.idRole}',
+                                                 '${user.idAddress}','${user.firstname}','${user.lastname}',
+                                                 '${user.phone}','${user.email}','${user.isDeleted}')"
+                                                  style="overflow: hidden; cursor: pointer;">
+                                             <td>${user.idUser}</td>
+                                             <td style="font-weight: bold">${user.firstname}</td>
+                                             <td style="font-weight: bold">${user.lastname}</td>
+                                             <td style="font-size: 12px">${user.email}</td>
+                                             <td><span class="estate-status ${user.isDeleted ? 'pending' : 'valid'}">
+                                                     ${user.isDeleted ? 'Non actif' : 'Actif'}</span>
+                                             </td>
+                                             <%--<td><button class="btn-action btn-delete" onclick="event.stopPropagation(); deleteUserAdmin(${user.idUser},event)">Supprimer</button>--%>
+                                             </td>
+                                        </tr>
+                                    </c:forEach>
                                     </tbody>
                                 </table>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="empty-results" id="userEmptyState">
-                                    <i class="bi bi-search" style="font-size: 48px; color: #6c757d;"></i>
-                                    <p>Utilisez le formulaire ci-dessus pour rechercher un user.</p>
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
-                    <hr style="margin: 30px 0;"> <!-- Séparateur -->
-                        <div class="table-responsive" style="overflow: auto; max-height: 400px;">
-                            <table class="table table-striped table-hover" id="usersTable">
-                                <thead style="position: sticky; top: 0;">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Firstname</th>
-                                    <th>Lastname</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:forEach var="user" items="${listUsers}">
-                                     <tr  onclick="populateForm('${user.idUser}','${user.idAdmin}','${user.idRole}',
-                                             '${user.idAddress}','${user.firstname}','${user.lastname}',
-                                             '${user.phone}','${user.email}','${user.isDeleted}')"
-                                              style="overflow: hidden; cursor: pointer;">
-                                         <td>${user.idUser}</td>
-                                         <td style="font-weight: bold">${user.firstname}</td>
-                                         <td style="font-weight: bold">${user.lastname}</td>
-                                         <td style="font-size: 12px">${user.email}</td>
-                                         <td><span class="estate-status ${user.isDeleted ? 'pending' : 'valid'}">
-                                                 ${user.isDeleted ? 'Non actif' : 'Actif'}</span>
-                                         </td>
-                                         <td><button class="btn-action btn-delete" onclick="event.stopPropagation(); deleteUserAdmin(${user.idUser},event)">Supprimer</button>
-                                         </td>
-                                    </tr>
-                                </c:forEach>
-                                </tbody>
-                            </table>
-                        </div>
+                            </div>
 
                     </div>
 

@@ -257,6 +257,10 @@ header section {
     transform: rotate(-90deg);
 }
 
+#searchField p {
+    font-weight: 600;
+}
+
 /* Section filtre de prix */
 .price-filter-section {
     max-width: 0;
@@ -332,8 +336,6 @@ header section {
     box-shadow: 0 5px 10px rgba(0,0,0,0.1);
     overflow: visible;
     position: relative;
-    /*width: 100%;*/
-    /*max-width: 850px;*/
     margin: 0 auto;
 }
 
@@ -661,7 +663,6 @@ header section {
     padding: 25px;
     display: none;
     z-index: 1000;
-    /*width: 300px;*/
 }
 
 .guests-dropdown.active {
@@ -837,7 +838,6 @@ header section {
 }
 
 /* Icon 3 */
-
 .animated-icon3 span:nth-child(1) {
     top: 0px;
     -webkit-transform-origin: left center;
@@ -941,4 +941,15 @@ section {
     #calendarDropdown {
         margin: 70px;
     }
+
+    .search-field label {
+        font-size: 15px;
+    }
 }
+
+@media (min-width: 1024px) and (max-width: 2560px) {
+    .search-field label {
+        font-size: 15px;
+    }
+}
+

@@ -46,7 +46,7 @@ public class User {
         this.idAdmin = idAdmin;
     }
 
-    public int getIdRole() {
+    public Integer getIdRole() {
         return idRole;
     }
 
@@ -54,7 +54,7 @@ public class User {
         this.idRole = idRole;
     }
 
-    public int getIdAddress() {
+    public Integer getIdAddress() {
         return idAddress;
     }
 

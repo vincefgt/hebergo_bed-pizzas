@@ -84,8 +84,7 @@ public class UserServlet extends HttpServlet {
                         // Recharger toutes les données
                         //reloadParamPageData(request, session);
                         request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
-                        return;
-                    }
+                        return;}
 
                     try {
                         int userId = Integer.parseInt(userIdParam);
@@ -116,18 +115,11 @@ public class UserServlet extends HttpServlet {
                                 e.printStackTrace();
                             }
                         }
-
                         // Rediriger vers la page param avec l'onglet admin actif
                         request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
 
                     } catch (NumberFormatException e) {
                         request.setAttribute("userSearchError", "Format d'ID invalide");
-                        //reloadParamPageData(request, session);
-                        request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        request.setAttribute("userSearchError", "Erreur lors de la recherche : " + e.getMessage());
-                        //reloadParamPageData(request, session);
                         request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
                     }
                     break;

@@ -1,5 +1,6 @@
 package vf_afpa_cda24060_2.hebergo_bnp.servlet;
 
+import com.google.gson.Gson;
 import jakarta.annotation.Resource;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -136,6 +137,37 @@ public class EstateServlet extends HttpServlet {
                         e.printStackTrace();
                         request.setAttribute("searchError", "Erreur lors de la recherche : " + e.getMessage());
                         request.getRequestDispatcher("/user-servlet?actionUser=paramUser").forward(request, response);}
+                    break;
+                case "searchEstate2":
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    try {
+                        String idParam = request.getParameter("idEstate");
+
+                        if (idParam == null || idParam.trim().isEmpty()) {
+                            response.getWriter().write("{}");
+                            return;
+                        }
+
+                        idEstate = Integer.parseInt(idParam);
+                        Estate estate = estateDao.getEstateById(idEstate);
+
+                        if (estate != null) {
+                            // Utiliser Gson ou Jackson pour convertir en JSON
+                            Gson gson = new Gson();
+                            String json = gson.toJson(estate);
+                            response.getWriter().write(json);
+                        } else {
+                            response.getWriter().write("{}");
+                        }
+
+                    } catch (NumberFormatException e) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        response.getWriter().write("{\"error\": \"ID invalide\"}");
+                    } catch (Exception e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.getWriter().write("{\"error\": \"Erreur serveur\"}");
+                    }
                     break;
                 default:
                     break;

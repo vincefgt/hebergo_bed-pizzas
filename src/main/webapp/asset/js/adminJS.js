@@ -38,31 +38,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
 function getContextPath() {
     return document.body.getAttribute('data-context-path') || '';}
 
-// Search Estate by ID
-function searchEstate() {
-    const searchInput = document.getElementById('searchEstateId');
-    const estateId = searchInput.value.trim();
-
-    if (!estateId) {
-        alert('Veuillez entrer un ID de logement');
-        return;}
-
-    if (isNaN(estateId) || estateId <= 0) {
-        alert('Veuillez entrer un ID valide (nombre positif)');
-        return;}
-
-    // Redirection simple vers le servlet
-    window.location.href = `${window.contextPath}/EstateServlet?action=searchEstate&idEstate=${estateId}`;
-}
-
-function resetSearch() {
-    const searchInput = document.getElementById('searchEstateId');
-    if (searchInput) searchInput.value = '';
-
-    // Recharger la page param sans paramètre de recherche
-    window.location.href = `${window.contextPath}/user-servlet?actionUser=paramUser`;
-}
-
 /*/ Ajouter support de la touche Entrée
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchEstateId');
@@ -98,48 +73,214 @@ async function searchUser() {
     if (isNaN(UserId) || UserId <= 0) {
         alert('Veuillez entrer un ID valide (nombre positif)');
         return;}
-    window.location.href = `${window.contextPath}/user-servlet?actionUser=researchUser&idUser=${UserId}`;
+    window.location.href = window.contextPath +'/user-servlet?actionUser=researchUser&idUser='+UserId;
 }
+async function searchUser2() {
+    const searchInput = document.getElementById('searchUserId');
+    const UserId = searchInput.value.trim();
 
-// Toggle Estate Status
-async function toggleEstateStatus(estateId, currentStatus) {
+    if (!UserId) { alert('Veuillez entrer un ID de user');
+        return; }
+
+    if (isNaN(UserId) || UserId <= 0) {
+        alert('Veuillez entrer un ID valide (nombre positif)');
+        return;}
     try {
-        const response = await fetch(window.contextPath + '/AdminServlet?action=toggleEstateStatus&id=' + estateId + '&status=' + !currentStatus, {
-            method: 'POST'
-        });
+        // Fetch la page HTML complète
+        const response = await fetch(window.contextPath + '/user-servlet?actionUser=researchUser&idUser=' + UserId);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);}
 
-        if (response.ok) {
-            alert('Statut du logement modifié avec succès');
-            searchEstate(); // Refresh results
-        } else {
-            alert('Erreur lors de la modification du statut');
+        // Récupérer le HTML
+        const html = await response.text();
+
+        // Parser le HTML pour extraire la partie qui nous intéresse
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        // Extraire le tableau ou le message d'erreur
+        const newContent = doc.querySelector('#searchResultsUser');
+        if (newContent) {
+            document.getElementById('searchResultsUser').innerHTML = newContent.innerHTML;
         }
     } catch (error) {
         console.error('Erreur:', error);
-        alert('Erreur lors de la modification du statut');
+        alert('Erreur lors de la recherche du logement');
     }
 }
+async function deleteUserAdmin(userId, event) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur id '+userId+'?')) {
+        try {
+            const response = await fetch(getContextPath()+ '/user-servlet?actionUser=deleteUser&idUser=' + userId);
 
-// Toggle User Status
-async function toggleUserStatus(userId, currentStatus) {
+            if (response.ok) {
+                setTimeout(() => {
+                    const rowUser = event.target.closest('tr');
+                    if (rowUser) {
+                        rowUser.remove();
+                        // Vérifier s'il reste des lignes dans le tableau
+                        const tableBody = document.querySelector('#usersTable');
+                        if (tableBody && tableBody.children.length === 0) {
+                            document.getElementById('userTable').style.display = 'none';
+                            const userEmptyState = document.getElementById('estateEmptyState');
+                            if (userEmptyState) {
+                                userEmptyState.style.display = 'block';
+                                userEmptyState.textContent = 'Aucun user disponible.';
+                            }
+                        }
+                    }
+                }, 300);
+                alert('User supprimé avec succès');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert('Erreur lors de la suppression de l\'utilisateur');}
+    }
+}
+function resetSearchUser() {
+    const searchInput = document.getElementById('searchUserId');
+    if (searchInput) searchInput.value = '';
+    // Réinitialiser l'affichage
+    const emptyState = document.getElementById('userEmptyState');
+    const searchResultsUser = document.getElementById('searchResultsUser');
+    // Vider le tableau
+    if (searchResultsUser) {
+        searchResultsUser.innerHTML = '';
+        searchResultsUser.innerHTML = '<div class="empty-results" id="userEmptyState">\n' +
+                                        '<i class="bi bi-search" style="font-size: 48px; color: #6c757d;"></i>\n' +
+                                        '<p>Utilisez le formulaire ci-dessus pour rechercher un user.</p>\n' +
+                                        ' </div>';}
+}
+
+// Search Estate by ID
+function resetSearchEstate() {
+    const searchInput = document.getElementById('searchEstateId');
+    if (searchInput) searchInput.value = '';
+    // Réinitialiser l'affichage
+    const emptyState = document.getElementById('estateEmptyState');
+    const searchResult = document.getElementById('searchResults');
+    // Vider le tableau
+    if (searchResult) {
+       searchResult.innerHTML = '';
+        searchResult.innerHTML = '<div class="empty-results" id="EmptyState">\n' +
+            '<i class="bi bi-search" style="font-size: 48px; color: #6c757d;"></i>\n' +
+            '<p>Utilisez le formulaire ci-dessus pour rechercher un logement.</p>\n' +
+            ' </div>';}
+}
+function searchEstate() {
+    const searchInput = document.getElementById('searchEstateId');
+    const estateId = searchInput.value.trim();
+
+    if (!estateId) {
+        alert('Veuillez entrer un ID de logement');
+        return;}
+
+    if (isNaN(estateId) || estateId <= 0) {
+        alert('Veuillez entrer un ID valide (nombre positif)');
+        return;}
+
+    // Redirection simple vers le servlet
+    window.location.href = `${window.contextPath}/EstateServlet?action=searchEstate&idEstate=${estateId}`;
+}
+async function searchEstate2() {
+    const estateId = document.getElementById('searchEstateId').value.trim();
+
+    if (!estateId) {
+        alert('Veuillez entrer un ID de logement');
+        return;
+    }
+
     try {
-        const response = await fetch(window.contextPath + '/AdminServlet?action=toggleUserStatus&id=' + userId + '&status=' + !currentStatus, {
-            method: 'POST'
-        });
+        const response = await fetch(window.contextPath + '/EstateServlet?action=searchEstate&idEstate=' + estateId);
 
-        if (response.ok) {
-            alert('Statut de l\'utilisateur modifié avec succès');
-            searchUser(); // Refresh results
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // FIX: Utiliser await avec json()
+        const data = await response.json();
+
+        const tableBody = document.getElementById('estateTableBody');
+        const table = document.getElementById('estateTable');
+        const emptyState = document.getElementById('estateEmptyState');
+
+        if (data && data.idEstate) {
+            table.style.display = 'table';
+            emptyState.style.display = 'none';
+
+            tableBody.innerHTML = `
+            <tr>
+                <td>${escapeHtml(data.idEstate)}</td>
+                <td>${escapeHtml(data.nameEstate)}</td>
+                <td>${escapeHtml(data.ownerName || 'N/A')}</td>
+                <td>
+                    <span class="status-badge ${data.valid ? 'active' : 'inactive'}">
+                        ${data.valid ? 'Actif' : 'Non actif'}
+                    </span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-action btn-activate ${data.valid ? 'active' : ''}" 
+                                onclick="toggleEstateStatus(${data.idEstate}, ${data.valid})">
+                            ${data.valid ? 'Actif' : 'Activer'}
+                        </button>
+                        <button class="btn-action btn-modify" 
+                                onclick="modifyEstate(${data.idEstate})">
+                            Modifier
+                        </button>
+                        <button class="btn-action btn-delete" 
+                                onclick="deleteEstateAdmin(${data.idEstate})">
+                            Supprimer
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
         } else {
-            alert('Erreur lors de la modification du statut');
+            table.style.display = 'none';
+            emptyState.style.display = 'block';
+            emptyState.textContent = 'Aucun logement trouvé avec cet ID.';
         }
     } catch (error) {
         console.error('Erreur:', error);
-        alert('Erreur lors de la modification du statut');
+        alert('Erreur lors de la recherche du logement');
     }
 }
+async function searchEstate3() {
+    const estateId = document.getElementById('searchEstateId').value.trim();
 
-// Delete Estate (Admin)
+    if (!estateId) {
+        alert('Veuillez entrer un ID de logement');
+        return;
+    }
+
+    try {
+        // Fetch la page HTML complète
+        const response = await fetch(window.contextPath + '/EstateServlet?action=searchEstate&idEstate=' + estateId);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Récupérer le HTML
+        const html = await response.text();
+
+        // Parser le HTML pour extraire la partie qui nous intéresse
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        // Extraire le tableau ou le message d'erreur
+        const newContent = doc.querySelector('#searchResults');
+
+        if (newContent) {
+            document.getElementById('searchResults').innerHTML = newContent.innerHTML;
+        }
+
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la recherche du logement');
+    }
+}
 async function deleteEstateAdmin(estateId, event) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce logement id ' + estateId + ' ?')) {
         try {
@@ -169,66 +310,12 @@ async function deleteEstateAdmin(estateId, event) {
         }
     }
 }
-
-// Delete User (Admin)
-async function deleteUserAdmin(userId, event) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur id '+userId+'?')) {
-        try {
-            const response = await fetch(getContextPath()+ '/user-servlet?actionUser=deleteUser&idUser=' + userId);
-
-            if (!response.ok) {
-                throw new Error('Erreur lors de la suppression');
-                const rowUser = event.target.closest('tr');
-                if (rowUser) {
-                    rowUser.remove();
-                    // Vérifier s'il reste des lignes dans le tableau
-                    const tableBody = document.querySelector('#usersTable');
-                    if (tableBody && tableBody.children.length === 0) {
-                        document.getElementById('userTable').style.display = 'none';
-                        const emptyState = document.getElementById('estateEmptyState');
-                        if (emptyState) {
-                            emptyState.style.display = 'block';
-                            emptyState.textContent = 'Aucun logement disponible.';
-                        }
-                    }
-                }
-                alert('User supprimé avec succès');
-            }
-        } catch (error) {
-            console.error('Erreur:', error);
-            alert('Erreur lors de la suppression de l\'utilisateur');}
-    }
-}
-
-// Add New Item
-function addNewItem() {
-    const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
-
-    // You can customize this based on what should be added
-    if (confirm('Voulez-vous ajouter un nouveau logement ?')) {
-        window.location.href = window.contextPath + '/EstateServlet?action=add';
-    }
-}
-
-function editEstate(event, estateId) {
-
-    if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-    }
-
-    const context = (window.contextPath || '').trim();
-
-    const url = context + "/EstateServlet?action=edit&idEstate=" + estateId;
-
-    console.log("Navigating directly to:", url);
-
-
-    window.location.href = url;
+function editEstate(estateId) {
+    window.location.href =  window.contextPath + "/EstateServlet?action=edit&idEstate=" + estateId;
 }
 
 //hostList
-/*async function deleteEstate(estateId) {
+async function deleteEstate(estateId) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce logement ?')) {
         // Show loading state
         const card = event.target.closest('.estate-card');
@@ -287,62 +374,54 @@ function editEstate(event, estateId) {
                 }
             });
     }
-}*/
+}
 
-async function deleteEstate(event, estateId) {
-
-    if (event && event.preventDefault) event.preventDefault();
-
-    // confirm before delete
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce logement ?')) return;
-
-    const btn = event ? event.currentTarget : null;
-    const card = btn ? btn.closest('.estate-card') : null;
-
-    if (card) {
-        card.style.opacity = '0.5';
-        card.style.pointerEvents = 'none';
-    }
-
-    // get path
-    const context = window.contextPath || '/hebergo_bnp_war_exploded';
-    const url = `${context}/EstateServlet?action=delete&idEstate=${estateId}`;
-
+// Toggle Estate Status
+async function toggleEstateStatus(estateId, currentStatus) {
     try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        const response = await fetch(window.contextPath + '/AdminServlet?action=toggleEstateStatus&id=' + estateId + '&status=' + !currentStatus, {
+            method: 'POST'
         });
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-        // delete with animation effect
-        if (card) {
-            card.style.transition = 'all 0.4s ease';
-            card.style.transform = 'scale(0.9)';
-            card.style.opacity = '0';
-
-            setTimeout(() => {
-                card.remove();
-
-                // if the grid is empty, display "Aucun logement pour le moment ..."
-                const grid = document.querySelector('.estates-grid');
-                if (grid && grid.children.length === 0) {
-                    location.reload();
-                }
-            }, 400);
+        if (response.ok) {
+            alert('Statut du logement modifié avec succès');
+            searchEstate(); // Refresh results
         } else {
-            location.reload();
+            alert('Erreur lors de la modification du statut');
         }
-
     } catch (error) {
-        console.error('Erreur lors de la suppression:', error);
-        alert('Erreur: Impossible de supprimer le logement.');
-
-        if (card) {
-            card.style.opacity = '1';
-            card.style.pointerEvents = 'auto';
-        }
+        console.error('Erreur:', error);
+        alert('Erreur lors de la modification du statut');
     }
 }
+
+// Toggle User Status
+async function toggleUserStatus(userId, currentStatus) {
+    try {
+        const response = await fetch(window.contextPath + '/AdminServlet?action=toggleUserStatus&id=' + userId + '&status=' + !currentStatus, {
+            method: 'POST'
+        });
+
+        if (response.ok) {
+            alert('Statut de l\'utilisateur modifié avec succès');
+            searchUser(); // Refresh results
+        } else {
+            alert('Erreur lors de la modification du statut');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la modification du statut');
+    }
+}
+
+// Add New Item
+function addNewItem() {
+    const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+
+    // You can customize this based on what should be added
+    if (confirm('Voulez-vous ajouter un nouveau logement ?')) {
+        window.location.href = window.contextPath + '/EstateServlet?action=add';
+    }
+}
+
 
