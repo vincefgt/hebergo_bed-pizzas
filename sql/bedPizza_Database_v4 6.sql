@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS rents(
    total_price DOUBLE NOT NULL,
    payment_number VARCHAR(50) NOT NULL,
    FOREIGN KEY(id_estate) REFERENCES Estates(id_estate) ON DELETE SET NULL,
-   FOREIGN KEY(id_user) REFERENCES Users(id_user) ON DELETE SET NULL
+   FOREIGN KEY(id_user) REFERENCES Users(id_user) 
 );
 
 

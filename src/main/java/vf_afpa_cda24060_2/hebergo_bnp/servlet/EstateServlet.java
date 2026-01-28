@@ -245,6 +245,7 @@ public class EstateServlet extends HttpServlet {
                     estate.setIdUser(idUser);
                     estate.setIdAddress(myAddress.getIdAddress());
                     estate.setValid(true); // Default to true or based on your logic
+                    estate.setIdAdmin(1); //temporary because the DB doesnt allow idAdmin to be null
 
                     if (relativePath != null) {
                         estate.setPhotoEstate(relativePath);
