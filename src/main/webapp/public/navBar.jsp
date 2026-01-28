@@ -53,7 +53,7 @@
             <div class="search-field" id="guestsField">
                 <label>Voyageurs</label>
                 <input type="text" id="guestsInput" placeholder="Ajouter des voyageurs" readonly>
-                <div class="guests-dropdown" id="guestsDropdown">
+                <div class="guests-dropdown col-12" id="guestsDropdown">
                     <div class="guest-input-group">
                         <label for="guestsNumber">Nombre de voyageurs</label>
                         <input type="number" id="guestsNumber" min="1" max="20" value="1">

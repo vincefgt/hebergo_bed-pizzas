@@ -39,26 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Actions des boutons du modal
-    const loginBtn = document.getElementById('loginBtn');
-    const settingsBtn = document.getElementById('settingsBtn');
-
-    if (loginBtn) {
-        loginBtn.addEventListener('click', function() {
-            console.log('Connexion demandée');
-            // Ajoutez ici votre logique de connexion
-            alert('Redirection vers la page de connexion...');
-        });
-    }
-
-    if (settingsBtn) {
-        settingsBtn.addEventListener('click', function() {
-            console.log('Paramètres demandés');
-            // Ajoutez ici votre logique de paramètres
-            alert('Ouverture des paramètres...');
-        });
-    }
-
     // Gestion des options supplémentaires (prix)
     const toggleAdditionalOptions = document.getElementById('toggleAdditionalOptions');
     const priceFilterSection = document.getElementById('priceFilterSection');
@@ -329,8 +309,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 minPrice: minPrice,
                 maxPrice: maxPrice
             };
-
-            console.log('Recherche lancée avec les paramètres:', searchParams);
 
             alert(`Recherche lancée:\nDestination: ${destination}\nDates: ${dates || 'Non spécifiées'}\nVoyageurs: ${guests || 'Non spécifié'}\nPrix: ${minPrice || '0'}€ - ${maxPrice || '∞'}€`);
         });
