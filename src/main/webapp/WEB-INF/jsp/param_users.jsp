@@ -166,45 +166,88 @@
                     <!-- Estate Management Section -->
                     <div class="admin-section">
                         <h3>Logements</h3>
+                        <!-- searchBar -->
                         <div class="search-container">
                             <label for="searchEstateId">Recherche ID Logement</label>
-                            <input type="text" id="searchEstateId" placeholder="Entrez l'ID du logement">
-                            <button class="btn-search" onclick="searchEstate()">Recherche</button>
-                        </div>
-
-                        <div id="estateResults">
-                            <table class="results-table" id="estateTable" style="display: none;">
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Logement</th>
-                                    <th>Propriétaire</th>
-                                    <th>Statut</th>
-                                    <th>Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody id="estateTableBody">
-                                <!-- Results will be inserted here -->
-                                </tbody>
-                            </table>
-                            <div id="estateEmptyState" class="empty-results">
-                                Aucun résultat. Effectuez une recherche pour afficher les logements.
+                            <div class="search-input-group" style="display: flex; align-items: center; justify-content: center; gap: 2rem;">
+                                <input type="text"
+                                       id="searchEstateId"
+                                       class="form-control"
+                                       placeholder="Entrez l'ID du logement"
+                                       autocomplete="off"
+                                       value="${param.idEstate}">
+                                <button class="btn btn-primary" onclick="searchEstate()">
+                                    <i class="bi bi-search"></i> Rechercher
+                                </button>
+                                <button class="btn btn-secondary" onclick="resetSearch()">
+                                    <i class="bi bi-x-circle"></i> Réinitialiser
+                                </button>
                             </div>
                         </div>
-                        <table class="results-table" id="estateTable" style="display: none;">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Logement</th>
-                                <th>Propriétaire</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody id="estateTableBody">
-                            <!-- Results will be inserted here -->
-                            </tbody>
-                        </table>
+                        <!-- Affichage des résultats de recherche -->
+                        <div id="searchResults" style="margin-top: 20px;">
+                            <!-- Message de succès -->
+                            <c:if test="${not empty searchSuccess and searchSuccess}">
+                                <div class="alert alert-success" role="alert">Logement trouvé avec succès !</div>
+                            </c:if>
+                            <!-- Message d'erreur -->
+                            <c:if test="${not empty searchError}">
+                                <div class="alert alert-warning" role="alert">${searchError}</div>
+                            </c:if>
+                            <!-- Tableau des résultats -->
+                            <c:choose>
+                                <c:when test="${not empty estateFound}">
+                                    <table class="results-table table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Photo</th>
+                                            <th>Nom</th>
+                                            <th>Prix/jour</th>
+                                            <th>Statut</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr onclick="window.location.href='${pageContext.request.contextPath}/detailsServlet?idEstate=${estateFound.idEstate}'"
+                                            style="cursor: pointer;">
+                                            <td>${estateFound.idEstate}</td>
+                                            <td class="estate-image-admin">
+                                                <c:choose>
+                                                    <c:when test="${not empty estateFound.photoEstate}">
+                                                        <img src="${pageContext.request.contextPath}/${estateFound.photoEstate}"
+                                                             alt="${estateFound.nameEstate}"
+                                                             style="max-width: 80px; height: auto;">
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span>Pas d'image</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td class="estate-title">${estateFound.nameEstate}</td>
+                                            <td class="estate-price">${estateFound.dailyPrice} €</td>
+                                            <td><span class="estate-status ${estateFound.valid ? 'valid' : 'pending'}">
+                                                    ${estateFound.valid ? 'Actif' : 'Non actif'}
+                                            </span></td>
+                                            <td>
+                                                <button class="btn-action btn-delete"
+                                                        onclick="event.stopPropagation(); deleteEstateAdmin(${estateFound.idEstate}, event)">Supprimer
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="empty-results" id="estateEmptyState">
+                                        <i class="bi bi-search" style="font-size: 48px; color: #6c757d;"></i>
+                                        <p>Utilisez le formulaire ci-dessus pour rechercher un logement.</p>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                        <hr style="margin: 30px 0;"> <!-- Séparateur -->
+                        <!-- listTable Estate-->
                         <div class="table-responsive" style="overflow: auto; max-height: 400px; margin: auto;">
                             <table class="table table-striped table-hover" id="estateTable">
                                 <thead style="position: sticky; top: 0;">
@@ -247,32 +290,73 @@
                     <div class="admin-section">
                         <h3>Recherche ID Guest / Host</h3>
                         <div class="search-container">
-                            <label for="searchUserId">Recherche ID Guest / Host</label>
-                            <input type="text" id="searchUserId" placeholder="Entrez l'ID de l'utilisateur">
-                            <button class="btn-search" onclick="searchUser()">Recherche</button>
+                        <label for="searchUserId">Recherche ID User</label>
+                        <div class="search-input-group" style="display: flex; align-items: center; justify-content: center; gap: 2rem;">
+                            <input type="text"
+                                   id="searchUserId"
+                                   class="form-control"
+                                   placeholder="Entrez l'ID du User"
+                                   autocomplete="off"
+                                   value="${param.idUser}">
+                            <button class="btn btn-primary" onclick="searchUser()">
+                                <i class="bi bi-search"></i> Rechercher
+                            </button>
+                            <button class="btn btn-secondary" onclick="resetSearch()">
+                                <i class="bi bi-x-circle"></i> Réinitialiser
+                            </button>
                         </div>
-
-                        <div id="userResults">
-                            <table class="results-table" id="userTable" style="display: none;">
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Type</th>
-                                    <th>Nom</th>
-                                    <th>Email</th>
-                                    <th>Statut</th>
-                                    <th>Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody id="userTableBody">
-                                <!-- Results will be inserted here -->
-                                </tbody>
-                            </table>
-                            <div id="userEmptyState" class="empty-results">
-                                Aucun résultat. Effectuez une recherche pour afficher les utilisateurs.
-                            </div>
-                        </div>
-
+                    </div>
+                    <!-- Affichage des résultats de recherche -->
+                    <div id="searchResults" style="margin-top: 20px;">
+                        <!-- Message de succès -->
+                        <c:if test="${not empty userSearchSuccess and userSearchSuccess}">
+                            <div class="alert alert-success" role="alert">User trouvé avec succès !</div>
+                        </c:if>
+                        <!-- Message d'erreur -->
+                        <c:if test="${not empty userSearchError}">
+                            <div class="alert alert-warning" role="alert">${userSearchError}</div>
+                        </c:if>
+                        <!-- Tableau des résultats -->
+                        <c:choose>
+                            <c:when test="${not empty userFound}">
+                                <table class="results-table table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Firstname</th>
+                                        <th>Lastname</th>
+                                        <th>Email</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>${userFound.idUser}</td>
+                                        <td>${userFound.firstname}</td>
+                                        <td>${userFound.lastname}</td>
+                                        <td>${userFound.email}</td>
+                                        <td><span class="estate-status ${userFound.isDeleted ? 'pending' : 'valid'}">
+                                                ${userFound.isDeleted ? 'Non actif' : 'Actif'}</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn-action btn-delete"
+                                                    onclick="event.stopPropagation(); deleteUserAdmin(${userFound.idUser}, event)">Supprimer
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="empty-results" id="userEmptyState">
+                                    <i class="bi bi-search" style="font-size: 48px; color: #6c757d;"></i>
+                                    <p>Utilisez le formulaire ci-dessus pour rechercher un user.</p>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                    <hr style="margin: 30px 0;"> <!-- Séparateur -->
                         <div class="table-responsive" style="overflow: auto; max-height: 400px;">
                             <table class="table table-striped table-hover" id="usersTable">
                                 <thead style="position: sticky; top: 0;">
@@ -309,7 +393,7 @@
                     </div>
 
                     <!-- Footer Actions -->
-                    <div class="admin-footer">
+                    <div class="admin-footer" style="display: none;">
                         <button class="btn-footer btn-return" onclick="window.location.href='${pageContext.request.contextPath}/index.jsp'">
                             Retour</button>
                         <button class="btn-footer btn-add" onclick="addNewItem()">Ajouter</button>
@@ -326,6 +410,7 @@
 
 <jsp:include page="/public/footer.jsp" />
 
+<!-- function in AdminJS -->
 <script>
     // Define contextPath globally before loading admin.js
     window.contextPath = '${pageContext.request.contextPath}';

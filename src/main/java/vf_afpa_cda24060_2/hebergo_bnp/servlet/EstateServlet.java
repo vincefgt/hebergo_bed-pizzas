@@ -9,10 +9,9 @@ import jakarta.servlet.http.*;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.AddressesDAO;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.CitiesDAO;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.EstateDao;
-import vf_afpa_cda24060_2.hebergo_bnp.model.Addresses;
-import vf_afpa_cda24060_2.hebergo_bnp.model.Cities;
-import vf_afpa_cda24060_2.hebergo_bnp.model.Estate;
-import vf_afpa_cda24060_2.hebergo_bnp.model.User;
+import vf_afpa_cda24060_2.hebergo_bnp.dao.userDAO;
+import vf_afpa_cda24060_2.hebergo_bnp.model.*;
+
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
@@ -70,8 +69,43 @@ public class EstateServlet extends HttpServlet {
                         request.setAttribute("estatesList", estatesList);}
                     break;
                 case "searchEstate":
-                    idEstate = Integer.parseInt(request.getParameter("idEstate"));
-                    estateDao.getEstateById(idEstate);
+                    try {
+                        String idEstateParam = request.getParameter("idEstate");
+                        if (idEstateParam == null || idEstateParam.trim().isEmpty()) {
+                            request.setAttribute("searchError", "ID de logement manquant");
+                            request.getRequestDispatcher("/user-servlet?actionUser=paramUser").forward(request, response);
+                            return;}
+
+                        idEstate = Integer.parseInt(idEstateParam);
+                        Estate estateFound = estateDao.getEstateById(idEstate);
+
+                        if (estateFound != null) {
+                            request.setAttribute("estateFound", estateFound);
+                            request.setAttribute("searchSuccess", true);
+                        } else {
+                            request.setAttribute("searchError", "Aucun logement trouvé avec l'ID : " + idEstate);}
+
+                        // Recharger toutes les données nécessaires pour la page param
+                        List<Estate> allEstates = estateDao.getAllEstates();
+                        request.setAttribute("list", allEstates);
+
+                        // Recharger les utilisateurs
+                        userDAO userDao = new userDAO();
+                        request.setAttribute("listUsers", userDao.findAll());
+
+                        // Recharger les estates de l'hôte si connecté
+                        if (session != null && session.getAttribute("user") != null) {
+                            List<Estate> hostEstates = estateDao.findEstateByHost((User) session.getAttribute("user"));
+                            request.setAttribute("estatesList", hostEstates);}
+                        request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+
+                    } catch (NumberFormatException e) {
+                        request.setAttribute("searchError", "Format d'ID invalide");
+                        request.getRequestDispatcher("/user-servlet?actionUser=paramUser").forward(request, response);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        request.setAttribute("searchError", "Erreur lors de la recherche : " + e.getMessage());
+                        request.getRequestDispatcher("/user-servlet?actionUser=paramUser").forward(request, response);}
                     break;
                 default:
                     break;

@@ -36,127 +36,69 @@ document.addEventListener('DOMContentLoaded', function(e) {
 });
 
 function getContextPath() {
-    return document.body.getAttribute('data-context-path') || '';
-}
+    return document.body.getAttribute('data-context-path') || '';}
 
 // Search Estate by ID
-async function searchEstate() {
-    const estateId = document.getElementById('searchEstateId').value.trim();
+function searchEstate() {
+    const searchInput = document.getElementById('searchEstateId');
+    const estateId = searchInput.value.trim();
 
     if (!estateId) {
         alert('Veuillez entrer un ID de logement');
-        return;
-    }
-    try {
-        const response = await fetch(window.contextPath + '/AdminServlet?action=searchEstate&id=' + estateId);
-        const data = await response.json();
-        const tableBody = document.getElementById('estateTableBody');
-        const table = document.getElementById('estateTable');
-        const emptyState = document.getElementById('estateEmptyState');
+        return;}
 
-        if (data && data.idEstate) {
-            // Show table, hide empty state
-            table.style.display = 'table';
-            emptyState.style.display = 'none';
+    if (isNaN(estateId) || estateId <= 0) {
+        alert('Veuillez entrer un ID valide (nombre positif)');
+        return;}
 
-            // Populate table
-            tableBody.innerHTML = `
-                <tr>
-                    <td>${data.idEstate}</td>
-                    <td>${data.nameEstate}</td>
-                    <td>${data.ownerName || 'N/A'}</td>
-                    <td>
-                        <span class="status-badge ${data.valid ? 'active' : 'inactive'}">
-                            ${data.valid ? 'Actif' : 'Non actif'}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-action btn-activate ${data.valid ? 'active' : ''}" 
-                                    onclick="toggleEstateStatus(${data.idEstate}, ${data.valid})">
-                                ${data.valid ? 'Actif' : 'Activer'}
-                            </button>
-                            <button class="btn-action btn-modify" 
-                                    onclick="modifyEstate(${data.idEstate})">
-                                Modifier
-                            </button>
-                            <button class="btn-action btn-delete" 
-                                    onclick="deleteEstateAdmin(${data.idEstate})">
-                                Supprimer
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        } else {
-            table.style.display = 'none';
-            emptyState.style.display = 'block';
-            emptyState.textContent = 'Aucun logement trouvé avec cet ID.';
-        }
-    } catch (error) {
-        console.error('Erreur:', error);
-        alert('Erreur lors de la recherche du logement');
+    // Redirection simple vers le servlet
+    window.location.href = `${window.contextPath}/EstateServlet?action=searchEstate&idEstate=${estateId}`;
+}
+
+function resetSearch() {
+    const searchInput = document.getElementById('searchEstateId');
+    if (searchInput) searchInput.value = '';
+
+    // Recharger la page param sans paramètre de recherche
+    window.location.href = `${window.contextPath}/user-servlet?actionUser=paramUser`;
+}
+
+/*/ Ajouter support de la touche Entrée
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchEstateId');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchEstate();
+            }
+        });
     }
+});*/
+
+// FIX: Fonction utilitaire pour échapper le HTML
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return String(text).replace(/[&<>"']/g, m => map[m]);
 }
 
 // Search User by ID
 async function searchUser() {
-    const userId = document.getElementById('searchUserId').value.trim();
-    if (!userId) {
-        alert('Veuillez entrer un ID utilisateur');
+    const searchInput = document.getElementById('searchUserId');
+    const UserId = searchInput.value.trim();
+
+    if (!UserId) { alert('Veuillez entrer un ID de user');
+        return; }
+
+    if (isNaN(UserId) || UserId <= 0) {
+        alert('Veuillez entrer un ID valide (nombre positif)');
         return;}
-
-    try {
-        const response = await fetch(window.contextPath + '/user-servlet?actionUser=researchUser&idUser=' + userId);
-        const data = await response.json();
-        const tableBody = document.getElementById('userTableBody');
-        const table = document.getElementById('userTable');
-        const emptyState = document.getElementById('userEmptyState');
-
-        if (response && response.idUser) {
-            // Show table, hide empty state
-            table.style.display = 'table';
-            emptyState.style.display = 'none';
-
-            // Populate table
-            tableBody.innerHTML = `
-                <tr>
-                    <td>${data.idUser}</td>
-                    <td>${data.role || 'Host'}</td>
-                    <td>${data.firstname} ${data.lastname}</td>
-                    <td>${data.email}</td>
-                    <td>
-                        <span class="status-badge ${data.active ? 'active' : 'inactive'}">
-                            ${data.active ? 'Actif' : 'Inactif'}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-action btn-activate ${data.active ? 'active' : ''}" 
-                                    onclick="toggleUserStatus(${data.idUser}, ${data.active})">
-                                ${data.active ? 'Actif' : 'Activer'}
-                            </button>
-                            <button class="btn-action btn-modify" 
-                                    onclick="modifyUser(${data.idUser})">
-                                Modifier
-                            </button>
-                            <button class="btn-action btn-delete" 
-                                    onclick="deleteUserAdmin(${data.idUser})">
-                                Supprimer
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        } else {
-            table.style.display = 'none';
-            emptyState.style.display = 'block';
-            emptyState.textContent = 'Aucun utilisateur trouvé avec cet ID.';
-        }
-    } catch (error) {
-        console.error('Erreur:', error);
-        alert('Erreur lors de la recherche de l\'utilisateur');
-    }
+    window.location.href = `${window.contextPath}/user-servlet?actionUser=researchUser&idUser=${UserId}`;
 }
 
 // Toggle Estate Status
@@ -197,16 +139,6 @@ async function toggleUserStatus(userId, currentStatus) {
     }
 }
 
-// Modify Estate
-function modifyEstate(estateId) {
-    window.location.href = window.contextPath + '/detailsServlet?idEstate=' + estateId;
-}
-
-// Modify User
-function modifyUser(userId) {
-    window.location.href = window.contextPath + '/user-servlet?actionUser=edit&id=' + userId;
-}
-
 // Delete Estate (Admin)
 async function deleteEstateAdmin(estateId, event) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce logement id ' + estateId + ' ?')) {
@@ -242,8 +174,10 @@ async function deleteEstateAdmin(estateId, event) {
 async function deleteUserAdmin(userId, event) {
     if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur id '+userId+'?')) {
         try {
-            const response = await fetch(getContextPath()+ '/user-servlet?action=delete&idUser=' + userId);
-            if (response.ok) {
+            const response = await fetch(getContextPath()+ '/user-servlet?actionUser=deleteUser&idUser=' + userId);
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la suppression');
                 const rowUser = event.target.closest('tr');
                 if (rowUser) {
                     rowUser.remove();
@@ -262,8 +196,7 @@ async function deleteUserAdmin(userId, event) {
             }
         } catch (error) {
             console.error('Erreur:', error);
-            alert('Erreur lors de la suppression de l\'utilisateur');
-        }
+            alert('Erreur lors de la suppression de l\'utilisateur');}
     }
 }
 
@@ -276,10 +209,6 @@ function addNewItem() {
         window.location.href = window.contextPath + '/EstateServlet?action=add';
     }
 }
-
-//userForm
-function resetForm() {
-    document.querySelector('form').reset();}
 
 function editEstate(estateId) {
     window.location.href =  window.contextPath + "/detailsServlet?idEstate=" + estateId;

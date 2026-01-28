@@ -4,7 +4,9 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import vf_afpa_cda24060_2.hebergo_bnp.dao.EstateDao;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.userDAO;
+import vf_afpa_cda24060_2.hebergo_bnp.model.Estate;
 import vf_afpa_cda24060_2.hebergo_bnp.model.User;
 
 import javax.management.DynamicMBean;
@@ -78,33 +80,61 @@ public class UserServlet extends HttpServlet {
                 case "researchUser":
                     String userIdParam = request.getParameter("idUser");
                     if (userIdParam == null || userIdParam.trim().isEmpty()) {
-                        request.setAttribute("errorMessage", "ID utilisateur manquant");
+                        request.setAttribute("userSearchError", "ID utilisateur manquant");
+                        // Recharger toutes les données
+                        //reloadParamPageData(request, session);
                         request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
                         return;
                     }
+
                     try {
                         int userId = Integer.parseInt(userIdParam);
-                        User foundUser = userDAO.findById(userId);
+                        User userFound = userDAO.findById(userId);
 
-                        if (foundUser != null) {
-                            request.setAttribute("foundUser", foundUser);
-                            request.setAttribute("successMessage", "Utilisateur trouvé : " + foundUser.getFirstname() + " " + foundUser.getLastname());
+                        if (userFound != null) {
+                            request.setAttribute("userFound", userFound);
+                            request.setAttribute("userSearchSuccess", true);
                         } else {
-                            request.setAttribute("errorMessage", "Aucun utilisateur trouvé avec l'ID : " + userId);
+                            request.setAttribute("userSearchError", "Aucun utilisateur trouvé avec l'ID : " + userId);
                         }
-                        // Recharger les listes complètes
+
+                        // Recharger toutes les données nécessaires pour la page param
+                        request.setAttribute("listUsers", userDAO.findAll());
+                        // Recharger les estates de l'hôte si connecté
+                        if (session != null && session.getAttribute("user") != null) {
+                            User currentUser = (User) session.getAttribute("user");
+                            EstateDao estateDao = new EstateDao();
+                            try {
+                                // Liste des estates de l'hôte connecté
+                                List<Estate> hostEstates = estateDao.findEstateByHost(currentUser);
+                                request.setAttribute("estatesList", hostEstates);
+
+                                // Liste de tous les estates pour l'admin
+                                List<Estate> allEstates = estateDao.getAllEstates();
+                                request.setAttribute("list", allEstates);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                         // Rediriger vers la page param avec l'onglet admin actif
                         request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
 
                     } catch (NumberFormatException e) {
-                        request.setAttribute("errorMessage", "Format d'ID invalide");
-                        request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);}
+                        request.setAttribute("userSearchError", "Format d'ID invalide");
+                        //reloadParamPageData(request, session);
+                        request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        request.setAttribute("userSearchError", "Erreur lors de la recherche : " + e.getMessage());
+                        //reloadParamPageData(request, session);
+                        request.getRequestDispatcher("/WEB-INF/jsp/param_users.jsp").forward(request, response);
+                    }
                     break;
                 case "deleteUser":
                     userDAO.deleteById(Integer.parseInt(request.getParameter("idUser")));
                     break;
                 default:
-                    request.getRequestDispatcher("index.jsp").forward(request, response);
                     break;
             }
         } catch (SQLException e) {
