@@ -32,7 +32,7 @@
 <c:import url="/public/navBar.jsp" />
 
 <main>
-    <div class="main-container pt-4">
+    <div class="main-container">
         <!-- Header Profile -->
         <div class="profile-header">
             <h1>Bienvenue, ${sessionScope.user.firstname} ${sessionScope.user.lastname}</h1>
@@ -401,10 +401,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div id="scrollUp">
-        <a href="#top"><i class="h1 bi bi-arrow-up-circle-fill"></i></a>
     </div>
 </main>
 
