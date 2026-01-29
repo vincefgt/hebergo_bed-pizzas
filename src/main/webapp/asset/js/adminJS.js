@@ -85,7 +85,7 @@ async function searchUser2() {
         return;}
     try {
         // Fetch la page HTML complète
-        const response = await fetch(window.contextPath + '/user-servlet?actionUser=researchUser&idUser=' + UserId);
+        const response = await fetch(getContextPath() + '/user-servlet?actionUser=researchUser&idUser=' + UserId);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);}
 
@@ -254,7 +254,7 @@ async function searchEstate3() {
 
     try {
         // Fetch la page HTML complète
-        const response = await fetch(window.contextPath + '/EstateServlet?action=searchEstate&idEstate=' + estateId);
+        const response = await fetch(getContextPath() + '/EstateServlet?action=searchEstate&idEstate=' + estateId);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -309,9 +309,13 @@ async function deleteEstateAdmin(estateId, event) {
     }
 }
 function editEstate(estateId) {
-    window.location.href =  window.contextPath + "/EstateServlet?action=edit&idEstate=" + estateId;
+    //if (event) {
+     //   event.stopPropagation();
+    //    event.preventDefault();
+        //comment because defined in onclick button
+        window.location.href = getContextPath() + "/EstateServlet?action=edit&idEstate=" + estateId;
+   // }
 }
-
 //hostList
 async function deleteEstate(estateId) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce logement ?')) {

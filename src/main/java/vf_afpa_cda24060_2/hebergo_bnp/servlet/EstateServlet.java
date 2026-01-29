@@ -20,6 +20,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import static vf_afpa_cda24060_2.hebergo_bnp.Utility.TokenHelper.isValidToken;
+
 @WebServlet(name = "estate_servlet", value = "/EstateServlet")
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB
@@ -180,6 +182,11 @@ public class EstateServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isValidToken(request)) {
+            // Token invalide → attaque CSRF ou session expirée
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF token invalide");
+            return;
+        }
         try {
             HttpSession session = request.getSession(false);
 
@@ -269,8 +276,8 @@ public class EstateServlet extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error: " + e.getMessage());
                 return;
             }
-
             response.sendRedirect("index.jsp");
+           //request.getRequestDispatcher ("${pageContext.request.contextPath}/user-servlet?actionUser=paramUser").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -6,9 +6,10 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.EstateDao;
 import vf_afpa_cda24060_2.hebergo_bnp.dao.userDAO;
+import vf_afpa_cda24060_2.hebergo_bnp.logger.MyLogger;
 import vf_afpa_cda24060_2.hebergo_bnp.model.Estate;
+import vf_afpa_cda24060_2.hebergo_bnp.model.PasswordUtil;
 import vf_afpa_cda24060_2.hebergo_bnp.model.User;
-
 import javax.management.DynamicMBean;
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
+import static vf_afpa_cda24060_2.hebergo_bnp.Utility.TokenHelper.isValidToken;
 
 @WebServlet(name = "UserServlet", value = "/user-servlet")
 public class UserServlet extends HttpServlet {
@@ -138,6 +140,11 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        if (!isValidToken(request)) {
+            // Token invalide → attaque CSRF ou session expirée
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF token invalide");
+            return;
+        }
         //variable global both signup /login share
         String adUrl = "/index.jsp"; // index for reload carrousel
         String password = request.getParameter("password");
@@ -207,7 +214,7 @@ public class UserServlet extends HttpServlet {
                         user.setLastname(lastname.trim());
                         user.setPhone(phone.trim());
                         user.setEmail(email.trim());
-                        user.setPasswordHash(vf_afpa_cda24060_2.hebergo_bnp.util.PasswordUtil.hashPassword(password)); // Hash password w Argon2.id
+                        user.setPasswordHash(PasswordUtil.hashPassword(password)); // Hash password w Argon2.id
                         if (idAddressStr != null && !idAddressStr.trim().isEmpty()) {
                             user.setIdAddress(Integer.parseInt(idAddressStr));}
                         if (idRoleStr != null && !idRoleStr.trim().isEmpty()) {
@@ -257,7 +264,8 @@ public class UserServlet extends HttpServlet {
                         request.getRequestDispatcher("/WEB-INF/jsp/login_users.jsp").forward(request, response); // stay on log in page
                         return;}
                     // Verify password using Argon2id
-                    boolean isPasswordValid = vf_afpa_cda24060_2.hebergo_bnp.util.PasswordUtil.verifyPassword(user.getPasswordHash(), password);
+                    boolean isPasswordValid = PasswordUtil.verifyPassword(user.getPasswordHash(), password);
+
                     if (!isPasswordValid) {
                         //logger.warn("Failed login attempt for user: {}", email); //TODO logger
                         request.setAttribute("error", "Mot de passe incorrect");
