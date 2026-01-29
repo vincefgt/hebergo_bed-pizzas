@@ -76,10 +76,8 @@ async function searchUser() {
 async function searchUser2() {
     const searchInput = document.getElementById('searchUserId');
     const UserId = searchInput.value.trim();
-
     if (!UserId) { alert('Veuillez entrer un ID de user');
         return; }
-
     if (isNaN(UserId) || UserId <= 0) {
         alert('Veuillez entrer un ID valide (nombre positif)');
         return;}
