@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="vf_afpa_cda24060_2.hebergo_bnp.Utility.TokenHelper" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -113,11 +114,11 @@
                         <div class="estates-grid">
                             <c:forEach var="estate" items="${estatesList}">
                                     <div class="estate-card">
-                                        <a href="detailsServlet?idEstate=${estate.idEstate}" style="text-decoration: none;">
+                                        <a href="${pageContext.request.contextPath}/detailsServlet?idEstate=${estate.idEstate}" style="text-decoration: none;" onclick="(e) => e.stopPropagation()">
                                         <div class="estate-image">
                                             <c:choose>
                                                 <c:when test="${not empty estate.photoEstate}">
-                                                    <img src="${estate.photoEstate}" alt="${estate.nameEstate}">
+                                                    <img src="${estate.photoEstate}" alt="${estate.nameEstate}">+
                                                 </c:when>
                                                 <c:otherwise>
                                                     Pas d'image disponible
@@ -136,9 +137,9 @@
                                             </div>
                                             <div class="estate-footer">
                                                 <div class="estate-actions">
-                                                    <button class="icon-btn" onclick="editEstate(${estate.idEstate}); event.stopPropagation()" title="Modifier">✏️</button>
-                                                    <button class="icon-btn delete" onclick="deleteEstate(${estate.idEstate}); event.stopPropagation()" title="Supprimer">🗑️</button>
-                                                </div>
+                                                    <button class="icon-btn" onclick="editEstate(${estate.idEstate}); event.stopPropagation();event.preventDefault()" title="Modifier">✏️</button>
+                                                    <button class="icon-btn delete" onclick="deleteEstate(${estate.idEstate}); event.stopPropagation(); event.preventDefault()" title="Supprimer">🗑️</button>
+                                               </div>
                                             </div>
                                         </div>
                                         </a>

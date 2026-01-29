@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="vf_afpa_cda24060_2.hebergo_bnp.Utility.TokenHelper" %>
 <html>
 <head>
     <title>Add New Estate</title>
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="${pageContext.request.contextPath}/asset/css/navBar.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/asset/css/footer.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/asset/css/navBar.css" rel="stylesheet" />
 </head>
 <body class="bg-light">
 <c:import url="../../public/navBar.jsp" />
@@ -19,6 +21,11 @@
         <div class="card-body">
             <form action="${pageContext.request.contextPath}/EstateServlet"
                   method="post" enctype="multipart/form-data">
+                <!-- set Token -->
+                <c:set var="csrfToken" value="${ TokenHelper.generateCsrfToken() }" />
+                <c:set var="_csrfToken" value="${csrfToken}" scope="session" />
+                <input type="hidden" value="${csrfToken}" name="${ TokenHelper.CSRF_TOKEN_VALUE_NAME }" />
+
                 <!-- Hidden field for update (optional) -->
                 <input type="hidden" name="idEstate" value="${estate.idEstate}"/>
 
@@ -72,10 +79,9 @@
                 </div>
 
                 <div class="d-flex justify-content-end">
-                    <a href="${pageContext.request.contextPath}/param_users.jsp"
+                    <a href="${pageContext.request.contextPath}/user-servlet?actionUser=paramUser"
                        class="btn btn-secondary me-2">Annuler</a>
-                    <button type="submit" class="btn btn-primary">
-                        ${estate.idEstate != null ? "Modifier" : "Ajouter"}
+                    <button type="submit" class="btn btn-primary">${estate.idEstate != null ? "Modifier" : "Ajouter"}
                     </button>
                 </div>
             </form>

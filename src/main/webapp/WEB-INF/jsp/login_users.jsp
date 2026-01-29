@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="vf_afpa_cda24060_2.hebergo_bnp.Utility.TokenHelper" %>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -36,6 +38,12 @@
                         </div>
                     </c:if>
                     <form action="<c:url value="/user-servlet"/>" method="post" id="loginForm">
+
+                        <!-- set Token -->
+                        <c:set var="csrfToken" value="${TokenHelper.generateCsrfToken()}" />
+                        <c:set var="_csrfToken" value="${csrfToken}" scope="session" />
+                        <input type="hidden" value="${csrfToken}" name="${TokenHelper.CSRF_TOKEN_VALUE_NAME }" />
+
                         <input name="actionUser" type="hidden" value="login">
                         <div class="form-group">
                             <label for="email">Email<span class="required">*</span></label>

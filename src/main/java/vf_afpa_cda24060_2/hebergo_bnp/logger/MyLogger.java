@@ -4,19 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MyLogger {
-
     //--------------------- STATIC VARIABLES -----------------------------------
     // création du logger via le loggerFactory de SLFJ
     private static final Logger LOGGER = LoggerFactory.getLogger(MyLogger.class.getName());
 
     //--------------------- STATIC - GETTERS - SETTERS -------------------------
     public static Logger getLOGGER() {
-
-        return LOGGER;
+        return LOGGER;}
+    //--------------------- CONSTRUCTORS ---------------------------------------
+    private MyLogger (){
 
     }
-
-    //--------------------- CONSTRUCTORS ---------------------------------------
-    private MyLogger (){}
-
 }

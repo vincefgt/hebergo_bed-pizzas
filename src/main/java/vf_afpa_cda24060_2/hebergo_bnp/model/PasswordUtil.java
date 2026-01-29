@@ -1,15 +1,47 @@
-package vf_afpa_cda24060_2.hebergo_bnp.util;
+package vf_afpa_cda24060_2.hebergo_bnp.model;
 
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Properties;
+import static vf_afpa_cda24060_2.hebergo_bnp.logger.MyLogger.getLOGGER;
+
 
 /**
  * Utility class for password hashing using Argon2id algorithm.
  * Argon2id is the recommended password hashing algorithm as of 2025.
  */
 public class PasswordUtil {
+    // pepper integration
+    private static String PEPPER = "";
+    /**
+     //	 * Bloc static pour charger les fichier de config
+     //	 * et récuperer le PEPPER
+     //	 */
+    static {
+		// recupération du poivre
+		Properties properties = new Properties();
+		try (InputStream input = PasswordUtil.class.getClassLoader().getResourceAsStream("conf.properties")) {
+			if (input == null) {
+				getLOGGER().error("ERROR : conf.properties introuvable");
+				throw new IllegalStateException("conf.properties introuvable");
+			}
+			properties.load(input);
+			PEPPER = properties.getProperty("password.pepper");
+			if (PEPPER == null) {
+				getLOGGER().error("Pepper n'est pas défini dans la config");
+                throw new IllegalStateException("Pepper n'est pas défini dans la config");
+			}
+		} catch (IOException ex) {
+			getLOGGER().error("Error loading conf.properties: {}", ex.getMessage());
+			throw new IllegalStateException("Error loading conf.properties", ex);
+		}
+	}
+
     private static final Logger logger = LogManager.getLogger(PasswordUtil.class);
     // Argon2 parameters (can be adjusted based on security requirements)
     private static final int ITERATIONS = 2;        // Number of iterations
@@ -24,6 +56,23 @@ public class PasswordUtil {
     );
 
     /**
+     //	 *
+     //	 * @param encryptedPassword
+     //	 * @return
+     //	 */
+	private static String extractSalt(String encryptedPassword) {
+	        // echappement du dollar sinon regex
+	        String[] parts = encryptedPassword.split("\\$"); //  reminder format BDD : $argon2id$v=19$m=65536,t=3,p=4$<salt>$<hash>
+	        // si le split donne moins de 3 éléments alors problème
+	        if (parts.length < 4) {
+				getLOGGER().error("Hash seems malformed [hash={}] [parts={}]", encryptedPassword, Arrays.toString(parts));
+				throw new IllegalArgumentException("Malformed encrypted password.");
+	        }
+	        return parts[3]; // retourne le sel
+	    }
+
+
+    /**
      * Hash a password using Argon2id algorithm.
      *
      * @param password The plain text password to hash
@@ -32,10 +81,12 @@ public class PasswordUtil {
      */
     public static String hashPassword(String password) {
         if (password == null || password.isEmpty()) {
+            //getLogger.error("Hash seems malformed [hash={}] [parts={}]");
             throw new IllegalArgumentException("Password cannot be null or empty");
         }
-
+//'$argon2id$v=19$m=65536,t=2,p=1$y9sbS5wEJFNBFnLFGcLojp8Rb66iR/54h2h8fcpk4pc$5ctprP40zYj6VvmgNBrQ4+MU26XddK6/4nrUeaVcEghl96y1xmQyaikBz7TF8htzk56tX6qq73OCmY4q0TQ34g'
         try {
+            //  reminder format BDD : $argon2id$v=19$m=65536,t=3,p=4$<salt>$<hash>
             String hash = argon2.hash(ITERATIONS, MEMORY, PARALLELISM, password.toCharArray());
             logger.debug("Password hashed successfully");
             return hash;
