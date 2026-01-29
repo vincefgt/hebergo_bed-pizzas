@@ -25,12 +25,20 @@
     <title>Bed&Pizzas</title>
 </head>
 <body>
+<c:if test="${not empty sessionScope.success}">
+    <script> <!-- introduit du js dans le html -->
+        <%-- window.addEventListener('DOMContentLoaded', function () {  <!--  option 1 await loaded page to do -->
+            alert("User created successfully. Please, connect yourself.");}); --%>
+        window.onload = function () {
+            alert("User created successfully. Please, connect yourself.");};
+    </script>
+    <c:remove var="success" scope="session"/>
+</c:if>
 
 <%-- L'ajout de la navBar --%>
 <c:import url="public/navBar.jsp" />
 
 <main class="pt-4">
-
   <c:if test="${not empty sessionScope.user}">
     <div style="justify-content: center; display: flex; align-items: center; flex-direction: column;" id="welcome">
       <h1>WELCOME BACK ${fn:toUpperCase(sessionScope.user.firstname)} !</h1>

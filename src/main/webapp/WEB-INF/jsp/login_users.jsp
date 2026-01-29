@@ -21,21 +21,16 @@
                 <div class="form-group">
                     <!-- Display error message if present -->
                     <c:if test="${not empty error}">
-                        <div class="alert alert-error">
-                            <strong>Erreur :</strong> ${error}
-                        </div>
+                        ${success}.
+                        <div class="alert alert-error"><strong>Erreur :</strong> ${error}</div>
                     </c:if>
                     <!-- Display success message if present -->
                     <c:if test="${not empty success}">
-                        <div class="alert alert-success">
-                            <strong>Succès :</strong> ${success}
-                        </div>
+                        <div class="alert alert-success"><strong>Succès :</strong> ${success}</div>
                     </c:if>
                     <!-- Display info message if present -->
                     <c:if test="${not empty info}">
-                        <div class="alert alert-info">
-                            <strong>Info :</strong> ${info}
-                        </div>
+                        <div class="alert alert-info"><strong>Info :</strong> ${info}</div>
                     </c:if>
                     <form action="<c:url value="/user-servlet"/>" method="post" id="loginForm">
 

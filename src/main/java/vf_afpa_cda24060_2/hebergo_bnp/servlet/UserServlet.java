@@ -241,6 +241,7 @@ public class UserServlet extends HttpServlet {
                 break;
             case "login": // ---------------------- LOG IN -----------------------------
                 // Get form parameters
+                request.getSession().setAttribute("success", ""); // reset successed msg
                  email = request.getParameter("email");
                  password = request.getParameter("password");
                  String remember = request.getParameter("remember");
