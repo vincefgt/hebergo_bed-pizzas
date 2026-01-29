@@ -276,9 +276,7 @@ public class EstateServlet extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error: " + e.getMessage());
                 return;
             }
-            response.sendRedirect("index.jsp");
-           //request.getRequestDispatcher ("${pageContext.request.contextPath}/user-servlet?actionUser=paramUser").forward(request, response);
-
+            response.sendRedirect("user-servlet?actionUser=paramUser");
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error saving estate: " + e.getMessage());
