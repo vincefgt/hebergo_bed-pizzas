@@ -22,33 +22,31 @@ document.querySelectorAll('.estate-actions').forEach(actions => {
         e.preventDefault();
     });
 });
-// Ajouter la recherche avec la touche Entrée
-document.addEventListener('DOMContentLoaded', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const searchInput = document.getElementById('searchUserId');
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchUser();}
-        });
-    }
-});
 
 function getContextPath() {
     return document.body.getAttribute('data-context-path') || '';}
 
-/*/ Ajouter support de la touche Entrée
+// Ajouter support de la touche Entrée
 document.addEventListener('DOMContentLoaded', function() {
+    e.preventDefault();
+    e.stopPropagation();
     const searchInput = document.getElementById('searchEstateId');
+    const searchInput2 = document.getElementById('searchUserIdId');
     if (searchInput) {
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                searchEstate();
+                searchEstate3();
             }
         });
     }
-});*/
+    if (searchInput2) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchUser2();
+            }
+        });
+    }
+});
 
 // FIX: Fonction utilitaire pour échapper le HTML
 function escapeHtml(text) {
@@ -385,7 +383,7 @@ async function toggleEstateStatus(estateId, currentStatus) {
 
         if (response.ok) {
             alert('Statut du logement modifié avec succès');
-            searchEstate(); // Refresh results
+            searchEstate3(); // Refresh results
         } else {
             alert('Erreur lors de la modification du statut');
         }
@@ -404,7 +402,7 @@ async function toggleUserStatus(userId, currentStatus) {
 
         if (response.ok) {
             alert('Statut de l\'utilisateur modifié avec succès');
-            searchUser(); // Refresh results
+            searchUser2(); // Refresh results
         } else {
             alert('Erreur lors de la modification du statut');
         }
