@@ -99,7 +99,7 @@ public class UserServlet extends HttpServlet {
 
                         // Recharger toutes les données nécessaires pour la page param
                         request.setAttribute("listUsers", userDAO.findAll());
-                        // Recharger les estates de l'hôte si connecté
+                        //estates de l'hôte si connecté
                         if (session != null && session.getAttribute("user") != null) {
                             User currentUser = (User) session.getAttribute("user");
                             EstateDao estateDao = new EstateDao();
